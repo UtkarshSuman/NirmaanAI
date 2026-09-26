@@ -1,0 +1,110 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Project {
+  id                          String   @id @default(cuid())
+  projectId                   String   @unique @map("project_id")
+  projectName                 String   @map("project_name")
+  ministryDepartment          String   @map("ministry_department")
+  sector                      String
+  subSector                   String?  @map("sub_sector")
+  state                       String
+  district                    String?
+  implementingAgency          String   @map("implementing_agency")
+
+  // Financial
+  originalCostCrore           Float    @map("original_cost_crore")
+  revisedCostCrore            Float    @map("revised_cost_crore")
+  anticipatedCostCrore        Float?   @map("anticipated_cost_crore")
+  cumulativeExpenditureCrore  Float    @map("cumulative_expenditure_crore")
+  expenditureCurrentYearCrore Float?   @map("expenditure_current_year_crore")
+  expenditurePreviousYearCrore Float?  @map("expenditure_previous_year_crore")
+  landAcquisitionCostCrore    Float?   @map("land_acquisition_cost_crore")
+
+  // Timeline
+  originalStartDate           DateTime? @map("original_start_date")
+  originalCompletionDate      DateTime? @map("original_completion_date")
+  revisedCompletionDate       DateTime? @map("revised_completion_date")
+  anticipatedCompletionDate   DateTime? @map("anticipated_completion_date")
+  yearOfApproval              Int?      @map("year_of_approval")
+
+  // Progress
+  physicalProgressPercent     Float    @map("physical_progress_percent")
+  financialProgressPercent    Float    @map("financial_progress_percent")
+  milestoneAchievedCount      Int      @default(0) @map("milestone_achieved_count")
+  milestoneTotalCount         Int      @default(0) @map("milestone_total_count")
+
+  // Status
+  projectStatus               String   @default("Under Implementation") @map("project_status")
+  costOverrunPercent           Float    @default(0) @map("cost_overrun_percent")
+  timeOverrunMonths            Int      @default(0) @map("time_overrun_months")
+  reasonForDelay               String?  @map("reason_for_delay")
+  costRevisionCount            Int      @default(0) @map("cost_revision_count")
+  scheduleRevisionCount        Int      @default(0) @map("schedule_revision_count")
+
+  // Metadata
+  lastUpdated                  DateTime? @map("last_updated")
+  createdAt                    DateTime  @default(now()) @map("created_at")
+  updatedAt                    DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  predictions  Prediction[]
+  alerts       Alert[]
+
+  @@map("projects")
+}
+
+model Prediction {
+  id                           String   @id @default(cuid())
+  projectId                    String   @map("project_id")
+  predictionDate               DateTime @default(now()) @map("prediction_date")
+  modelVersion                 String?  @map("model_version")
+
+  // Cost Overrun
+  predictedCostOverrunPercent  Float?   @map("predicted_cost_overrun_percent")
+  costOverrunProbability       Float?   @map("cost_overrun_probability")
+
+  // Time Overrun
+  predictedTimeOverrunMonths   Int?     @map("predicted_time_overrun_months")
+  timeOverrunProbability       Float?   @map("time_overrun_probability")
+
+  // Risk Score
+  riskScore                    Float?   @map("risk_score")
+  riskCategory                 String?  @map("risk_category")
+
+  // Explainability
+  topRiskFactors               String?  @map("top_risk_factors")   // JSON string
+  shapValues                   String?  @map("shap_values")        // JSON string
+
+  createdAt                    DateTime @default(now()) @map("created_at")
+
+  project                      Project  @relation(fields: [projectId], references: [projectId])
+
+  @@map("predictions")
+}
+
+model Alert {
+  id                String   @id @default(cuid())
+  projectId         String   @map("project_id")
+  alertType         String   @map("alert_type")
+  severity          String
+  title             String
+  description       String?
+  riskScore         Float?   @map("risk_score")
+  recommendedAction String?  @map("recommended_action")
+  isAcknowledged    Boolean  @default(false) @map("is_acknowledged")
+  acknowledgedAt    DateTime? @map("acknowledged_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  project           Project  @relation(fields: [projectId], references: [projectId])
+
+  @@map("alerts")
+}
