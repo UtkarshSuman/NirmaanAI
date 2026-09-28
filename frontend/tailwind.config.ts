@@ -11,16 +11,26 @@ const config: Config = {
     extend: {
       colors: {
         gov: {
-          dark: "#060913",
-          navy: "#0a0f1d",
-          card: "#0f172a",
-          border: "#1e293b",
-          blue: "#2563eb",
-          accent: "#38bdf8",
+          bg: "#f8fafc",
+          surface: "#ffffff",
+          navy: "#0f172a",
+          slate: "#1e293b",
+          muted: "#64748b",
+          border: "#e2e8f0",
+          saffron: "#ea580c",
+          saffronLight: "#fff7ed",
+          saffronDark: "#c2410c",
+          green: "#16a34a",
+          greenLight: "#f0fdf4",
+          red: "#dc2626",
+          redLight: "#fef2f2",
+          blue: "#0284c7",
+          blueLight: "#f0f9ff",
         },
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["var(--font-inter)", "system-ui", "-apple-system", "sans-serif"],
+        serif: ["Newsreader", "Charter", "Georgia", "Cambria", "Times", "serif"],
       },
       animation: {
         "pulse-subtle": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",

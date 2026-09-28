@@ -44,77 +44,77 @@ export default async function MapPage() {
   const stats = await getMapStats();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Executive Header Banner */}
-      <div className="p-6 lg:p-8 rounded-2xl bg-gradient-to-r from-[#0d1627] via-[#101b33] to-[#0a1222] border border-[#1e2e4a] shadow-xl">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
-          <Globe className="w-5 h-5 text-amber-400" />
-          <span className="text-xs font-semibold text-amber-300 uppercase tracking-wider">
-            PM GatiShakti & PAIMANA Geo-Spatial Intelligence
+          <Globe className="w-4 h-4 text-orange-600" />
+          <span className="text-xs font-bold text-orange-700 uppercase tracking-wider">
+            Geo-Spatial Infrastructure Observatory
           </span>
         </div>
-        <h1 className="text-2xl lg:text-3xl font-extrabold text-white tracking-tight">
+        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
           National Infrastructure Map of India
         </h1>
-        <p className="text-sm text-slate-300 max-w-3xl mt-1 leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-600 max-w-3xl mt-1 leading-relaxed">
           Geographic distribution, cost escalation intensity, and schedule slippage across all 36 States and
           Union Territories for Central Sector Infrastructure Projects costing ₹150 Crore and above.
         </p>
       </div>
 
       {/* Main Interactive India Map Component */}
-      <IndiaMap />
+      <IndiaMap variant="full" />
 
       {/* State Infrastructure Summary Table */}
       {stats && (
-        <div className="p-6 rounded-2xl bg-[#090e1a] border border-slate-800 space-y-4 shadow-xl">
-          <div className="flex items-center justify-between">
+        <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-4 shadow-sm">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
-              <h2 className="text-base font-bold text-white flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-sky-400" />
+              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-slate-600" />
                 <span>Top 10 States by Infrastructure Project Volume</span>
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Central Sector Projects ≥ ₹150 Cr tracked under the PAIMANA framework
+              <p className="text-xs text-slate-500 mt-0.5">
+                Central Sector Projects ≥ ₹150 Cr tracked under the PAIMAANA framework
               </p>
             </div>
-            <span className="text-xs px-2.5 py-1 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20 font-mono">
+            <span className="text-xs px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200 font-mono font-semibold">
               {stats.totalStatesCovered} States/UTs Monitored
             </span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#0e1628] border-b border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-bold">
                 <tr>
-                  <th className="py-3 px-4">State / UT</th>
-                  <th className="py-3 px-4 text-right">Projects Monitored</th>
-                  <th className="py-3 px-4 text-right">Total Outlay (₹ Cr)</th>
-                  <th className="py-3 px-4 text-right">Avg Cost Escalation</th>
-                  <th className="py-3 px-4 text-right">Avg Schedule Delay</th>
+                  <th className="py-3 px-4 font-semibold">State / UT</th>
+                  <th className="py-3 px-4 text-right font-semibold">Projects Monitored</th>
+                  <th className="py-3 px-4 text-right font-semibold">Total Outlay (₹ Cr)</th>
+                  <th className="py-3 px-4 text-right font-semibold">Avg Cost Escalation</th>
+                  <th className="py-3 px-4 text-right font-semibold">Avg Schedule Delay</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-slate-100">
                 {stats.topStates.map((s, idx) => (
-                  <tr key={s.state} className="hover:bg-slate-800/40 transition-colors">
-                    <td className="py-3 px-4 font-semibold text-slate-200 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-slate-800 text-[10px] text-slate-400 flex items-center justify-center font-mono">
+                  <tr key={s.state} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3 px-4 font-bold text-slate-900 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-slate-100 text-[10px] text-slate-600 flex items-center justify-center font-mono font-semibold">
                         {idx + 1}
                       </span>
                       <span>{s.state}</span>
                     </td>
-                    <td className="py-3 px-4 text-right font-mono font-bold text-sky-300">
+                    <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">
                       {s.count}
                     </td>
-                    <td className="py-3 px-4 text-right font-mono text-white">
+                    <td className="py-3 px-4 text-right font-mono text-slate-800 font-semibold">
                       ₹{s.outlay.toLocaleString()} Cr
                     </td>
                     <td className="py-3 px-4 text-right font-mono">
-                      <span className={s.avgOverrun > 15 ? "text-rose-400 font-bold" : "text-emerald-400 font-bold"}>
+                      <span className={s.avgOverrun > 15 ? "text-rose-700 font-bold" : "text-emerald-700 font-semibold"}>
                         +{s.avgOverrun}%
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-right font-mono text-amber-300">
+                    <td className="py-3 px-4 text-right font-mono font-semibold text-orange-700">
                       +{s.avgDelay} mo
                     </td>
                   </tr>
