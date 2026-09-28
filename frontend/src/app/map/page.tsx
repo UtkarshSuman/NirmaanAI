@@ -89,7 +89,7 @@ export default async function MapPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                  Top States by Infrastructure Project Volume
+                  Top 10 States by Infrastructure Project Volume
                 </h2>
                 <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                   [Current Analytical Dataset]

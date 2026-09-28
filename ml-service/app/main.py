@@ -538,6 +538,25 @@ async def sector_summary():
     return {'sectors': sectors_clean.to_dict(orient='records')}
 
 
+@app.get("/ml/data/snapshots/{project_id}")
+async def get_project_snapshots(project_id: str):
+    """Get historical snapshot time-series for a project."""
+    if snapshots_df is None:
+        raise HTTPException(status_code=503, detail="Snapshots data not loaded")
+
+    p_snaps = snapshots_df[snapshots_df['project_id'] == project_id].copy()
+    if len(p_snaps) == 0:
+        return {"project_id": project_id, "count": 0, "snapshots": []}
+
+    p_snaps = p_snaps.sort_values('snapshot_date')
+    p_snaps_clean = p_snaps.replace([np.inf, -np.inf], np.nan).where(pd.notnull(p_snaps), None)
+    return {
+        "project_id": project_id,
+        "count": len(p_snaps_clean),
+        "snapshots": p_snaps_clean.to_dict(orient="records"),
+    }
+
+
 # ─── INTERNAL HELPERS ───────────────────────────────────────────────────────────
 
 def _generate_prediction(project_row) -> Dict[str, Any]:

@@ -65,9 +65,14 @@ body {
   box-shadow: 0 6px 12px -2px rgba(15, 23, 42, 0.06);
 }
 
-/* National Tricolor Top Stripe */
-.gov-tricolor-stripe {
-  height: 3px;
-  background: linear-gradient(90deg, #FF9933 0%, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #138808 66.6%, #138808 100%);
-  width: 100%;
+@keyframes loadingBar {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }

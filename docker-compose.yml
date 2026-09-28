@@ -11,4 +11,32 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - DATABASE_URL=file:/app/prisma/dev.db
+      - ML_SERVICE_URL=http://ml-service:8000
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    volumes:
+      - nirmaan-db-data:/app/prisma
+    depends_on:
+      - ml-service
     restart: unless-stopped
+
+  ml-service:
+    build:
+      context: .
+      dockerfile: ml-service/Dockerfile
+    container_name: nirmaan-ml-service
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/raw:/app/data/raw:ro
+      - ./ml-service/data/models:/app/data/models:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/ml/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  nirmaan-db-data:
+    driver: local

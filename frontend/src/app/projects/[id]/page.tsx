@@ -18,7 +18,10 @@ import {
 import prisma from "@/lib/prisma";
 import RiskGauge from "@/components/RiskGauge";
 import ShapWaterfall from "@/components/ShapWaterfall";
+import SnapshotTrendChart from "@/components/charts/SnapshotTrendChart";
+import ProjectEditModal from "@/components/ProjectEditModal";
 import { getCurrentPredictionForProject } from "@/lib/services/predictionService";
+import { getProjectSnapshots } from "@/lib/services/snapshotService";
 
 export const revalidate = 30;
 
@@ -37,8 +40,11 @@ async function getProjectData(id: string) {
 
     if (!project) return null;
 
-    const currentPrediction = await getCurrentPredictionForProject(project.projectId);
-    return { project, currentPrediction };
+    const [currentPrediction, snapshots] = await Promise.all([
+      getCurrentPredictionForProject(project.projectId),
+      getProjectSnapshots(project.projectId),
+    ]);
+    return { project, currentPrediction, snapshots };
   } catch (error) {
     console.error("Error loading project detail:", error);
     return null;
@@ -57,11 +63,11 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
-  const { project, currentPrediction: pred } = data;
+  const { project, currentPrediction: pred, snapshots } = data;
   const riskScore = pred?.riskScore ?? null;
   const riskCategory = pred?.riskCategory ?? undefined;
 
-  // Parse SHAP factors
+  // Parse SHAP factors and shapValues
   let factors = [];
   try {
     if (pred?.topRiskFactors) {
@@ -71,13 +77,22 @@ export default async function ProjectDetailPage({
     factors = [];
   }
 
+  let shapValues = undefined;
+  try {
+    if (pred?.shapValues) {
+      shapValues = JSON.parse(pred.shapValues);
+    }
+  } catch {
+    shapValues = undefined;
+  }
+
   const costVariance = Math.max(0, project.revisedCostCrore - project.originalCostCrore);
   const progressGap = project.financialProgressPercent - project.physicalProgressPercent;
 
   return (
     <div className="space-y-8">
       {/* Back link & status breadcrumb */}
-      <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
         <Link
           href="/projects"
           className="inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-900 transition-colors font-semibold"
@@ -86,12 +101,14 @@ export default async function ProjectDetailPage({
           <span>Back to Portfolio Register</span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-xs px-2.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-800 font-bold">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <ProjectEditModal project={project} currentRiskScore={riskScore} />
+
+          <span className="font-mono text-xs px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-800 font-bold">
             Project ID: {project.projectId}
           </span>
           <span
-            className={`text-xs px-2.5 py-0.5 rounded font-bold uppercase border ${
+            className={`text-xs px-2.5 py-1 rounded font-bold uppercase border ${
               project.projectStatus === "Completed"
                 ? "bg-teal-50 text-gov-teal border-teal-200"
                 : project.projectStatus === "Shelved"
@@ -365,8 +382,17 @@ export default async function ProjectDetailPage({
         </div>
 
         {/* SHAP Waterfall Attribution */}
-        <ShapWaterfall factors={factors} />
+        <ShapWaterfall factors={factors} shapValues={shapValues} />
       </div>
+
+      {/* Historical Time-Series Snapshot Trajectory */}
+      {snapshots && snapshots.length > 0 && (
+        <SnapshotTrendChart
+          projectId={project.projectId}
+          projectName={project.projectName}
+          snapshots={snapshots}
+        />
+      )}
 
       {/* Active Early Warning Alerts for This Project */}
       {project.alerts && project.alerts.length > 0 && (

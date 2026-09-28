@@ -4,6 +4,8 @@ import "./globals.css";
 import TopNav from "@/components/TopNav";
 import GovHeader from "@/components/GovHeader";
 import GovFooter from "@/components/GovFooter";
+import ChatWidget from "@/components/ChatWidget";
+import DeviceAlertModal from "@/components/DeviceAlertModal";
 import prisma from "@/lib/prisma";
 
 const inter = Inter({
@@ -57,6 +59,12 @@ export default async function RootLayout({
             {children}
           </div>
         </main>
+
+        {/* Floating Chatbot Widget in Bottom-Right Corner */}
+        <ChatWidget />
+
+        {/* Global Device Alert & Ingestion Modal */}
+        <DeviceAlertModal />
 
         {/* Platform Footer */}
         <GovFooter />

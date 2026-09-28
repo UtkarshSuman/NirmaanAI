@@ -19,9 +19,6 @@ export default function GovHeader() {
 
   return (
     <header className="w-full bg-white border-b border-slate-200 text-slate-800 select-none">
-      {/* Restrained Accent Stripe */}
-      <div className="gov-tricolor-stripe w-full h-[2px]" />
-
       {/* Top Utility Bar */}
       <div className="bg-slate-50/90 px-4 sm:px-6 lg:px-8 py-1.5 border-b border-slate-200/80 text-xs text-slate-600">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between">

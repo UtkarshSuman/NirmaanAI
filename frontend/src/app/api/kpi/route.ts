@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getNationalPortfolioMetrics } from "@/lib/services/portfolioService";
 import type { NationalKpis } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 let cachedKpiResult: NationalKpis | null = null;
 let cacheKpiTimestamp = 0;
 const CACHE_TTL_MS = 60 * 1000;

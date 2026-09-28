@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ChevronRight, ShieldAlert, ArrowRight } from "lucide-react";
+import RiskDonutChart from "@/components/charts/RiskDonutChart";
 
 interface LiveAlertItem {
   id: string;
@@ -77,100 +78,16 @@ export default function RiskRadar({
 
       {/* Two-Column Open Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Risk Category Distribution (5 Cols) */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-slate-900 tracking-tight">
-              Predictive Tier Breakdown
-            </h3>
-            <span className="text-xs text-slate-500">
-              Current predictive classification
-            </span>
-          </div>
-
-          <div className="space-y-3">
-            {/* Critical */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-rose-700 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-rose-600" />
-                  Critical Escalation
-                </span>
-                <span className="font-mono text-slate-900 font-bold">
-                  {distribution.critical} Assets (
-                  {((distribution.critical / totalAudited) * 100).toFixed(0)}%)
-                </span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-rose-600 rounded-full"
-                  style={{ width: `${(distribution.critical / totalAudited) * 100}%` }}
-                />
-              </div>
-            </div>
-
-            {/* High */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-orange-700 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-orange-500" />
-                  High Risk
-                </span>
-                <span className="font-mono text-slate-900 font-bold">
-                  {distribution.high} Assets (
-                  {((distribution.high / totalAudited) * 100).toFixed(0)}%)
-                </span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-orange-500 rounded-full"
-                  style={{ width: `${(distribution.high / totalAudited) * 100}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Moderate */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-amber-800 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-500" />
-                  Moderate Variance
-                </span>
-                <span className="font-mono text-slate-900 font-bold">
-                  {distribution.moderate} Assets (
-                  {((distribution.moderate / totalAudited) * 100).toFixed(0)}%)
-                </span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-amber-500 rounded-full"
-                  style={{ width: `${(distribution.moderate / totalAudited) * 100}%` }}
-                />
-              </div>
-            </div>
-
-            {/* On Track */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-teal-800 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-teal-600" />
-                  On Track / Low Risk
-                </span>
-                <span className="font-mono text-slate-900 font-bold">
-                  {distribution.low} Assets (
-                  {((distribution.low / totalAudited) * 100).toFixed(0)}%)
-                </span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-teal-600 rounded-full"
-                  style={{ width: `${(distribution.low / totalAudited) * 100}%` }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-2 text-[11px] text-slate-500 flex items-center justify-between border-t border-slate-100">
+        {/* Left Column: Risk Category Donut & Tier Breakdown (6 Cols) */}
+        <div className="lg:col-span-6 space-y-3">
+          <RiskDonutChart
+            critical={distribution.critical}
+            high={distribution.high}
+            moderate={distribution.moderate}
+            low={distribution.low}
+            totalClassified={totalAudited}
+          />
+          <div className="text-[11px] text-slate-500 flex items-center justify-between px-1">
             <span>Classification Coverage:</span>
             <strong className="text-slate-900 font-mono font-bold">
               {totalAudited.toLocaleString()} of {totalProjectsValue.toLocaleString()} ({coverage}%)
@@ -179,8 +96,8 @@ export default function RiskRadar({
           </div>
         </div>
 
-        {/* Right Column: Emerging Live Indicators (7 Cols) */}
-        <div className="lg:col-span-7 space-y-3">
+        {/* Right Column: Emerging Live Indicators (6 Cols) */}
+        <div className="lg:col-span-6 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-bold text-slate-900 tracking-tight">
               Emerging Systemic Risk Indicators

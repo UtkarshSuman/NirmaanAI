@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, Bell, Menu, X, ArrowRight, Bot } from "lucide-react";
+import { Search, Bell, Menu, X, ArrowRight, Bot, UploadCloud } from "lucide-react";
+import CufIngestionModal from "@/components/CufIngestionModal";
 
 interface TopNavProps {
   unacknowledgedAlertsCount?: number;
@@ -18,6 +19,17 @@ export default function TopNav({
   const pathname = usePathname();
   const [searchTerm, setSearchTerm] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isIngestOpen, setIsIngestOpen] = useState(false);
+  const [currentHash, setCurrentHash] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrentHash(window.location.hash);
+      const onHashChange = () => setCurrentHash(window.location.hash);
+      window.addEventListener("hashchange", onHashChange);
+      return () => window.removeEventListener("hashchange", onHashChange);
+    }
+  }, [pathname]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,12 +45,34 @@ export default function TopNav({
     { name: "Risk Radar", href: "/alerts" },
     { name: "Sectors", href: "/analytics#sectors" },
     { name: "Map", href: "/map" },
+    { name: "Methodology", href: "/about" },
     { name: "AI Officer", href: "/assistant" },
   ];
 
   const isActive = (href: string) => {
-    if (href === "/" && pathname === "/") return true;
-    if (href !== "/" && pathname.startsWith(href.split("#")[0])) return true;
+    const [targetPath, targetHash] = href.split("#");
+    if (targetPath === "/" && pathname === "/") {
+      return !targetHash || currentHash === `#${targetHash}`;
+    }
+
+    if (targetHash) {
+      return pathname === targetPath && currentHash === `#${targetHash}`;
+    }
+
+    if (pathname === targetPath) {
+      if (currentHash) {
+        const hasSpecificHashLink = navLinks.some(
+          (item) => item.href === `${targetPath}${currentHash}`
+        );
+        if (hasSpecificHashLink) return false;
+      }
+      return true;
+    }
+
+    if (targetPath !== "/" && pathname.startsWith(targetPath)) {
+      return true;
+    }
+
     return false;
   };
 
@@ -60,6 +94,10 @@ export default function TopNav({
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={() => {
+                    const hash = item.href.includes("#") ? `#${item.href.split("#")[1]}` : "";
+                    setCurrentHash(hash);
+                  }}
                   className={`relative h-full flex flex-col justify-center px-0.5 transition-colors ${
                     active
                       ? "text-slate-900 font-bold"
@@ -117,6 +155,16 @@ export default function TopNav({
             )}
           </Link>
 
+          {/* Ingest CUF Button */}
+          <Link
+            href="/ingest"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold transition-colors shadow-2xs"
+            title="Live Common Upload Form (CUF) Ingestion Service"
+          >
+            <UploadCloud className="w-3.5 h-3.5 text-white" />
+            <span>Ingest CUF</span>
+          </Link>
+
           {/* AI Officer Button - Compact Rectangular Institutional Control */}
           <Link
             href="/assistant"
@@ -143,11 +191,23 @@ export default function TopNav({
           </form>
 
           <div className="flex flex-col space-y-1">
+            <Link
+              href="/ingest"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-1.5 px-2 rounded font-semibold text-left text-orange-700 bg-orange-50 flex items-center gap-2"
+            >
+              <UploadCloud className="w-4 h-4 text-orange-600" />
+              <span>Ingest CUF Service</span>
+            </Link>
             {navLinks.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  const hash = item.href.includes("#") ? `#${item.href.split("#")[1]}` : "";
+                  setCurrentHash(hash);
+                  setMobileMenuOpen(false);
+                }}
                 className={`py-1.5 px-2 rounded font-medium ${
                   isActive(item.href)
                     ? "bg-slate-100 text-orange-700 font-bold"
@@ -160,6 +220,19 @@ export default function TopNav({
           </div>
         </div>
       )}
+
+      {/* Global CUF Ingestion Modal */}
+      <CufIngestionModal
+        isOpen={isIngestOpen}
+        onClose={() => setIsIngestOpen(false)}
+        onIngestionSuccess={() => {
+          if (pathname === "/projects") {
+            window.location.reload();
+          } else {
+            router.push("/projects");
+          }
+        }}
+      />
     </nav>
   );
 }

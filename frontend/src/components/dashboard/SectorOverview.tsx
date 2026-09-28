@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import SectorDistributionChart from "@/components/SectorDistributionChart";
 
 interface SectorStatItem {
   sector: string;
@@ -39,6 +40,9 @@ export default function SectorOverview({ sectorStats }: SectorOverviewProps) {
           <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>
+
+      {/* Interactive Sector Distribution Chart */}
+      <SectorDistributionChart sectorStats={sectorStats} />
 
       {/* Institutional Report Table */}
       <div className="overflow-x-auto">

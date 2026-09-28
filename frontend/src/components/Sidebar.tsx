@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -14,7 +15,11 @@ import {
   ExternalLink,
   Layers,
   FileCheck,
+  Brain,
+  Code2,
+  UploadCloud,
 } from "lucide-react";
+import CufIngestionModal from "@/components/CufIngestionModal";
 
 const NAV_ITEMS = [
   {
@@ -50,19 +55,50 @@ const NAV_ITEMS = [
     desc: "Proactive Risk Signals",
   },
   {
+    name: "Risk Predictor",
+    href: "/predict",
+    icon: Brain,
+    badge: "NEW",
+    desc: "What-If ML Scenario Analyser",
+  },
+  {
     name: "AI Officer",
     href: "/assistant",
     icon: Bot,
     badge: "LLM",
     desc: "Portfolio Q&A Assistant",
   },
+  {
+    name: "API Explorer",
+    href: "/api-docs",
+    icon: Code2,
+    badge: "Docs",
+    desc: "REST & ML Endpoints",
+  },
+  {
+    name: "CUF Ingestion",
+    href: "/ingest",
+    icon: UploadCloud,
+    badge: "Service",
+    desc: "Excel / CSV Data Intake",
+  },
+  {
+    name: "SIH Methodology",
+    href: "/about",
+    icon: ShieldCheck,
+    badge: "SIH",
+    desc: "Problem & Model Design",
+  },
 ];
+
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [isIngestOpen, setIsIngestOpen] = useState(false);
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-[#070b16] border-r border-[#1a253c] flex flex-col z-40 select-none">
+    <>
+      <aside className="fixed left-0 top-0 h-screen w-64 bg-[#070b16] border-r border-[#1a253c] flex flex-col z-40 select-none">
       {/* Brand Header */}
       <div className="p-4 border-b border-[#1a253c] bg-gradient-to-b from-[#0a1020] to-[#070b16]">
         <div className="flex items-center gap-3">
@@ -84,6 +120,25 @@ export default function Sidebar() {
         <div className="px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
           <span>Integrated Monitoring</span>
           <span className="text-[9px] text-emerald-400 font-mono">● CURRENT DATASET</span>
+        </div>
+
+        {/* Live CUF Ingest CTA Button */}
+        <div className="px-1 mb-2">
+          <button
+            onClick={() => setIsIngestOpen(true)}
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-orange-600 via-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white shadow-md shadow-orange-950/40 border border-orange-400/30 transition-all duration-150"
+          >
+            <div className="flex items-center gap-2.5">
+              <UploadCloud className="w-4 h-4 text-white" />
+              <div className="text-left">
+                <div className="leading-none">Live CUF Ingestion</div>
+                <div className="text-[9px] mt-0.5 font-normal text-orange-100">Excel / CSV Ingestion</div>
+              </div>
+            </div>
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-black/25 text-white border border-white/20">
+              Live
+            </span>
+          </button>
         </div>
 
         {NAV_ITEMS.map((item) => {
@@ -115,6 +170,8 @@ export default function Sidebar() {
                       ? "bg-rose-500/20 text-rose-400 border border-rose-500/30 animate-pulse"
                       : item.badge === "Interactive"
                       ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                      : item.badge === "NEW"
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse"
                       : "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
                   }`}
                 >
@@ -195,5 +252,15 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
-  );
+
+    {/* Live CUF Ingestion Modal accessible globally from sidebar */}
+    <CufIngestionModal
+      isOpen={isIngestOpen}
+      onClose={() => setIsIngestOpen(false)}
+      onIngestionSuccess={() => {
+        window.location.reload();
+      }}
+    />
+  </>
+);
 }

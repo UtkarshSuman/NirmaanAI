@@ -41,41 +41,40 @@ const CUF_SCHEMA_TAXONOMY = [
 
 async function getAnalyticsData() {
   try {
-    // 1. Sector aggregations
-    const sectorStats = await prisma.project.groupBy({
-      by: ["sector"],
-      _count: { projectId: true },
-      _sum: { revisedCostCrore: true, cumulativeExpenditureCrore: true },
-      _avg: { costOverrunPercent: true, timeOverrunMonths: true, physicalProgressPercent: true },
-    });
-
-    // 2. Delay reasons citations
-    const delayReasons = await prisma.project.groupBy({
-      by: ["reasonForDelay"],
-      where: {
-        reasonForDelay: { not: null },
-        timeOverrunMonths: { gt: 0 },
-      },
-      _count: { projectId: true },
-    });
-
-    // 3. Ministry aggregations
-    const ministryStats = await prisma.project.groupBy({
-      by: ["ministryDepartment"],
-      _count: { projectId: true },
-      _sum: { revisedCostCrore: true },
-      _avg: { costOverrunPercent: true, timeOverrunMonths: true },
-    });
-
-    // 4. Live Portfolio Cost Escalation Aggregation
-    const totalCostAgg = await prisma.project.aggregate({
-      _sum: {
-        originalCostCrore: true,
-        revisedCostCrore: true,
-        cumulativeExpenditureCrore: true,
-      },
-      _count: { projectId: true },
-    });
+    const [sectorStats, delayReasons, ministryStats, totalCostAgg] = await Promise.all([
+      // 1. Sector aggregations
+      prisma.project.groupBy({
+        by: ["sector"],
+        _count: { projectId: true },
+        _sum: { revisedCostCrore: true, cumulativeExpenditureCrore: true },
+        _avg: { costOverrunPercent: true, timeOverrunMonths: true, physicalProgressPercent: true },
+      }),
+      // 2. Delay reasons citations
+      prisma.project.groupBy({
+        by: ["reasonForDelay"],
+        where: {
+          reasonForDelay: { not: null },
+          timeOverrunMonths: { gt: 0 },
+        },
+        _count: { projectId: true },
+      }),
+      // 3. Ministry aggregations
+      prisma.project.groupBy({
+        by: ["ministryDepartment"],
+        _count: { projectId: true },
+        _sum: { revisedCostCrore: true },
+        _avg: { costOverrunPercent: true, timeOverrunMonths: true },
+      }),
+      // 4. Live Portfolio Cost Escalation Aggregation
+      prisma.project.aggregate({
+        _sum: {
+          originalCostCrore: true,
+          revisedCostCrore: true,
+          cumulativeExpenditureCrore: true,
+        },
+        _count: { projectId: true },
+      }),
+    ]);
     const originalCost = totalCostAgg._sum.originalCostCrore || 0;
     const revisedCost = totalCostAgg._sum.revisedCostCrore || 0;
     const netCostOverrunCrore = Math.max(0, revisedCost - originalCost);
@@ -664,6 +663,65 @@ export default async function AnalyticsPage() {
                 </div>
               </div>
             ))}
+        </div>
+
+        {/* Sector Benchmarking Grid (Target for #sectors) */}
+        <div id="sectors" className="pt-6 border-t border-slate-100 space-y-4 scroll-mt-24">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-gov-blue">
+                  Sector Performance Ledger
+                </span>
+                <span className="text-[10px] text-slate-500 font-mono bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                  {data.sectors.length} Sectors Monitored
+                </span>
+              </div>
+              <h3 className="text-base font-serif font-bold text-slate-900 mt-0.5">
+                Central Sector Infrastructure Aggregations
+              </h3>
+            </div>
+            <Link
+              href="/projects"
+              className="text-xs text-gov-blue hover:underline font-medium flex items-center gap-1"
+            >
+              <span>Explore Portfolio</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {data.sectors.map((s) => (
+              <div
+                key={s.sector}
+                className="p-3.5 rounded bg-white border border-slate-200 hover:border-slate-300 transition-colors flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
+                    <span className="font-semibold text-slate-900 line-clamp-1">{s.sector}</span>
+                    <span className="text-slate-700 font-medium text-xs bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                      {s.count} Prj
+                    </span>
+                  </div>
+                  <div className="text-lg font-serif font-bold text-slate-900">
+                    ₹{(s.totalCost / 1000).toFixed(1)}k Cr
+                  </div>
+                </div>
+
+                <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span className="text-slate-500">
+                    Cost Overrun:{" "}
+                    <strong className={s.avgOverrun > 15 ? "text-gov-red font-semibold" : "text-gov-teal font-semibold"}>
+                      +{s.avgOverrun}%
+                    </strong>
+                  </span>
+                  <span className="text-slate-500">
+                    Avg Delay: <strong className="text-gov-saffron font-semibold">+{s.avgDelay} mo</strong>
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

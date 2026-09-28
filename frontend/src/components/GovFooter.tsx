@@ -108,6 +108,16 @@ export default function GovFooter() {
                 NIRMAAN AI Officer
               </Link>
             </li>
+            <li>
+              <Link href="/about" className="hover:text-orange-700 transition-colors font-medium text-slate-800">
+                SIH Methodology Monograph
+              </Link>
+            </li>
+            <li>
+              <Link href="/ingest" className="hover:text-orange-700 transition-colors">
+                CUF Data Ingestion Service
+              </Link>
+            </li>
           </ul>
         </div>
 

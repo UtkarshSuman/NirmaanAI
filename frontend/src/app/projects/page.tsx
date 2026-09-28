@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, Suspense } from "react";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   Search,
@@ -13,8 +14,10 @@ import {
   ChevronRight,
   MapPin,
   X,
+  UploadCloud,
 } from "lucide-react";
 import ProjectTable from "@/components/ProjectTable";
+import CufIngestionModal from "@/components/CufIngestionModal";
 import type { ProjectItem } from "@/lib/types";
 
 const SECTORS = [
@@ -83,6 +86,7 @@ function ProjectsContent() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const [showIngestModal, setShowIngestModal] = useState(false);
 
   // Sync state & search param from URL if it changes
   useEffect(() => {
@@ -204,6 +208,20 @@ function ProjectsContent() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href="/ingest"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-orange-600 hover:bg-orange-700 text-xs font-semibold text-white transition-colors shadow-2xs"
+          >
+            <UploadCloud className="w-3.5 h-3.5" />
+            <span>Ingest CUF Service</span>
+          </Link>
+          <button
+            onClick={() => setShowIngestModal(true)}
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-white hover:bg-slate-50 border border-slate-300 text-xs font-semibold text-slate-700 transition-colors shadow-2xs cursor-pointer"
+            title="Open Quick Ingest Modal"
+          >
+            <span>Quick Modal</span>
+          </button>
           <button
             onClick={exportCsv}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-slate-50 border border-slate-300 text-xs font-semibold text-slate-700 transition-colors shadow-2xs"
@@ -425,6 +443,15 @@ function ProjectsContent() {
           </div>
         )}
       </div>
+
+      {/* Live CUF Excel/CSV Ingestion Modal */}
+      <CufIngestionModal
+        isOpen={showIngestModal}
+        onClose={() => setShowIngestModal(false)}
+        onIngestionSuccess={() => {
+          fetchProjects();
+        }}
+      />
     </div>
   );
 }
