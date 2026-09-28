@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, Bell, Sparkles, Compass, AlertCircle, Menu, X } from "lucide-react";
+import { Search, Bell, Menu, X, ArrowRight, Bot } from "lucide-react";
 
 interface TopNavProps {
   unacknowledgedAlertsCount?: number;
@@ -27,13 +27,13 @@ export default function TopNav({
   };
 
   const navLinks = [
-    { name: "Home", href: "/", subtext: "" },
-    { name: "Portfolio", href: "/projects", subtext: "/projects" },
-    { name: "Forecasting", href: "/analytics", subtext: "/analytics" },
-    { name: "Risk Radar", href: "/alerts", subtext: "/risk-monitor" },
-    { name: "Sectors", href: "/analytics#sectors", subtext: "/sectors" },
-    { name: "Map Explorer", href: "/map", subtext: "/geo-map" },
-    { name: "AI Officer", href: "/assistant", subtext: "/assistant" },
+    { name: "Overview", href: "/" },
+    { name: "Portfolio", href: "/projects" },
+    { name: "Forecasting", href: "/analytics" },
+    { name: "Risk Radar", href: "/alerts" },
+    { name: "Sectors", href: "/analytics#sectors" },
+    { name: "Map", href: "/map" },
+    { name: "AI Officer", href: "/assistant" },
   ];
 
   const isActive = (href: string) => {
@@ -44,126 +44,119 @@ export default function TopNav({
 
   return (
     <nav className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 h-14 flex items-center justify-between gap-4">
-        {/* Navigation Links (Desktop) */}
-        <div className="hidden md:flex items-center gap-6 h-full text-xs">
-          {navLinks.map((item) => {
-            const active = isActive(item.href);
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`relative h-full flex flex-col justify-center px-1 transition-colors ${
-                  active
-                    ? "text-slate-900 font-bold"
-                    : "text-slate-600 hover:text-slate-900 font-medium"
-                }`}
-              >
-                <div className="flex items-baseline gap-1">
+      <div className="max-w-[1440px] mx-auto px-4 lg:px-8 h-12 flex items-center justify-between gap-4">
+        {/* Brand / Logo Indicator for Nav */}
+        <div className="flex items-center gap-6 h-full">
+          <Link href="/" className="font-serif font-bold text-sm tracking-tight text-slate-900 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-xs bg-orange-600" />
+            <span>PAIMAANA</span>
+          </Link>
+
+          {/* Navigation Links (Desktop) */}
+          <div className="hidden md:flex items-center gap-6 h-full text-xs">
+            {navLinks.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`relative h-full flex flex-col justify-center px-0.5 transition-colors ${
+                    active
+                      ? "text-slate-900 font-bold"
+                      : "text-slate-600 hover:text-slate-900 font-medium"
+                  }`}
+                >
                   <span>{item.name}</span>
-                  {item.subtext && (
-                    <span className="hidden xl:inline text-[10px] text-slate-400 font-mono">
-                      {item.subtext}
-                    </span>
+                  {/* Saffron Active Underline */}
+                  {active && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-600 rounded-full" />
                   )}
-                </div>
-                {/* Saffron Active Underline */}
-                {active && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-600 rounded-full" />
-                )}
-              </Link>
-            );
-          })}
+                </Link>
+              );
+            })}
+          </div>
         </div>
 
         {/* Mobile Hamburger Button */}
         <div className="flex items-center gap-2 md:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100"
+            className="p-1 rounded border border-slate-200 text-slate-700 hover:bg-slate-100"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
-          <span className="font-serif font-bold text-sm text-slate-900">PAIMAANA</span>
         </div>
 
-        {/* Right Section: Search, Status Badge, Alerts, AI Officer */}
+        {/* Right Section: Compact Search, Alert Pill, AI Officer */}
         <div className="flex items-center gap-3">
-          {/* Quick Search */}
-          <form onSubmit={handleSearch} className="hidden sm:block relative w-48 lg:w-64">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          {/* Compact Search Form */}
+          <form onSubmit={handleSearch} className="hidden sm:block relative w-48 lg:w-56">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
+              name="search"
               placeholder="Search projects..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-slate-50 hover:bg-slate-100/80 focus:bg-white border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+              className="w-full pl-8 pr-3 py-1 bg-slate-50 border border-slate-200 rounded text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition-all font-sans"
             />
           </form>
 
-          {/* Sync Status Badge (Matches Reference Screenshot) */}
-          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-800">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="font-semibold">April 2026 Synced</span>
-          </div>
-
-          {/* Alerts Bell */}
+          {/* Alert Notification Indicator */}
           <Link
             href="/alerts"
-            className="relative p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-            title="Early Warning System"
+            className="relative p-1.5 rounded hover:bg-slate-100 text-slate-600 transition-colors"
+            title="Active Risk Alerts"
           >
             <Bell className="w-4 h-4" />
             {unacknowledgedAlertsCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-600 text-[10px] text-white font-bold flex items-center justify-center shadow-xs">
-                {unacknowledgedAlertsCount > 9 ? "9+" : unacknowledgedAlertsCount}
+              <span className="absolute -top-0.5 -right-0.5 min-w-[15px] h-[15px] px-1 bg-rose-600 text-white rounded-full text-[9px] font-bold flex items-center justify-center font-mono">
+                {unacknowledgedAlertsCount}
               </span>
             )}
           </Link>
 
-          {/* AI Officer Button */}
+          {/* AI Officer Button - Compact Rectangular Institutional Control */}
           <Link
             href="/assistant"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs transition-colors"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-colors"
           >
-            <Sparkles className="w-3 h-3 text-orange-400" />
-            <span className="hidden sm:inline">AI Officer</span>
+            <Bot className="w-3.5 h-3.5 text-orange-400" />
+            <span>AI Officer</span>
           </Link>
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-2">
-          {navLinks.map((item) => {
-            const active = isActive(item.href);
-            return (
+        <div className="md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-2 text-xs">
+          <form onSubmit={handleSearch} className="mb-3">
+            <input
+              type="text"
+              name="search"
+              placeholder="Search projects..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded text-xs text-slate-900"
+            />
+          </form>
+
+          <div className="flex flex-col space-y-1">
+            {navLinks.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
-                  active
-                    ? "bg-orange-50 text-orange-700 font-bold border-l-4 border-orange-600"
+                className={`py-1.5 px-2 rounded font-medium ${
+                  isActive(item.href)
+                    ? "bg-slate-100 text-orange-700 font-bold"
                     : "text-slate-700 hover:bg-slate-50"
                 }`}
               >
                 {item.name}
               </Link>
-            );
-          })}
-          <div className="pt-2">
-            <form onSubmit={handleSearch} className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search projects, locations, ministries..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs"
-              />
-            </form>
+            ))}
           </div>
         </div>
       )}

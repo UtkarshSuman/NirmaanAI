@@ -44,61 +44,82 @@ export default async function MapPage() {
   const stats = await getMapStats();
 
   return (
-    <div className="space-y-6">
-      {/* Executive Header Banner */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+    <div className="space-y-10">
+      {/* Editorial Observatory Header */}
+      <div className="border-b border-slate-200 pb-6">
         <div className="flex items-center gap-2 mb-2">
-          <Globe className="w-4 h-4 text-orange-600" />
-          <span className="text-xs font-bold text-orange-700 uppercase tracking-wider">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-gov-blue">
             Geo-Spatial Infrastructure Observatory
           </span>
+          <span className="text-slate-300">/</span>
+          <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">
+            State-Level Portfolio Matrix
+          </span>
         </div>
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
-          National Infrastructure Map of India
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-600 max-w-3xl mt-1 leading-relaxed">
-          Geographic distribution, cost escalation intensity, and schedule slippage across all 36 States and
-          Union Territories for Central Sector Infrastructure Projects costing ₹150 Crore and above.
-        </p>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-3xl lg:text-4xl font-serif text-slate-900 tracking-tight">
+              National Infrastructure Map of India
+            </h1>
+            <p className="text-sm text-slate-600 max-w-3xl mt-2 leading-relaxed">
+              Geographic distribution, cost escalation intensity, and schedule slippage across all 36 States and
+              Union Territories for Central Sector Infrastructure Projects costing ₹150 Crore and above.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="text-[11px] font-mono text-slate-500 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
+              {stats?.totalStatesCovered ?? 36} States & UTs Logged
+            </span>
+            <span className="text-[11px] font-mono text-gov-navy bg-slate-100 px-2.5 py-1 rounded border border-slate-200 font-bold">
+              [LIVE DATABASE VALUE]
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Main Interactive India Map Component */}
-      <IndiaMap variant="full" />
+      <section aria-label="Interactive India Map">
+        <IndiaMap variant="full" />
+      </section>
 
-      {/* State Infrastructure Summary Table */}
+      {/* State Infrastructure Summary Table (Editorial Report Style) */}
       {stats && (
-        <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-4 shadow-sm">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <section className="border-t border-slate-200 pt-8 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-2 border-b border-slate-100">
             <div>
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-slate-600" />
-                <span>Top 10 States by Infrastructure Project Volume</span>
-              </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Central Sector Projects ≥ ₹150 Cr tracked under the PAIMAANA framework
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+                  Top States by Infrastructure Project Volume
+                </h2>
+                <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                  [LIVE DATABASE VALUE]
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">
+                Central Sector Projects ≥ ₹150 Cr tracked under the PAIMAANA framework sorted by capital outlay and project concentration
               </p>
             </div>
-            <span className="text-xs px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200 font-mono font-semibold">
-              {stats.totalStatesCovered} States/UTs Monitored
+            <span className="text-xs font-mono text-slate-500">
+              Coverage: 10 of {stats.totalStatesCovered} Jurisdictions
             </span>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-bold">
+            <table className="w-full text-left text-xs border border-slate-200">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="py-3 px-4 font-semibold">State / UT</th>
-                  <th className="py-3 px-4 text-right font-semibold">Projects Monitored</th>
-                  <th className="py-3 px-4 text-right font-semibold">Total Outlay (₹ Cr)</th>
-                  <th className="py-3 px-4 text-right font-semibold">Avg Cost Escalation</th>
-                  <th className="py-3 px-4 text-right font-semibold">Avg Schedule Delay</th>
+                  <th className="py-3 px-4">State / Union Territory</th>
+                  <th className="py-3 px-4 text-right">Projects Monitored</th>
+                  <th className="py-3 px-4 text-right">Total Outlay (₹ Cr)</th>
+                  <th className="py-3 px-4 text-right">Avg Cost Escalation</th>
+                  <th className="py-3 px-4 text-right">Avg Schedule Delay</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 text-slate-800">
                 {stats.topStates.map((s, idx) => (
-                  <tr key={s.state} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={s.state} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-3 px-4 font-bold text-slate-900 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-slate-100 text-[10px] text-slate-600 flex items-center justify-center font-mono font-semibold">
+                      <span className="w-5 h-5 rounded bg-slate-100 text-[10px] text-slate-600 flex items-center justify-center font-mono font-semibold">
                         {idx + 1}
                       </span>
                       <span>{s.state}</span>
@@ -106,15 +127,15 @@ export default async function MapPage() {
                     <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">
                       {s.count}
                     </td>
-                    <td className="py-3 px-4 text-right font-mono text-slate-800 font-semibold">
+                    <td className="py-3 px-4 text-right font-mono text-slate-900 font-semibold">
                       ₹{s.outlay.toLocaleString()} Cr
                     </td>
-                    <td className="py-3 px-4 text-right font-mono">
-                      <span className={s.avgOverrun > 15 ? "text-rose-700 font-bold" : "text-emerald-700 font-semibold"}>
+                    <td className="py-3 px-4 text-right font-mono font-semibold">
+                      <span className={s.avgOverrun > 15 ? "text-gov-red font-bold" : "text-gov-teal font-semibold"}>
                         +{s.avgOverrun}%
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-right font-mono font-semibold text-orange-700">
+                    <td className="py-3 px-4 text-right font-mono font-semibold text-gov-saffron">
                       +{s.avgDelay} mo
                     </td>
                   </tr>
@@ -122,7 +143,7 @@ export default async function MapPage() {
               </tbody>
             </table>
           </div>
-        </div>
+        </section>
       )}
     </div>
   );

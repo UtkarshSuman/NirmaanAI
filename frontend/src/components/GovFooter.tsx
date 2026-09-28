@@ -39,7 +39,7 @@ export default function GovFooter() {
   return (
     <footer className="w-full bg-white border-t border-slate-200 text-slate-600 text-xs select-none">
       {/* Upper Navigation & Institutional Columns */}
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8 grid grid-cols-1 md:grid-cols-4 gap-8 border-b border-slate-200/80">
+      <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-8 grid grid-cols-1 md:grid-cols-4 gap-8 border-b border-slate-200/80">
         {/* Col 1: Ministry Info */}
         <div className="space-y-3">
           <div className="flex items-center gap-2.5">
@@ -53,8 +53,10 @@ export default function GovFooter() {
             Infrastructure & Project Monitoring Division (IPMD) monitors Central Sector Infrastructure Projects
             costing ₹150 Crore and above across 17 Union Ministries and 22 core sectors.
           </p>
-          <div className="text-[10px] text-slate-500 font-mono">
-            Platform: PAIMANA 2.0 (Formerly OCMS) • Infrastructure Intelligence
+          <div className="text-[10px] text-slate-500 font-mono bg-slate-50 p-2 rounded border border-slate-200 leading-relaxed">
+            PAIMAANA — Infrastructure Intelligence Prototype
+            <br />
+            <span className="text-slate-400">Research & Demonstration Platform • SIH 26103</span>
           </div>
         </div>
 
@@ -161,8 +163,8 @@ export default function GovFooter() {
         </div>
       </div>
 
-      {/* Bottom Mandatory Legal, Policy & Logo Strip (Matches Screenshot) */}
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px]">
+      {/* Bottom Mandatory Legal, Policy & Logo Strip */}
+      <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px]">
         {/* Left: Ministry identity */}
         <div className="flex items-center gap-2">
           <AshokaEmblem className="w-5 h-5 text-amber-800 shrink-0" />

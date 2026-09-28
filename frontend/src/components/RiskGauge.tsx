@@ -9,17 +9,17 @@ interface RiskGaugeProps {
 export default function RiskGauge({ score, category, size = "md" }: RiskGaugeProps) {
   const normalizedScore = Math.min(100, Math.max(0, Math.round(score)));
 
-  let strokeColor = "#059669"; // Emerald
-  let bgClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
-  let label = category || "LOW";
+  let strokeColor = "#178b7a"; // Gov Teal
+  let bgClass = "bg-teal-50 text-teal-800 border-teal-200";
+  let label = category || "ON TRACK";
 
   if (normalizedScore >= 70) {
-    strokeColor = "#dc2626"; // Red
-    bgClass = "bg-rose-50 text-rose-700 border-rose-200";
+    strokeColor = "#c63f32"; // Restrained Red
+    bgClass = "bg-red-50 text-red-800 border-red-200";
     label = category || "CRITICAL";
   } else if (normalizedScore >= 45) {
-    strokeColor = "#ea580c"; // Orange
-    bgClass = "bg-orange-50 text-orange-700 border-orange-200";
+    strokeColor = "#e97824"; // Saffron
+    bgClass = "bg-orange-50 text-orange-800 border-orange-200";
     label = category || "HIGH";
   } else if (normalizedScore >= 25) {
     strokeColor = "#d97706"; // Amber
@@ -28,9 +28,9 @@ export default function RiskGauge({ score, category, size = "md" }: RiskGaugePro
   }
 
   const dimensions = {
-    sm: { radius: 26, stroke: 5, width: 68, height: 68, text: "text-sm font-bold" },
-    md: { radius: 44, stroke: 7, width: 110, height: 110, text: "text-2xl font-bold" },
-    lg: { radius: 64, stroke: 9, width: 156, height: 156, text: "text-4xl font-bold" },
+    sm: { radius: 26, stroke: 4, width: 64, height: 64, text: "text-sm font-bold" },
+    md: { radius: 42, stroke: 6, width: 104, height: 104, text: "text-2xl font-bold" },
+    lg: { radius: 60, stroke: 8, width: 148, height: 148, text: "text-4xl font-bold" },
   }[size];
 
   const circumference = 2 * Math.PI * dimensions.radius;
@@ -42,7 +42,7 @@ export default function RiskGauge({ score, category, size = "md" }: RiskGaugePro
         <svg
           width={dimensions.width}
           height={dimensions.height}
-          className="transform -rotate-90 drop-shadow-sm"
+          className="transform -rotate-90"
         >
           {/* Subtle Outer Track */}
           <circle
@@ -77,7 +77,7 @@ export default function RiskGauge({ score, category, size = "md" }: RiskGaugePro
       </div>
 
       <span
-        className={`mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border font-mono ${bgClass}`}
+        className={`mt-2 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase border font-mono ${bgClass}`}
       >
         {label}
       </span>

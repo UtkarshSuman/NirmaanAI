@@ -241,42 +241,49 @@ export default async function AnalyticsPage() {
   const data = await getAnalyticsData();
 
   return (
-    <div className="space-y-8">
-      {/* Executive Header Banner */}
-      <div className="p-6 lg:p-8 rounded-2xl bg-white border border-slate-200 shadow-sm">
+    <div className="space-y-12">
+      {/* Editorial Report Header */}
+      <div className="border-b border-slate-200 pb-6">
         <div className="flex items-center gap-2 mb-2">
-          <Brain className="w-5 h-5 text-orange-600" />
-          <span className="text-xs font-bold text-orange-700 uppercase tracking-wider">
-            Smart India Hackathon • Problem Statement ID: 26103
+          <span className="text-[11px] font-bold uppercase tracking-wider text-gov-blue">
+            Smart India Hackathon • Problem Statement 26103
           </span>
-          <span className="text-xs text-slate-400">•</span>
-          <span className="text-xs text-slate-600 font-semibold">MoSPI DIID Empirical Evaluation</span>
+          <span className="text-slate-300">/</span>
+          <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">
+            MoSPI DIID Empirical Evaluation Monograph
+          </span>
         </div>
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
-          AI & ML Predictive Architecture, Comparative Benchmarks & CUF Evaluation
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-600 max-w-3xl mt-2 leading-relaxed">
-          Comprehensive empirical validation addressing the <strong>3 Technical Dimensions</strong> and{" "}
-          <strong>Expected Outcomes</strong>: quantifying machine-learning superiority over legacy OCMS rules,
-          attributing Common Upload Form (CUF) predictive power, and benchmarking cross-ministry performance.
-        </p>
-      </div>
-
-      {/* Live Data Provenance Verification Banner */}
-      <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-2.5">
-          <FileCode className="w-4 h-4 text-emerald-600 shrink-0" />
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
           <div>
-            <span className="font-bold text-slate-900">Live Artifact Verification: </span>
-            <span className="font-mono text-emerald-800 font-bold">{data?.mlSourcePath}</span>
-            <span className="text-slate-500 block text-[11px]">
-              Evaluated on holdout test partition (288 projects) via 5-fold stratified cross-validation
+            <h1 className="text-3xl lg:text-4xl font-serif text-slate-900 tracking-tight">
+              Predictive Architecture, Benchmarks & CUF Evaluation
+            </h1>
+            <p className="text-sm text-slate-600 max-w-3xl mt-2 leading-relaxed">
+              Empirical validation addressing the <strong>3 Technical Dimensions</strong> and{" "}
+              <strong>Expected Outcomes</strong>: quantifying machine-learning superiority over legacy OCMS rules,
+              attributing Common Upload Form (CUF) predictive power, and benchmarking cross-ministry performance.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[11px] font-mono text-gov-navy bg-slate-100 px-2.5 py-1 rounded border border-slate-200 font-bold">
+              [MODEL EVALUATION RESULT]
+            </span>
+            <span className="text-[11px] font-mono text-slate-600 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
+              Holdout Test Partition: N=288
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="px-2 py-1 rounded bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold border border-emerald-200 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+
+        {/* Live Data Provenance Verification Strip */}
+        <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <FileCode className="w-3.5 h-3.5 text-gov-teal shrink-0" />
+            <span className="text-slate-600">Model Artifacts: </span>
+            <span className="font-mono text-slate-900 font-bold">{data?.mlSourcePath}</span>
+            <span className="text-slate-400 hidden sm:inline">• 5-fold stratified cross-validation</span>
+          </div>
+          <span className="text-[10px] font-mono text-gov-teal bg-teal-50 px-2 py-0.5 rounded border border-teal-200 flex items-center gap-1 self-start sm:self-auto font-semibold">
+            <span className="w-1.5 h-1.5 rounded-full bg-gov-teal" />
             Active ML Pipeline Sync
           </span>
         </div>
@@ -286,124 +293,123 @@ export default async function AnalyticsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <a
           href="#dim-a"
-          className="p-4 rounded-xl bg-white border border-slate-200 hover:border-slate-400 shadow-sm transition-all flex items-center justify-between group"
+          className="p-3.5 rounded bg-white border border-slate-200 hover:border-slate-400 transition-colors flex items-center justify-between group"
         >
           <div>
-            <span className="text-[10px] font-bold text-blue-700 uppercase tracking-wider">Technical Dim A</span>
-            <p className="text-xs font-bold text-slate-900 group-hover:text-blue-700">Predictive Modeling (99.5% F1)</p>
+            <span className="text-[10px] font-bold text-gov-blue uppercase tracking-wider block font-mono">Technical Dim A</span>
+            <span className="text-xs font-bold text-slate-900 group-hover:text-gov-blue">Predictive Modeling (99.5% F1)</span>
           </div>
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-700 group-hover:translate-x-0.5 transition-all" />
+          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-gov-blue group-hover:translate-x-0.5 transition-all" />
         </a>
 
         <a
           href="#dim-b"
-          className="p-4 rounded-xl bg-white border border-slate-200 hover:border-slate-400 shadow-sm transition-all flex items-center justify-between group"
+          className="p-3.5 rounded bg-white border border-slate-200 hover:border-slate-400 transition-colors flex items-center justify-between group"
         >
           <div>
-            <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Technical Dim B</span>
-            <p className="text-xs font-bold text-slate-900 group-hover:text-emerald-700">AI vs Conventional (+46% Gain)</p>
+            <span className="text-[10px] font-bold text-gov-teal uppercase tracking-wider block font-mono">Technical Dim B</span>
+            <span className="text-xs font-bold text-slate-900 group-hover:text-gov-teal">AI vs Conventional (+46% Gain)</span>
           </div>
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-700 group-hover:translate-x-0.5 transition-all" />
+          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-gov-teal group-hover:translate-x-0.5 transition-all" />
         </a>
 
         <a
           href="#dim-c"
-          className="p-4 rounded-xl bg-white border border-slate-200 hover:border-slate-400 shadow-sm transition-all flex items-center justify-between group"
+          className="p-3.5 rounded bg-white border border-slate-200 hover:border-slate-400 transition-colors flex items-center justify-between group"
         >
           <div>
-            <span className="text-[10px] font-bold text-orange-700 uppercase tracking-wider">Technical Dim C</span>
-            <p className="text-xs font-bold text-slate-900 group-hover:text-orange-700">CUF Field Attribution (74.2%)</p>
+            <span className="text-[10px] font-bold text-gov-saffron uppercase tracking-wider block font-mono">Technical Dim C</span>
+            <span className="text-xs font-bold text-slate-900 group-hover:text-gov-saffron">CUF Field Attribution (74.2%)</span>
           </div>
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-orange-700 group-hover:translate-x-0.5 transition-all" />
+          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-gov-saffron group-hover:translate-x-0.5 transition-all" />
         </a>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────────────────── */}
       {/* TECHNICAL DIMENSION B: AI/ML vs Conventional Statistical Methods           */}
       {/* ─────────────────────────────────────────────────────────────────────────── */}
-      <section id="dim-b" className="p-6 rounded-2xl bg-white border border-slate-200 space-y-6 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <section id="dim-b" className="border-t border-slate-200 pt-8 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2 pb-2 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold uppercase tracking-wider border border-emerald-200">
+              <span className="text-[10px] px-2 py-0.5 rounded bg-teal-50 text-gov-teal font-bold uppercase tracking-wider border border-teal-200 font-mono">
                 Technical Dimension B
               </span>
-              <span className="text-xs text-slate-500 font-medium">Proof of Gain Evaluation</span>
+              <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                [MODEL EVALUATION RESULT]
+              </span>
             </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <Award className="w-5 h-5 text-emerald-700" />
-              <span>Assessment: Artificial Intelligence vs Conventional Methods</span>
+            <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
+              Assessment: Artificial Intelligence vs Conventional Methods
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Empirical evaluation parsed directly from <code className="text-emerald-800 font-mono text-[11px] bg-slate-100 px-1 py-0.5 rounded">training_results.json</code> on holdout partition.
+            <p className="text-xs text-slate-500 mt-1">
+              Empirical evaluation parsed directly from <code className="text-slate-800 font-mono text-[11px] bg-slate-100 px-1 py-0.5 rounded">training_results.json</code> on holdout test partition.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-mono font-bold">
-              Precision: 100.0% (Zero False Alarms)
-            </span>
-          </div>
+          <span className="text-xs px-2.5 py-1 rounded bg-teal-50 border border-teal-200 text-gov-teal font-mono font-bold">
+            Precision: 100.0% (Zero False Alarms)
+          </span>
         </div>
 
-        {/* Quantified Gain Highlights Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">F1-Score Gain</span>
-            <div className="text-2xl font-bold font-mono text-emerald-700">79.7% → 99.5%</div>
-            <p className="text-[11px] text-slate-500">+24.9% relative predictive gain over OCMS rules</p>
+        {/* Quantified Gain Highlights Statistics Strip */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 border-y border-slate-200 py-4 bg-white">
+          <div className="px-4 py-2">
+            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-mono">F1-Score Gain</span>
+            <div className="text-2xl font-serif font-bold text-gov-teal mt-0.5">79.7% → 99.5%</div>
+            <p className="text-[11px] text-slate-500 mt-0.5">+24.9% relative gain over OCMS rules</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">False Alarm Reduction</span>
-            <div className="text-2xl font-bold font-mono text-blue-700">33.8% → 0.0%</div>
-            <p className="text-[11px] text-slate-500">Eliminates officer fatigue from false alarms</p>
+          <div className="px-4 py-2">
+            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-mono">False Alarm Reduction</span>
+            <div className="text-2xl font-serif font-bold text-gov-blue mt-0.5">33.8% → 0.0%</div>
+            <p className="text-[11px] text-slate-500 mt-0.5">Eliminates officer fatigue from false alerts</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Early Warning Lead Time</span>
-            <div className="text-2xl font-bold font-mono text-orange-700">6 to 12 Months</div>
-            <p className="text-[11px] text-slate-500">vs 0 months for retrospective monthly reports</p>
+          <div className="px-4 py-2">
+            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-mono">Early Warning Lead Time</span>
+            <div className="text-2xl font-serif font-bold text-gov-saffron mt-0.5">6 to 12 Months</div>
+            <p className="text-[11px] text-slate-500 mt-0.5">vs 0 months for retrospective monthly reports</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Fiscal Risk Protected</span>
-            <div className="text-2xl font-bold font-mono text-slate-900">₹1.42 Lakh Cr</div>
-            <p className="text-[11px] text-slate-500">Estimated escalations caught prior to sanction</p>
+          <div className="px-4 py-2">
+            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-mono">Fiscal Risk Protected</span>
+            <div className="text-2xl font-serif font-bold text-slate-900 mt-0.5">₹1.42 Lakh Cr</div>
+            <p className="text-[11px] text-slate-500 mt-0.5">Estimated escalations caught prior to sanction</p>
           </div>
         </div>
 
         {/* Side-by-Side Model Comparison Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-bold">
+          <table className="w-full text-left text-xs border border-slate-200">
+            <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
               <tr>
-                <th className="py-3 px-4 font-semibold">Architecture</th>
-                <th className="py-3 px-4 font-semibold">Class</th>
-                <th className="py-3 px-4 text-right font-semibold">F1-Score</th>
-                <th className="py-3 px-4 text-right font-semibold">Precision</th>
-                <th className="py-3 px-4 text-right font-semibold">Recall</th>
-                <th className="py-3 px-4 text-right font-semibold">AUC-ROC</th>
-                <th className="py-3 px-4 text-right font-semibold">Lead Time</th>
-                <th className="py-3 px-4 text-right font-semibold">False Alarm</th>
+                <th className="py-3 px-4">Architecture</th>
+                <th className="py-3 px-4">Class</th>
+                <th className="py-3 px-4 text-right">F1-Score</th>
+                <th className="py-3 px-4 text-right">Precision</th>
+                <th className="py-3 px-4 text-right">Recall</th>
+                <th className="py-3 px-4 text-right">AUC-ROC</th>
+                <th className="py-3 px-4 text-right">Lead Time</th>
+                <th className="py-3 px-4 text-right">False Alarm</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 text-slate-800">
               {data?.costBenchmarks?.map((m: any, i: number) => (
                 <tr
                   key={i}
                   className={`transition-colors ${
                     m.isBest
-                      ? "bg-orange-50/50 font-bold text-slate-900 border-l-2 border-l-orange-600"
-                      : "hover:bg-slate-50 text-slate-800"
+                      ? "bg-orange-50/40 font-bold text-slate-900 border-l-2 border-l-gov-saffron"
+                      : "hover:bg-slate-50/70"
                   }`}
                 >
                   <td className="py-3 px-4 flex items-center gap-2">
-                    {m.isBest && <Zap className="w-3.5 h-3.5 text-orange-600" />}
+                    {m.isBest && <Zap className="w-3.5 h-3.5 text-gov-saffron" />}
                     <span>{m.model}</span>
                     {m.isBest && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-800 font-bold uppercase">
-                        PAIMANA Active
+                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-800 font-bold uppercase font-mono">
+                        Active Model
                       </span>
                     )}
                   </td>
@@ -413,9 +419,9 @@ export default async function AnalyticsPage() {
                   </td>
                   <td className="py-3 px-4 text-right font-mono">{(m.precision * 100).toFixed(1)}%</td>
                   <td className="py-3 px-4 text-right font-mono">{(m.recall * 100).toFixed(1)}%</td>
-                  <td className="py-3 px-4 text-right font-mono font-bold text-blue-700">{m.auc.toFixed(4)}</td>
-                  <td className="py-3 px-4 text-right font-mono text-orange-700 font-semibold">{m.leadTime}</td>
-                  <td className="py-3 px-4 text-right font-mono text-rose-700 font-semibold">{m.falseAlarmRate}</td>
+                  <td className="py-3 px-4 text-right font-mono font-bold text-gov-blue">{m.auc.toFixed(4)}</td>
+                  <td className="py-3 px-4 text-right font-mono text-gov-saffron font-semibold">{m.leadTime}</td>
+                  <td className="py-3 px-4 text-right font-mono text-gov-red font-semibold">{m.falseAlarmRate}</td>
                 </tr>
               ))}
             </tbody>
@@ -423,9 +429,9 @@ export default async function AnalyticsPage() {
         </div>
 
         {/* Qualitative Explanation Callout */}
-        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
+        <div className="p-4 rounded bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
           <div className="font-bold text-slate-900 flex items-center gap-1.5">
-            <Info className="w-4 h-4 text-blue-700 shrink-0" />
+            <Info className="w-4 h-4 text-gov-blue shrink-0" />
             <span>Analytical Findings: Why AI/ML Substantially Outperforms Conventional Rules</span>
           </div>
           <p className="text-[11px] leading-relaxed text-slate-600">
@@ -445,29 +451,30 @@ export default async function AnalyticsPage() {
       {/* ─────────────────────────────────────────────────────────────────────────── */}
       {/* TECHNICAL DIMENSION C: Common Upload Form (CUF) Evaluation & Attribution   */}
       {/* ─────────────────────────────────────────────────────────────────────────── */}
-      <section id="dim-c" className="p-6 rounded-2xl bg-white border border-slate-200 space-y-6 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <section id="dim-c" className="border-t border-slate-200 pt-8 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2 pb-2 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] px-2 py-0.5 rounded bg-orange-50 text-orange-800 font-bold uppercase tracking-wider border border-orange-200">
+              <span className="text-[10px] px-2 py-0.5 rounded bg-orange-50 text-orange-800 font-bold uppercase tracking-wider border border-orange-200 font-mono">
                 Technical Dimension C
               </span>
-              <span className="text-xs text-slate-500 font-medium">CUF Modernization & Variable Attribution</span>
+              <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                [MODEL EVALUATION RESULT]
+              </span>
             </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <FileCheck className="w-5 h-5 text-orange-600" />
-              <span>PAIMANA Common Upload Form (CUF) Field Evaluation</span>
+            <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
+              PAIMAANA Common Upload Form (CUF) Field Evaluation
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 mt-1">
               Attribution of predictive performance between existing CUF fields versus non-CUF external variables.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-900 font-mono font-bold">
+            <span className="text-xs px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-900 font-mono font-bold">
               In-CUF: 74.2%
             </span>
-            <span className="text-xs px-3 py-1.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 font-mono font-bold">
+            <span className="text-xs px-2.5 py-1 rounded bg-orange-50 border border-orange-200 text-gov-saffron font-mono font-bold">
               Non-CUF: 25.8%
             </span>
           </div>
@@ -475,21 +482,21 @@ export default async function AnalyticsPage() {
 
         {/* Feature Importance & Attribution Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-bold">
+          <table className="w-full text-left text-xs border border-slate-200">
+            <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
               <tr>
-                <th className="py-3 px-4 font-semibold">Feature Name</th>
-                <th className="py-3 px-4 font-semibold">Source</th>
-                <th className="py-3 px-4 font-semibold">Category</th>
-                <th className="py-3 px-4 text-right font-semibold">Normalized Gain</th>
-                <th className="py-3 px-4 font-semibold">Policy Impact / Description</th>
+                <th className="py-3 px-4">Feature Name</th>
+                <th className="py-3 px-4">Source</th>
+                <th className="py-3 px-4">Category</th>
+                <th className="py-3 px-4 text-right">Normalized Gain</th>
+                <th className="py-3 px-4">Policy Impact / Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 text-slate-800">
               {CUF_ATTRIBUTION.map((item, idx) => (
-                <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
                   <td className="py-3 px-4 font-bold text-slate-900 flex items-center gap-2">
-                    <span className="w-4 h-4 rounded-full bg-slate-100 text-[10px] text-slate-600 flex items-center justify-center font-mono font-semibold">
+                    <span className="w-4 h-4 rounded bg-slate-100 text-[10px] text-slate-600 flex items-center justify-center font-mono font-semibold">
                       {idx + 1}
                     </span>
                     <span>{item.field}</span>
@@ -499,7 +506,7 @@ export default async function AnalyticsPage() {
                       className={`text-[10px] px-2 py-0.5 rounded font-bold ${
                         item.source === "In-CUF"
                           ? "bg-slate-100 text-slate-700 border border-slate-200"
-                          : "bg-orange-50 text-orange-800 border border-orange-200"
+                          : "bg-orange-50 text-gov-saffron border border-orange-200"
                       }`}
                     >
                       {item.source}
@@ -517,54 +524,54 @@ export default async function AnalyticsPage() {
         </div>
 
         {/* Concrete Policy Recommendations for MoSPI DIID */}
-        <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+        <div className="p-4 rounded bg-slate-50 border border-slate-200 space-y-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs px-2 py-0.5 rounded bg-orange-100 text-orange-800 font-bold uppercase tracking-wider">
-              MoSPI DIID Policy Recommendations
+            <span className="text-xs px-2 py-0.5 rounded bg-orange-100 text-orange-800 font-bold uppercase tracking-wider font-mono">
+              Policy Recommendations
             </span>
-            <span className="text-xs text-slate-500">Proposed CUF Schema v3.0 Expansion</span>
+            <span className="text-xs text-slate-500 font-medium">Proposed CUF Schema v3.0 Expansion</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-700 pt-1">
-            <div className="p-3.5 rounded-xl bg-white border border-slate-200 space-y-1 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-700 pt-1">
+            <div className="p-3 rounded bg-white border border-slate-200 space-y-1">
               <strong className="text-slate-900 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-gov-teal" />
                 1. Mandatory Land Acquisition RoW Milestone
               </strong>
-              <p className="text-[11px] text-slate-600">
+              <p className="text-[11px] text-slate-600 leading-relaxed">
                 Land acquisition accounted for 43% of cited schedule delays. CUF should mandate reporting percentage of
                 unencumbered Right-of-Way (RoW) handed over prior to 20% financial disbursement.
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white border border-slate-200 space-y-1 shadow-sm">
+            <div className="p-3 rounded bg-white border border-slate-200 space-y-1">
               <strong className="text-slate-900 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-gov-teal" />
                 2. Automated Parivesh (MoEFCC) Clearance API Sync
               </strong>
-              <p className="text-[11px] text-slate-600">
+              <p className="text-[11px] text-slate-600 leading-relaxed">
                 Statutory forest and environmental clearances should sync automatically from the Parivesh portal into
                 PAIMANA, eliminating manual agency lag and capturing regulatory bottlenecks early.
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white border border-slate-200 space-y-1 shadow-sm">
+            <div className="p-3 rounded bg-white border border-slate-200 space-y-1">
               <strong className="text-slate-900 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-gov-teal" />
                 3. Concessionaire Liquidity & Working Capital Metric
               </strong>
-              <p className="text-[11px] text-slate-600">
+              <p className="text-[11px] text-slate-600 leading-relaxed">
                 Include contractor credit rating and working capital sufficiency ratio to flag contractor insolvency
                 risks before project execution freezes.
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white border border-slate-200 space-y-1 shadow-sm">
+            <div className="p-3 rounded bg-white border border-slate-200 space-y-1">
               <strong className="text-slate-900 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-gov-teal" />
                 4. Geotechnical & Terrain Complexity Flag
               </strong>
-              <p className="text-[11px] text-slate-600">
+              <p className="text-[11px] text-slate-600 leading-relaxed">
                 Tag projects with Himalayan / coastal / seismic difficulty ratings to adjust baseline milestone
                 expectations and apply terrain-specific risk multipliers.
               </p>
@@ -576,29 +583,30 @@ export default async function AnalyticsPage() {
       {/* ─────────────────────────────────────────────────────────────────────────── */}
       {/* TECHNICAL DIMENSION A: Predictive Models & Ensemble Regressors              */}
       {/* ─────────────────────────────────────────────────────────────────────────── */}
-      <section id="dim-a" className="p-6 rounded-2xl bg-white border border-slate-200 space-y-6 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <section id="dim-a" className="border-t border-slate-200 pt-8 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2 pb-2 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-bold uppercase tracking-wider border border-blue-200">
+              <span className="text-[10px] px-2 py-0.5 rounded bg-blue-50 text-gov-blue font-bold uppercase tracking-wider border border-blue-200 font-mono">
                 Technical Dimension A
               </span>
-              <span className="text-xs text-slate-500 font-medium">47-Feature Multi-Model Pipeline</span>
+              <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                [MODEL EVALUATION RESULT]
+              </span>
             </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <Brain className="w-5 h-5 text-blue-700" />
-              <span>Statistical & Machine Learning Predictive Pipeline</span>
+            <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
+              Statistical & Machine Learning Predictive Pipeline
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Cost Overrun & Schedule Delay forecasting with probability calibration and continuous regression magnitude.
+            <p className="text-xs text-slate-500 mt-1">
+              Cost Overrun & Schedule Delay forecasting with probability calibration and continuous regression magnitude across 47 indicators.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs px-2.5 py-1 rounded bg-slate-100 text-slate-700 font-mono font-bold">
+            <span className="text-xs px-2.5 py-1 rounded bg-slate-100 text-slate-800 font-mono font-bold">
               Cost F1: {(data?.costBenchmarks?.find((b: any) => b.isBest)?.f1 ?? 0.9948).toFixed(4)}
             </span>
-            <span className="text-xs px-2.5 py-1 rounded bg-slate-100 text-slate-700 font-mono font-bold">
+            <span className="text-xs px-2.5 py-1 rounded bg-slate-100 text-slate-800 font-mono font-bold">
               Time F1: {(data?.timeBenchmarks?.find((b: any) => b.isBest)?.f1 ?? 0.9126).toFixed(4)}
             </span>
           </div>
@@ -607,37 +615,37 @@ export default async function AnalyticsPage() {
         {/* Time Overrun Model Benchmark Table */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-orange-700" />
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <Clock className="w-3.5 h-3.5 text-gov-saffron" />
               <span>Time Overrun & Schedule Delay Prediction Models</span>
             </h3>
             <span className="text-[11px] text-slate-500 font-mono font-medium">Target: Time Overrun &gt; 0 Months</span>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-bold">
+            <table className="w-full text-left text-xs border border-slate-200">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="py-3 px-4 font-semibold">Model Architecture</th>
-                  <th className="py-3 px-4 font-semibold">Category</th>
-                  <th className="py-3 px-4 text-right font-semibold">F1-Score</th>
-                  <th className="py-3 px-4 text-right font-semibold">Precision</th>
-                  <th className="py-3 px-4 text-right font-semibold">Recall</th>
-                  <th className="py-3 px-4 text-right font-semibold">AUC-ROC</th>
+                  <th className="py-3 px-4">Model Architecture</th>
+                  <th className="py-3 px-4">Category</th>
+                  <th className="py-3 px-4 text-right">F1-Score</th>
+                  <th className="py-3 px-4 text-right">Precision</th>
+                  <th className="py-3 px-4 text-right">Recall</th>
+                  <th className="py-3 px-4 text-right">AUC-ROC</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 text-slate-800">
                 {data?.timeBenchmarks?.map((m: any, i: number) => (
                   <tr
                     key={i}
                     className={`transition-colors ${
                       m.isBest
-                        ? "bg-orange-50/50 font-bold text-slate-900 border-l-2 border-l-orange-600"
-                        : "hover:bg-slate-50 text-slate-800"
+                        ? "bg-orange-50/40 font-bold text-slate-900 border-l-2 border-l-gov-saffron"
+                        : "hover:bg-slate-50/70"
                     }`}
                   >
                     <td className="py-3 px-4 flex items-center gap-2">
-                      {m.isBest && <Zap className="w-3.5 h-3.5 text-orange-600" />}
+                      {m.isBest && <Zap className="w-3.5 h-3.5 text-gov-saffron" />}
                       <span>{m.model}</span>
                     </td>
                     <td className="py-3 px-4 text-slate-500 font-medium">{m.type}</td>
@@ -646,7 +654,7 @@ export default async function AnalyticsPage() {
                     </td>
                     <td className="py-3 px-4 text-right font-mono">{(m.precision * 100).toFixed(1)}%</td>
                     <td className="py-3 px-4 text-right font-mono">{(m.recall * 100).toFixed(1)}%</td>
-                    <td className="py-3 px-4 text-right font-mono font-bold text-orange-700">
+                    <td className="py-3 px-4 text-right font-mono font-bold text-gov-saffron">
                       {m.auc.toFixed(4)}
                     </td>
                   </tr>
@@ -660,54 +668,55 @@ export default async function AnalyticsPage() {
       {/* ─────────────────────────────────────────────────────────────────────────── */}
       {/* EXPECTED OUTCOME E: Cross-Ministry & Cross-Sector Benchmarking Module       */}
       {/* ─────────────────────────────────────────────────────────────────────────── */}
-      <section className="p-6 rounded-2xl bg-white border border-slate-200 space-y-6 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <section className="border-t border-slate-200 pt-8 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2 pb-2 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold uppercase tracking-wider border border-slate-200">
+              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold uppercase tracking-wider border border-slate-200 font-mono">
                 Outcome E
               </span>
-              <span className="text-xs text-slate-500 font-medium">Institutional Governance Analysis</span>
+              <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                [LIVE DATABASE AGGREGATION]
+              </span>
             </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-slate-700" />
-              <span>Benchmarking & Comparative Performance Module</span>
+            <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
+              Benchmarking & Comparative Performance Module
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 mt-1">
               Cross-Ministry and Cross-Sector capital efficiency, delay variance, and execution velocity.
             </p>
           </div>
         </div>
 
         {/* Ministry Scorecard Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {data?.ministries &&
             data.ministries.map((m) => (
               <div
                 key={m.ministry}
-                className="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition-all flex flex-col justify-between"
+                className="p-3.5 rounded bg-white border border-slate-200 hover:border-slate-300 transition-colors flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
                     <span className="font-bold text-slate-900 line-clamp-1">{m.ministry}</span>
-                    <span className="font-mono text-slate-700 font-bold text-[10px] bg-slate-200/70 px-1.5 py-0.5 rounded">
+                    <span className="font-mono text-slate-700 font-bold text-[10px] bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
                       {m.count} Prj
                     </span>
                   </div>
-                  <div className="text-lg font-bold text-slate-900 font-mono">
+                  <div className="text-lg font-serif font-bold text-slate-900">
                     ₹{(m.totalCost / 1000).toFixed(1)}k Cr
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
                   <span className="text-slate-500">
                     Overrun:{" "}
-                    <strong className={m.avgOverrun > 15 ? "text-rose-700 font-bold" : "text-emerald-700 font-bold"}>
+                    <strong className={m.avgOverrun > 15 ? "text-gov-red font-bold" : "text-gov-teal font-bold"}>
                       +{m.avgOverrun}%
                     </strong>
                   </span>
                   <span className="text-slate-500">
-                    Delay: <strong className="text-orange-700 font-bold">+{m.avgDelay} mo</strong>
+                    Delay: <strong className="text-gov-saffron font-bold">+{m.avgDelay} mo</strong>
                   </span>
                 </div>
               </div>
@@ -718,34 +727,35 @@ export default async function AnalyticsPage() {
       {/* ─────────────────────────────────────────────────────────────────────────── */}
       {/* EXPECTED OUTCOME F: Cost Escalation Driver Analysis & Delay Causes          */}
       {/* ─────────────────────────────────────────────────────────────────────────── */}
-      <section className="p-6 rounded-2xl bg-white border border-slate-200 space-y-6 shadow-sm">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+      <section className="border-t border-slate-200 pt-8 space-y-6">
+        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] px-2 py-0.5 rounded bg-rose-50 text-rose-700 font-bold uppercase tracking-wider border border-rose-200">
+              <span className="text-[10px] px-2 py-0.5 rounded bg-red-50 text-gov-red font-bold uppercase tracking-wider border border-red-200 font-mono">
                 Outcome F
               </span>
-              <span className="text-xs text-slate-500 font-medium">Root-Cause Attribution</span>
+              <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                [LIVE DATABASE CITATIONS]
+              </span>
             </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <Layers className="w-5 h-5 text-rose-600" />
-              <span>Cost Escalation Driver Analysis & Impediment Breakdown</span>
+            <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
+              Cost Escalation Driver Analysis & Impediment Breakdown
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 mt-1">
               Empirical root-cause distribution cited across delayed Central Sector infrastructure projects.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {data?.delayBreakdown &&
             data.delayBreakdown.map((d, idx) => (
               <div
                 key={d.reason}
-                className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4"
+                className="p-3.5 rounded bg-white border border-slate-200 flex items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-slate-200 text-[11px] text-slate-700 flex items-center justify-center font-mono font-bold shrink-0">
+                  <span className="w-5 h-5 rounded bg-slate-100 text-[10px] text-slate-700 flex items-center justify-center font-mono font-bold shrink-0">
                     {idx + 1}
                   </span>
                   <div>
@@ -755,7 +765,7 @@ export default async function AnalyticsPage() {
                 </div>
 
                 <div className="text-right shrink-0">
-                  <span className="text-sm font-bold font-mono text-orange-700">{d.count}</span>
+                  <span className="text-sm font-bold font-mono text-gov-saffron">{d.count}</span>
                   <span className="text-[10px] text-slate-500 block font-medium">Projects</span>
                 </div>
               </div>

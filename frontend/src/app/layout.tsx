@@ -51,9 +51,9 @@ export default async function RootLayout({
           totalProjectsCount={totalProjectsCount}
         />
 
-        {/* Main Observatory Content */}
+        {/* Main Observatory Content - Generous 1440px Width with Balanced Rhythm */}
         <main id="main-content" className="flex-1 w-full bg-[#f8fafc]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
             {children}
           </div>
         </main>

@@ -23,10 +23,9 @@ import {
   Sparkles,
   Info,
   CheckCircle2,
-  ZoomIn,
-  ZoomOut,
-  Compass,
-  Layers,
+  Plus,
+  Minus,
+  Navigation,
 } from "lucide-react";
 
 export interface StateData {
@@ -69,13 +68,13 @@ interface IndiaMapProps {
   hideDossier?: boolean;
 }
 
-// Major cities for geography labels
+// Major cities for geography context
 const MAJOR_CITIES = [
-  { name: "Delhi", x: 255, y: 220, isHub: true },
-  { name: "Mumbai", x: 175, y: 440, isHub: true },
-  { name: "Kolkata", x: 480, y: 350, isHub: true },
-  { name: "Bengaluru", x: 235, y: 550, isHub: true },
-  { name: "Chennai", x: 295, y: 545, isHub: true },
+  { name: "Delhi", x: 255, y: 220 },
+  { name: "Mumbai", x: 175, y: 440 },
+  { name: "Kolkata", x: 480, y: 350 },
+  { name: "Bengaluru", x: 235, y: 550 },
+  { name: "Chennai", x: 295, y: 545 },
 ];
 
 export default function IndiaMap({
@@ -145,36 +144,35 @@ export default function IndiaMap({
     return Math.max(...outlays, 50000);
   }, [statesData]);
 
-  // Color generator based on mode in light government observatory theme
+  // Restrained color generator adhering to observatory palette
   const getStateColor = (stateName: string, isSelected: boolean) => {
     const s = statesData[stateName];
     if (!s) {
       return "#f1f5f9"; // fallback light slate
     }
 
-    // Check region filtering
     if (activeRegion !== "ALL" && s.region !== activeRegion) {
-      return "#f8fafc"; // dimmed when not in active region
+      return "#f8fafc"; // dimmed outside active region
     }
 
     if (viewMode === "projects") {
       const ratio = s.projectCount / maxProjects;
-      if (ratio > 0.6) return isSelected ? "#0284c7" : "#38bdf8"; // High (UP, MH, GJ)
-      if (ratio > 0.35) return isSelected ? "#0369a1" : "#7dd3fc"; // Med-High (KA, RJ, TN)
-      if (ratio > 0.18) return isSelected ? "#0ea5e9" : "#bae6fd"; // Med (MP, WB, AP, BR)
+      if (ratio > 0.6) return isSelected ? "#1d6fa5" : "#38bdf8"; // High
+      if (ratio > 0.35) return isSelected ? "#173f5f" : "#7dd3fc"; // Med-High
+      if (ratio > 0.18) return isSelected ? "#0284c7" : "#bae6fd"; // Med
       if (ratio > 0.05) return isSelected ? "#38bdf8" : "#e0f2fe"; // Low-Med
-      return isSelected ? "#cbd5e1" : "#f1f5f9"; // Low
+      return isSelected ? "#cbd5e1" : "#f1f5f9"; // Minimal
     } else if (viewMode === "risk") {
-      if (s.riskTier === "CRITICAL") return isSelected ? "#dc2626" : "#fca5a5"; // Crimson/Light red
-      if (s.riskTier === "HIGH") return isSelected ? "#ea580c" : "#fdba74"; // Orange/Light orange
-      if (s.riskTier === "MODERATE") return isSelected ? "#d97706" : "#fde047"; // Amber/Light yellow
-      return isSelected ? "#059669" : "#86efac"; // On Track Teal/Green
+      if (s.riskTier === "CRITICAL") return isSelected ? "#c63f32" : "#fca5a5"; // Restrained Red
+      if (s.riskTier === "HIGH") return isSelected ? "#e97824" : "#fdba74"; // Saffron
+      if (s.riskTier === "MODERATE") return isSelected ? "#d97706" : "#fde047"; // Amber
+      return isSelected ? "#178b7a" : "#99f6e4"; // Teal On-Track
     } else {
       // Outlay mode
       const ratio = s.revisedCostCrore / maxOutlay;
-      if (ratio > 0.6) return isSelected ? "#047857" : "#34d399";
-      if (ratio > 0.35) return isSelected ? "#0d9488" : "#5eead4";
-      if (ratio > 0.15) return isSelected ? "#0284c7" : "#99f6e4";
+      if (ratio > 0.6) return isSelected ? "#0d9488" : "#2dd4bf";
+      if (ratio > 0.35) return isSelected ? "#14b8a6" : "#5eead4";
+      if (ratio > 0.15) return isSelected ? "#1d6fa5" : "#a5f3fc";
       return isSelected ? "#64748b" : "#e2e8f0";
     }
   };
@@ -183,39 +181,36 @@ export default function IndiaMap({
 
   return (
     <div
-      className={`rounded-2xl bg-white border border-slate-200/90 shadow-sm overflow-hidden ${
-        variant === "hero" ? "p-0 bg-transparent border-0 shadow-none" : "p-5 lg:p-6"
+      className={`${
+        variant === "hero" ? "p-0 bg-transparent border-0" : "p-4 sm:p-6 bg-white border border-slate-200 rounded-lg shadow-2xs"
       } ${className}`}
     >
       {/* Header & Controls Bar - Only in full variant */}
       {variant === "full" && (
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 mb-5 border-b border-slate-200">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-200">
           <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-[11px] font-bold text-orange-700 uppercase tracking-wider bg-orange-50 px-2 py-0.5 rounded border border-orange-200 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                National Geo-Spatial Intelligence
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] font-bold text-orange-700 uppercase tracking-wider bg-orange-50 px-2 py-0.5 rounded border border-orange-200 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                Geo-Spatial Observatory
               </span>
-              <span className="text-xs text-slate-500">
-                Choropleth of Central Sector Projects (≥ ₹150 Cr)
+              <span className="text-xs text-slate-500 font-mono">
+                Central Sector Projects (≥ ₹150 Cr)
               </span>
             </div>
-            <h2 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <span>State & Union Territory Infrastructure Matrix</span>
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+              State &amp; Union Territory Infrastructure Matrix
             </h2>
-            <p className="text-xs text-slate-600 mt-0.5">
-              Select any state to inspect capital outlays, schedule overruns, and high-priority infrastructure assets.
-            </p>
           </div>
 
-          {/* View Mode Switcher */}
+          {/* Compact View Mode Switcher */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="bg-slate-100 p-1 rounded-xl border border-slate-200 flex items-center gap-1">
+            <div className="bg-slate-100 p-0.5 rounded border border-slate-200 flex items-center text-xs">
               <button
                 onClick={() => setViewMode("projects")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-2.5 py-1 rounded transition-colors ${
                   viewMode === "projects"
-                    ? "bg-white text-slate-900 shadow-sm border border-slate-200/80"
+                    ? "bg-white text-slate-900 font-bold shadow-2xs"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
@@ -223,23 +218,23 @@ export default function IndiaMap({
               </button>
               <button
                 onClick={() => setViewMode("risk")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-2.5 py-1 rounded transition-colors ${
                   viewMode === "risk"
-                    ? "bg-white text-rose-700 shadow-sm border border-slate-200/80"
+                    ? "bg-white text-rose-700 font-bold shadow-2xs"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Risk & Slippage
+                Risk &amp; Slippage
               </button>
               <button
                 onClick={() => setViewMode("outlay")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-2.5 py-1 rounded transition-colors ${
                   viewMode === "outlay"
-                    ? "bg-white text-emerald-700 shadow-sm border border-slate-200/80"
+                    ? "bg-white text-emerald-800 font-bold shadow-2xs"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Capital Outlay (₹)
+                Capital Outlay
               </button>
             </div>
 
@@ -247,7 +242,7 @@ export default function IndiaMap({
             <select
               value={selectedState}
               onChange={(e) => handleStateClick(e.target.value)}
-              className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-orange-500 shadow-sm font-medium"
+              className="px-2.5 py-1 bg-white border border-slate-200 rounded text-xs text-slate-800 focus:outline-none focus:border-slate-400 font-medium"
             >
               {Object.keys(statesData)
                 .sort()
@@ -263,16 +258,16 @@ export default function IndiaMap({
 
       {/* Region Filter Pills - Only in full variant */}
       {variant === "full" && (
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-5 border-b border-slate-100 text-xs">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mr-1">Zone:</span>
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-4 border-b border-slate-100 text-xs">
+          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">Zone:</span>
           {["ALL", "North", "South", "West", "East", "Central", "North-East"].map((reg) => (
             <button
               key={reg}
               onClick={() => setActiveRegion(reg)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
+              className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
                 activeRegion === reg
-                  ? "bg-slate-900 text-white font-semibold shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70"
+                  ? "bg-slate-900 text-white font-bold"
+                  : "bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200"
               }`}
             >
               {reg === "ALL" ? "All India (36)" : `${reg} Zone`}
@@ -284,10 +279,10 @@ export default function IndiaMap({
               setActiveRegion("ALL");
               setSelectedState("Uttar Pradesh");
             }}
-            className="ml-auto text-[11px] text-slate-500 hover:text-slate-800 flex items-center gap-1 shrink-0"
+            className="ml-auto text-[11px] text-slate-400 hover:text-slate-700 flex items-center gap-1 shrink-0"
           >
             <RotateCcw className="w-3 h-3" />
-            <span>Reset Map</span>
+            <span>Reset</span>
           </button>
         </div>
       )}
@@ -305,54 +300,47 @@ export default function IndiaMap({
           className={`${
             variant === "hero" || hideDossier
               ? "w-full h-full relative flex items-center justify-center"
-              : "lg:col-span-7 relative bg-slate-50/60 rounded-xl border border-slate-200/80 p-4 flex flex-col items-center justify-center overflow-hidden min-h-[500px]"
+              : "lg:col-span-7 relative bg-slate-50/50 rounded border border-slate-200 p-4 flex flex-col items-center justify-center overflow-hidden min-h-[460px]"
           }`}
         >
           {/* Subtle Map Legend / Info Overlay in Full Mode */}
           {variant === "full" && (
-            <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-md p-2.5 rounded-lg border border-slate-200 text-[10px] space-y-1 shadow-sm">
+            <div className="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-sm px-2.5 py-2 rounded border border-slate-200 text-[10px] space-y-1 shadow-2xs">
               <span className="font-bold text-slate-800 uppercase tracking-wider block">
                 {viewMode === "projects" && "Density: Central Sector Projects"}
                 {viewMode === "risk" && "Slippage: Critical Overruns"}
                 {viewMode === "outlay" && "Allocation: Capital Outlay"}
               </span>
               <div className="flex items-center gap-1">
-                <span className="text-slate-500">Low</span>
-                <span className="w-16 h-1.5 rounded-full bg-gradient-to-r from-sky-100 via-sky-300 to-sky-600 mx-1" />
+                <span className="text-slate-400">Low</span>
+                <span className="w-14 h-1 rounded-full bg-gradient-to-r from-sky-100 via-sky-300 to-sky-600 mx-1" />
                 <span className="text-slate-700 font-semibold">High</span>
               </div>
-              <div className="text-slate-400 text-[9px]">Click any state to inspect details</div>
             </div>
           )}
 
           {/* Interactive SVG */}
-          <div className="w-full max-w-[620px] aspect-[650/720] relative">
+          <div className="w-full max-w-[600px] aspect-[650/720] relative">
             <svg
               viewBox={MAP_VIEWBOX}
-              className="w-full h-full drop-shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
+              className="w-full h-full drop-shadow-2xs"
               aria-label="Interactive Map of India with 36 States and Union Territories"
             >
-              <defs>
-                <filter id="selectionGlowLight" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="1" stdDeviation="3" floodColor="#ea580c" floodOpacity="0.4" />
-                </filter>
-              </defs>
-
-              {/* Geographic Context Text Labels (Surrounding Neighbors & Oceans) */}
-              <g className="select-none pointer-events-none text-slate-300 font-serif italic text-[11px] tracking-widest">
+              {/* Geographic Context Text Labels */}
+              <g className="select-none pointer-events-none text-slate-300 font-serif italic text-[11px] tracking-widest opacity-60">
                 <text x="100" y="240" fill="#94a3b8">PAKISTAN</text>
                 <text x="440" y="160" fill="#94a3b8">CHINA</text>
                 <text x="365" y="270" fill="#94a3b8">NEPAL</text>
                 <text x="500" y="260" fill="#94a3b8">BHUTAN</text>
                 <text x="500" y="325" fill="#94a3b8">BANGLADESH</text>
                 <text x="590" y="370" fill="#94a3b8">MYANMAR</text>
-                <text x="80" y="490" fill="#0284c7" opacity="0.45" fontSize="12" fontStyle="italic">Arabian Sea</text>
-                <text x="470" y="520" fill="#0284c7" opacity="0.45" fontSize="12" fontStyle="italic">Bay of Bengal</text>
-                <text x="240" y="690" fill="#0284c7" opacity="0.45" fontSize="12" fontStyle="italic">Indian Ocean</text>
+                <text x="80" y="490" fill="#1d6fa5" opacity="0.45" fontSize="11" fontStyle="italic">Arabian Sea</text>
+                <text x="470" y="520" fill="#1d6fa5" opacity="0.45" fontSize="11" fontStyle="italic">Bay of Bengal</text>
+                <text x="240" y="690" fill="#1d6fa5" opacity="0.45" fontSize="11" fontStyle="italic">Indian Ocean</text>
               </g>
 
-              {/* State Polygons */}
-              <g className="transition-all duration-300">
+              {/* State Polygons with Understated Boundaries */}
+              <g className="transition-all duration-200">
                 {INDIA_MAP_PATHS.map((item) => {
                   const isSelected = selectedState === item.name;
                   const isHovered = hoveredState?.name === item.name;
@@ -363,14 +351,11 @@ export default function IndiaMap({
                       key={item.id}
                       d={item.path}
                       fill={fillColor}
-                      stroke={isSelected ? "#ea580c" : isHovered ? "#0284c7" : "#cbd5e1"}
-                      strokeWidth={isSelected ? 2.5 : isHovered ? 1.75 : 0.8}
+                      stroke={isSelected ? "#e97824" : isHovered ? "#1d6fa5" : "#cbd5e1"}
+                      strokeWidth={isSelected ? 2 : isHovered ? 1.5 : 0.7}
                       strokeLinejoin="round"
                       strokeLinecap="round"
                       className="cursor-pointer transition-colors duration-150 hover:brightness-95"
-                      style={{
-                        filter: isSelected ? "url(#selectionGlowLight)" : undefined,
-                      }}
                       onMouseEnter={(e) => handleMouseMove(e, item)}
                       onMouseMove={(e) => handleMouseMove(e, item)}
                       onMouseLeave={() => setHoveredState(null)}
@@ -384,14 +369,14 @@ export default function IndiaMap({
               <g className="pointer-events-none select-none">
                 {MAJOR_CITIES.map((c) => (
                   <g key={c.name} transform={`translate(${c.x}, ${c.y})`}>
-                    <circle r="3" fill="#0f172a" stroke="#ffffff" strokeWidth="1.5" />
+                    <circle r="2.5" fill="#0f172a" stroke="#ffffff" strokeWidth="1" />
                     <text
-                      x="7"
-                      y="3.5"
+                      x="6"
+                      y="3"
                       fill="#0f172a"
-                      fontSize="10"
+                      fontSize="9"
                       fontWeight="bold"
-                      className="font-sans"
+                      className="font-sans opacity-80"
                     >
                       {c.name}
                     </text>
@@ -399,7 +384,7 @@ export default function IndiaMap({
                 ))}
               </g>
 
-              {/* Key State Pin Markers with Project Risk Dots */}
+              {/* State Risk Centroid Markers */}
               <g className="pointer-events-none select-none">
                 {INDIA_MAP_PATHS.filter((s) =>
                   [
@@ -420,17 +405,16 @@ export default function IndiaMap({
 
                   const dotColor =
                     sData.riskTier === "CRITICAL"
-                      ? "#dc2626"
+                      ? "#c63f32"
                       : sData.riskTier === "HIGH"
-                      ? "#ea580c"
+                      ? "#e97824"
                       : sData.riskTier === "MODERATE"
                       ? "#d97706"
-                      : "#0d9488";
+                      : "#178b7a";
 
                   return (
                     <g key={s.id} transform={`translate(${s.centroid[0]}, ${s.centroid[1]})`}>
-                      <circle r="4" fill={dotColor} stroke="#ffffff" strokeWidth="1.5" />
-                      <circle r="6" fill={dotColor} opacity="0.25" />
+                      <circle r="3" fill={dotColor} stroke="#ffffff" strokeWidth="1" />
                     </g>
                   );
                 })}
@@ -440,49 +424,49 @@ export default function IndiaMap({
             {/* Dynamic Floating Tooltip */}
             {hoveredState && (
               <div
-                className="absolute z-30 pointer-events-none p-3 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl text-xs text-slate-800 space-y-1 transform -translate-x-1/2 -translate-y-full mb-3 min-w-[210px]"
+                className="absolute z-30 pointer-events-none p-2.5 rounded bg-white/95 backdrop-blur-sm border border-slate-200 shadow-md text-xs text-slate-800 space-y-1 transform -translate-x-1/2 -translate-y-full mb-3 min-w-[200px]"
                 style={{
                   left: `${tooltipPos.x}px`,
-                  top: `${tooltipPos.y - 10}px`,
+                  top: `${tooltipPos.y - 8}px`,
                 }}
               >
-                <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-1">
                   <div>
-                    <p className="font-bold text-slate-900 text-sm">{hoveredState.name}</p>
-                    <p className="text-[10px] text-orange-600 font-semibold">{hoveredState.hindiName}</p>
+                    <p className="font-bold text-slate-900 text-xs">{hoveredState.name}</p>
+                    <p className="text-[10px] text-orange-700 font-semibold">{hoveredState.hindiName}</p>
                   </div>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-mono font-medium">
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-mono">
                     {hoveredState.region}
                   </span>
                 </div>
 
                 {statesData[hoveredState.name] ? (
-                  <div className="space-y-1 pt-1 text-[11px]">
+                  <div className="space-y-0.5 pt-1 text-[11px]">
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Total Projects:</span>
-                      <strong className="text-slate-900 font-mono font-bold">
+                      <span className="text-slate-500">Monitored Projects:</span>
+                      <strong className="text-slate-900 font-mono">
                         {statesData[hoveredState.name].projectCount}
                       </strong>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Capital Outlay:</span>
-                      <strong className="text-slate-900 font-mono font-bold">
+                      <span className="text-slate-500">Outlay:</span>
+                      <strong className="text-slate-900 font-mono">
                         ₹{(statesData[hoveredState.name].revisedCostCrore / 1000).toFixed(1)}k Cr
                       </strong>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-500">Delayed:</span>
-                      <strong className="text-orange-700 font-mono font-semibold">
+                      <strong className="text-orange-700 font-mono">
                         {statesData[hoveredState.name].delayedProjectsCount} (
                         {statesData[hoveredState.name].delayedProjectsPercent}%)
                       </strong>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Avg Cost Overrun:</span>
+                      <span className="text-slate-500">Cost Overrun:</span>
                       <strong
-                        className={`font-mono font-semibold ${
+                        className={`font-mono ${
                           statesData[hoveredState.name].avgCostOverrunPercent > 15
-                            ? "text-rose-600"
+                            ? "text-rose-700"
                             : "text-emerald-700"
                         }`}
                       >
@@ -503,145 +487,131 @@ export default function IndiaMap({
           <div className="lg:col-span-5 space-y-4">
             {selectedData ? (
               <div className="space-y-4">
-                {/* State Header Card */}
-                <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
+                {/* State Summary Block */}
+                <div className="p-4 rounded border border-slate-200 bg-white">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold border border-slate-200">
+                        <span className="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold">
                           {selectedData.region} Zone
                         </span>
                         <span
-                          className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase border ${
+                          className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
                             selectedData.riskTier === "CRITICAL"
-                              ? "bg-rose-50 text-rose-700 border-rose-200"
+                              ? "bg-rose-50 text-rose-700 border border-rose-200"
                               : selectedData.riskTier === "HIGH"
-                              ? "bg-orange-50 text-orange-700 border-orange-200"
-                              : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              ? "bg-orange-50 text-orange-700 border border-orange-200"
+                              : "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           }`}
                         >
                           {selectedData.riskTier} Risk
                         </span>
                       </div>
 
-                      <h3 className="text-xl font-bold text-slate-900 mt-1.5 tracking-tight">
+                      <h3 className="text-lg font-bold text-slate-900 mt-1 tracking-tight">
                         {selectedData.state}
                       </h3>
-                      <p className="text-xs font-semibold text-orange-700">{selectedData.stateHindi}</p>
+                      <p className="text-xs text-orange-700 font-medium">{selectedData.stateHindi}</p>
                     </div>
 
                     <Link
                       href={`/projects?state=${encodeURIComponent(selectedData.state)}`}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-sm shrink-0"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-colors shrink-0"
                     >
                       <span>View All ({selectedData.projectCount})</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
+                      <ChevronRight className="w-3 h-3" />
                     </Link>
                   </div>
 
-                  {/* State Key Statistics Grid */}
-                  <div className="grid grid-cols-2 gap-2.5 mt-4 pt-4 border-t border-slate-100 text-xs">
-                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80">
-                      <span className="text-[10px] text-slate-500 block">Sanctioned Outlay</span>
-                      <strong className="text-slate-900 font-mono text-sm font-bold">
+                  {/* State Statistics Matrix */}
+                  <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs">
+                    <div className="p-2 rounded bg-slate-50 border border-slate-100">
+                      <span className="text-[10px] text-slate-500 block">Outlay</span>
+                      <strong className="text-slate-900 font-mono text-xs font-bold">
                         ₹{(selectedData.revisedCostCrore / 1000).toFixed(1)}k Cr
                       </strong>
-                      <span className="text-[10px] text-slate-500 block mt-0.5">
-                        Exp: ₹{(selectedData.cumulativeExpenditureCrore / 1000).toFixed(1)}k Cr
-                      </span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80">
-                      <span className="text-[10px] text-slate-500 block">Net Escalation</span>
-                      <strong className="text-rose-700 font-mono text-sm font-bold">
+                    <div className="p-2 rounded bg-slate-50 border border-slate-100">
+                      <span className="text-[10px] text-slate-500 block">Escalation</span>
+                      <strong className="text-rose-700 font-mono text-xs font-bold">
                         +₹{selectedData.netEscalationCrore.toLocaleString()} Cr
                       </strong>
-                      <span className="text-[10px] text-slate-500 block mt-0.5">
-                        Avg +{selectedData.avgCostOverrunPercent}%
-                      </span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80">
-                      <span className="text-[10px] text-slate-500 block">Schedule Slippage</span>
-                      <strong className="text-orange-700 font-mono text-sm font-bold">
+                    <div className="p-2 rounded bg-slate-50 border border-slate-100">
+                      <span className="text-[10px] text-slate-500 block">Delayed</span>
+                      <strong className="text-orange-700 font-mono text-xs font-bold">
                         {selectedData.delayedProjectsCount} Projects
                       </strong>
-                      <span className="text-[10px] text-slate-500 block mt-0.5">
-                        Avg delay: +{selectedData.avgDelayMonths} mo
-                      </span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80">
+                    <div className="p-2 rounded bg-slate-50 border border-slate-100">
                       <span className="text-[10px] text-slate-500 block">Physical Progress</span>
-                      <strong className="text-emerald-700 font-mono text-sm font-bold">
+                      <strong className="text-emerald-700 font-mono text-xs font-bold">
                         {selectedData.avgPhysicalProgressPercent}%
                       </strong>
-                      <span className="text-[10px] text-slate-500 block mt-0.5">
-                        Financial: {selectedData.avgFinancialProgressPercent}%
-                      </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Top Projects Executing in Selected State */}
-                <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 shadow-sm">
-                  <div className="flex items-center justify-between text-xs">
+                <div className="p-4 rounded border border-slate-200 bg-white space-y-3">
+                  <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-2">
                     <span className="font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                       <Building2 className="w-3.5 h-3.5 text-slate-500" />
-                      Major Infrastructure Assets in {selectedData.state}
+                      Key Projects in {selectedData.state}
                     </span>
-                    <span className="text-[10px] text-slate-500 font-mono">≥ ₹150 Cr</span>
+                    <span className="text-[10px] text-slate-400 font-mono">≥ ₹150 Cr</span>
                   </div>
 
-                  <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                  <div className="space-y-2 max-h-[280px] overflow-y-auto pr-1">
                     {selectedData.topProjects && selectedData.topProjects.length > 0 ? (
                       selectedData.topProjects.map((p) => (
                         <Link
                           key={p.projectId}
                           href={`/projects/${p.projectId}`}
-                          className="p-3 rounded-lg bg-slate-50 border border-slate-200/80 hover:border-slate-400 hover:bg-white transition-all flex flex-col justify-between group block"
+                          className="p-2.5 rounded bg-slate-50/70 border border-slate-200/80 hover:bg-white hover:border-slate-300 transition-colors flex flex-col justify-between block group"
                         >
                           <div className="flex items-start justify-between gap-2">
                             <p className="text-xs font-semibold text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-1">
                               {p.projectName}
                             </p>
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200/70 text-slate-700 font-mono shrink-0">
+                            <span className="text-[10px] px-1 py-0.2 rounded bg-slate-200/80 text-slate-700 font-mono shrink-0">
                               {p.sector}
                             </span>
                           </div>
 
-                          <div className="flex items-center justify-between text-[11px] text-slate-600 mt-2">
-                            <span>
-                              Agency: <strong className="text-slate-800">{p.implementingAgency}</strong>
-                            </span>
+                          <div className="flex items-center justify-between text-[11px] text-slate-500 mt-1.5">
+                            <span>{p.implementingAgency}</span>
                             <span className="font-mono text-slate-900 font-bold">
                               ₹{p.revisedCostCrore.toLocaleString()} Cr
                             </span>
                           </div>
 
-                          <div className="flex items-center justify-between text-[10px] mt-1.5 pt-1.5 border-t border-slate-200/60">
-                            <span className={p.costOverrunPercent > 10 ? "text-rose-600 font-semibold" : "text-emerald-700 font-semibold"}>
+                          <div className="flex items-center justify-between text-[10px] mt-1 pt-1 border-t border-slate-200/60 text-slate-500">
+                            <span className={p.costOverrunPercent > 10 ? "text-rose-700 font-semibold" : "text-emerald-700"}>
                               Overrun: +{p.costOverrunPercent}%
                             </span>
-                            <span className={p.timeOverrunMonths > 0 ? "text-orange-700 font-semibold" : "text-emerald-700 font-semibold"}>
+                            <span className={p.timeOverrunMonths > 0 ? "text-orange-700 font-semibold" : "text-slate-600"}>
                               Delay: +{p.timeOverrunMonths} mo
                             </span>
-                            <span className="text-blue-700 font-medium">
-                              Progress: {p.physicalProgressPercent}%
+                            <span className="text-slate-700">
+                              Prog: {p.physicalProgressPercent}%
                             </span>
                           </div>
                         </Link>
                       ))
                     ) : (
-                      <p className="text-xs text-slate-500 text-center py-4">No project details available.</p>
+                      <p className="text-xs text-slate-400 text-center py-4">No project details available.</p>
                     )}
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-8 rounded-xl bg-white border border-slate-200 text-center text-slate-500 shadow-sm">
-                <Info className="w-8 h-8 mx-auto mb-2 text-slate-400" />
-                <p className="text-xs">Select a state on the map to review infrastructure dossiers.</p>
+              <div className="p-8 rounded border border-slate-200 bg-white text-center text-slate-400">
+                <Info className="w-6 h-6 mx-auto mb-2 text-slate-300" />
+                <p className="text-xs">Select any state on the map to inspect project dossiers.</p>
               </div>
             )}
           </div>

@@ -23,19 +23,22 @@ export default function ShapWaterfall({ factors, shapValues }: ShapWaterfallProp
   ];
 
   return (
-    <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
+    <div className="p-5 rounded-lg bg-white border border-slate-200">
+      <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
         <div>
-          <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
             <span>SHAP Explainability Attribution</span>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono font-bold border border-slate-200">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-mono font-bold border border-slate-200">
               TreeExplainer
             </span>
           </h4>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-[11px] text-slate-500 mt-0.5">
             Key empirical features driving this project&apos;s risk elevation
           </p>
         </div>
+        <span className="text-[10px] font-mono text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+          [MODEL EVALUATION RESULT]
+        </span>
       </div>
 
       <div className="space-y-3">
@@ -46,12 +49,12 @@ export default function ShapWaterfall({ factors, shapValues }: ShapWaterfallProp
           return (
             <div key={idx} className="group">
               <div className="flex items-center justify-between text-xs mb-1.5">
-                <span className="font-semibold text-slate-800 group-hover:text-blue-700 transition-colors">
+                <span className="font-semibold text-slate-800">
                   {item.factor}
                 </span>
                 <span
                   className={`font-mono font-bold flex items-center gap-1 ${
-                    isHigh ? "text-rose-700" : isMedium ? "text-orange-700" : "text-emerald-700"
+                    isHigh ? "text-gov-red" : isMedium ? "text-gov-saffron" : "text-gov-teal"
                   }`}
                 >
                   +{item.impact.toFixed(1)}%
@@ -60,14 +63,14 @@ export default function ShapWaterfall({ factors, shapValues }: ShapWaterfallProp
               </div>
 
               {/* Progress bar representing feature importance impact */}
-              <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden flex">
+              <div className="w-full h-1.5 rounded bg-slate-100 overflow-hidden flex">
                 <div
-                  className={`h-full rounded-full transition-all duration-700 ${
+                  className={`h-full rounded transition-all duration-700 ${
                     isHigh
-                      ? "bg-rose-600"
+                      ? "bg-gov-red"
                       : isMedium
-                      ? "bg-orange-500"
-                      : "bg-blue-600"
+                      ? "bg-gov-saffron"
+                      : "bg-gov-blue"
                   }`}
                   style={{ width: `${Math.min(100, Math.max(8, item.impact * 2))}%` }}
                 />
@@ -79,7 +82,7 @@ export default function ShapWaterfall({ factors, shapValues }: ShapWaterfallProp
 
       <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
         <span className="flex items-center gap-1">
-          <Info className="w-3.5 h-3.5 text-blue-700" />
+          <Info className="w-3.5 h-3.5 text-gov-blue" />
           Calculated via Shapley Values across 47 engineered indicators
         </span>
         <span className="font-mono text-slate-500">Base Value: E[f(x)] = 21.4%</span>
