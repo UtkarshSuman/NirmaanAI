@@ -128,7 +128,7 @@ async function getAnalyticsData() {
         falseAlarmRate: "1.0%",
       },
       {
-        model: "PAIMANA Stacking Meta-Learner",
+        model: "NIRMAAN AI Stacking Meta-Learner",
         type: "Stacking Meta-Ensemble",
         f1: rawMl?.ensemble?.cost_ensemble?.f1_score ?? 0.9948,
         precision: rawMl?.ensemble?.cost_ensemble?.precision ?? 1.0,
@@ -175,7 +175,7 @@ async function getAnalyticsData() {
         auc: rawMl?.time_overrun?.xgboost?.auc_roc ?? 0.9763,
       },
       {
-        model: "PAIMANA Time Stacking Ensemble",
+        model: "NIRMAAN AI Time Stacking Ensemble",
         type: "Ensemble",
         f1: rawMl?.ensemble?.time_ensemble?.f1_score ?? 0.9126,
         precision: rawMl?.ensemble?.time_ensemble?.precision ?? 0.8785,
@@ -225,7 +225,7 @@ async function getAnalyticsData() {
 
 // Technical Dimension C: CUF vs Non-CUF Feature Attribution
 const CUF_ATTRIBUTION = [
-  { field: "Cost Revision Count", source: "In-CUF", category: "Governance", importance: 0.4624, desc: "Sanctioned revision iterations logged on PAIMANA" },
+  { field: "Cost Revision Count", source: "In-CUF", category: "Governance", importance: 0.4624, desc: "Sanctioned revision iterations logged on NIRMAAN AI" },
   { field: "Cost Revision Ratio (Rev / Orig)", source: "In-CUF", category: "Financial", importance: 0.4562, desc: "Cumulative expansion ratio from original sanctioned budget" },
   { field: "Months Since Last Revision", source: "In-CUF", category: "Timeline", importance: 0.0438, desc: "Recency of administrative and financial baseline reset" },
   { field: "Cost Revision Acceleration Rate", source: "In-CUF", category: "Velocity", importance: 0.0196, desc: "Rate of change in successive revised estimates" },
@@ -463,7 +463,7 @@ export default async function AnalyticsPage() {
               </span>
             </div>
             <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
-              PAIMAANA Common Upload Form (CUF) Field Evaluation
+              NIRMAAN AI Common Upload Form (CUF) Field Evaluation
             </h2>
             <p className="text-xs text-slate-500 mt-1">
               Attribution of predictive performance between existing CUF fields versus non-CUF external variables.
@@ -551,7 +551,7 @@ export default async function AnalyticsPage() {
               </strong>
               <p className="text-[11px] text-slate-600 leading-relaxed">
                 Statutory forest and environmental clearances should sync automatically from the Parivesh portal into
-                PAIMANA, eliminating manual agency lag and capturing regulatory bottlenecks early.
+                NIRMAAN AI, eliminating manual agency lag and capturing regulatory bottlenecks early.
               </p>
             </div>
 

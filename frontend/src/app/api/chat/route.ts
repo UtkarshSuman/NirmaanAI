@@ -174,9 +174,9 @@ export async function POST(req: NextRequest) {
       )
       .join("\n\n");
 
-    const answer = `### 🇮🇳 PAIMANA AI Policy Officer Briefing
-*Ministry of Statistics & Programme Implementation (MoSPI) • IPMD National Repository*
-*Source: Live SQLite Database (dev.db) & April 2026 PAIMANA Monitoring Framework*
+    const answer = `### 🇮🇳 NIRMAAN AI Officer Briefing
+*National Infrastructure Observatory • Central Sector Portfolio Intelligence*
+*Source: Current Analytical Dataset (dev.db) & NIRMAAN AI Monitoring Framework*
 
 ${contextSummary}
 

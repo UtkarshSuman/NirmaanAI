@@ -177,7 +177,7 @@ export default function AlertsPage() {
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500">Monitoring Cadence</span>
             <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-              [LIVE DB VALUE]
+              [Current Analytical Dataset]
             </span>
           </div>
           <div className="text-base font-bold text-gov-teal mt-2 flex items-center gap-1.5">

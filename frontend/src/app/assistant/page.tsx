@@ -41,10 +41,10 @@ export default function AssistantPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: `### 🇮🇳 Namaste. Welcome to PAIMAANA AI Policy Officer Desk.
-I am your specialized intelligence assistant for the **Ministry of Statistics and Programme Implementation (MoSPI)** Infrastructure and Project Monitoring Division (IPMD).
+      content: `### 🇮🇳 Namaste. Welcome to NIRMAAN AI Officer Desk.
+I am your specialized intelligence assistant for national capital execution monitoring and predictive portfolio analysis.
 
-I have full contextual awareness over all **1,981 Central Sector Infrastructure Projects (≥ ₹150 Crore)** tracked across 17 Central Ministries and 22 infrastructure sectors under the PAIMAANA framework.
+I have full contextual awareness over all Central Sector Infrastructure Projects (≥ ₹150 Crore) tracked across 17 Central Ministries and 22 infrastructure sectors under the NIRMAAN AI framework.
 
 How may I assist your portfolio review today?`,
     },
@@ -101,7 +101,7 @@ How may I assist your portfolio review today?`,
         ...newMessages,
         {
           role: "assistant",
-          content: "Failed to connect to PAIMAANA intelligence core. Please check network status.",
+          content: "Failed to connect to NIRMAAN AI intelligence core. Please check network status.",
         },
       ]);
     } finally {
@@ -125,19 +125,19 @@ How may I assist your portfolio review today?`,
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <h1 className="text-2xl lg:text-3xl font-serif text-slate-900 tracking-tight">
-              PAIMAANA AI Policy Officer
+              NIRMAAN AI Officer
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-              Institutional briefing memo engine and conversational query interface for the
-              Ministry of Statistics and Programme Implementation (MoSPI) IPMD portfolio.
+              Institutional briefing memo engine and conversational query interface for
+              central-sector infrastructure portfolio monitoring.
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <span className="text-[10px] font-mono text-slate-600 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
-              Coverage: 1,981 Projects
+              Coverage: Central Sector
             </span>
             <span className="text-[10px] font-mono text-gov-navy bg-slate-100 px-2.5 py-1 rounded border border-slate-200 font-bold">
-              [LIVE DB + ML CONTEXT]
+              [Current Analytical Dataset + ML Model Context]
             </span>
           </div>
         </div>

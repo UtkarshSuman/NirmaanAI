@@ -54,9 +54,9 @@ export default function GovFooter() {
             costing ₹150 Crore and above across 17 Union Ministries and 22 core sectors.
           </p>
           <div className="text-[10px] text-slate-500 font-mono bg-slate-50 p-2 rounded border border-slate-200 leading-relaxed">
-            PAIMAANA — Infrastructure Intelligence Prototype
+            NIRMAAN AI — Infrastructure Intelligence Prototype
             <br />
-            <span className="text-slate-400">Research & Demonstration Platform • SIH 26103</span>
+            <span className="text-slate-400">Research &amp; Demonstration Platform • SIH 26103</span>
           </div>
         </div>
 
@@ -137,7 +137,7 @@ export default function GovFooter() {
             </li>
             <li>
               <Link href="/assistant" className="hover:text-orange-600 transition-colors">
-                PAIMAANA AI Policy Officer
+                NIRMAAN AI Officer
               </Link>
             </li>
           </ul>

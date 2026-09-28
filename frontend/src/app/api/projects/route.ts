@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const search = searchParams.get("search") || "";
+    const search = searchParams.get("search") || searchParams.get("q") || "";
     const sector = searchParams.get("sector") || "";
     const state = searchParams.get("state") || "";
     const status = searchParams.get("status") || "";

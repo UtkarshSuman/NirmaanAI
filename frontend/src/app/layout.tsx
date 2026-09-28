@@ -12,9 +12,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PAIMAANA | National Capital Execution Observatory (MoSPI)",
+  title: "NIRMAAN AI | Predictive Infrastructure Intelligence",
   description:
-    "National Infrastructure Project Monitoring Platform for Central Sector Projects costing ₹150 Cr and above. Ministry of Statistics and Programme Implementation (MoSPI).",
+    "NIRMAAN AI — National Capital Execution Observatory for central-sector infrastructure project monitoring, predictive cost escalation forecasting, and early risk detection.",
   icons: {
     icon: "/icon.svg",
   },

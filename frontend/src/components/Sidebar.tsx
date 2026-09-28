@@ -72,13 +72,13 @@ export default function Sidebar() {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-base tracking-wider text-white">PAIMANA</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-500/20 text-sky-300 font-bold border border-blue-500/30">
-                AI 2.0
+              <span className="font-extrabold text-base tracking-wider text-white">NIRMAAN AI</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                PROTOTYPE
               </span>
             </div>
-            <p className="text-[10px] text-amber-400/90 font-medium">भारत सरकार • MoSPI</p>
-            <p className="text-[9px] text-slate-400 font-mono">IPMD National Repository</p>
+            <p className="text-[10px] text-slate-300 font-medium">Predictive Infrastructure Intelligence</p>
+            <p className="text-[9px] text-slate-400 font-mono">Infrastructure Intelligence Observatory</p>
           </div>
         </div>
       </div>

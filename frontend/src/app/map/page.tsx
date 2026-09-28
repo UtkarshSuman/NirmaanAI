@@ -71,7 +71,7 @@ export default async function MapPage() {
               {stats?.totalStatesCovered ?? 36} States & UTs Logged
             </span>
             <span className="text-[11px] font-mono text-gov-navy bg-slate-100 px-2.5 py-1 rounded border border-slate-200 font-bold">
-              [LIVE DATABASE VALUE]
+              [Current Portfolio Aggregation]
             </span>
           </div>
         </div>
@@ -92,11 +92,11 @@ export default async function MapPage() {
                   Top States by Infrastructure Project Volume
                 </h2>
                 <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                  [LIVE DATABASE VALUE]
+                  [Current Analytical Dataset]
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-1">
-                Central Sector Projects ≥ ₹150 Cr tracked under the PAIMAANA framework sorted by capital outlay and project concentration
+                Central Sector Projects ≥ ₹150 Cr tracked under the NIRMAAN AI framework sorted by capital outlay and project concentration
               </p>
             </div>
             <span className="text-xs font-mono text-slate-500">

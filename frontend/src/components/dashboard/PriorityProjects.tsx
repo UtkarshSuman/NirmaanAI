@@ -25,7 +25,7 @@ export default function PriorityProjects({
             </h2>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Assets exhibiting significant cost escalation or schedule slippage under implementation.
+            Assets exhibiting highest cost escalation percentage under implementation [Sorted by Cost Overrun %].
           </p>
         </div>
 

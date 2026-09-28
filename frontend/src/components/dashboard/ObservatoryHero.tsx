@@ -41,22 +41,31 @@ export default function ObservatoryHero({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Left Column: Editorial Observatory Mission & Control (5 Cols) */}
         <div className="lg:col-span-5 space-y-6">
-          {/* Institutional Kicker */}
-          <div className="flex items-center gap-2">
-            <span className="w-4 h-[2px] bg-gov-saffron" />
-            <span className="text-[11px] font-bold text-gov-saffron tracking-wider uppercase font-mono">
-              National Infrastructure Observatory
-            </span>
+          {/* Institutional Kicker & Brand */}
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="w-3.5 h-[2px] bg-gov-saffron" />
+              <span className="text-[11px] font-bold text-gov-saffron tracking-wider uppercase font-mono">
+                National Infrastructure Observatory
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold font-serif tracking-tight text-slate-900">
+                NIRMAAN <span className="text-gov-saffron">AI</span>
+              </span>
+              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-semibold">
+                Prototype
+              </span>
+            </div>
           </div>
 
           {/* Headline - Editorial Serif / Display Hierarchy */}
           <div>
-            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-serif font-bold text-slate-900 tracking-tight leading-[1.12]">
-              National Capital Execution Observatory
+            <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-serif font-bold text-slate-900 tracking-tight leading-[1.14]">
+              Predictive Infrastructure Monitoring for India
             </h1>
             <p className="text-sm sm:text-base text-slate-600 mt-3 leading-relaxed font-sans">
-              A unified intelligence layer for monitoring project cost, schedule, execution progress
-              and emerging risks across India&apos;s central-sector infrastructure portfolio.
+              Unified intelligence for monitoring project cost, execution, schedule, and emerging risk across India&apos;s central-sector infrastructure portfolio.
             </p>
           </div>
 

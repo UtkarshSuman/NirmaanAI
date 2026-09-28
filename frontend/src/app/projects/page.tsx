@@ -166,7 +166,7 @@ function ProjectsContent() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `paimana_projects_ledger_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute("download", `nirmaan_projects_ledger_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -374,7 +374,7 @@ function ProjectsContent() {
         {loading ? (
           <div className="p-12 rounded bg-white border border-slate-200 flex flex-col items-center justify-center gap-2">
             <RefreshCw className="w-5 h-5 text-slate-600 animate-spin" />
-            <p className="text-xs text-slate-600 font-mono">Querying PAIMAANA Ledger Database...</p>
+            <p className="text-xs text-slate-600 font-mono">Querying NIRMAAN AI Ledger Database...</p>
           </div>
         ) : projects.length === 0 ? (
           <div className="p-12 rounded bg-white border border-dashed border-slate-200 text-center space-y-1">
@@ -423,7 +423,7 @@ export default function ProjectsPage() {
       fallback={
         <div className="p-12 text-center text-slate-400 bg-white rounded border border-slate-200">
           <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-slate-400" />
-          <p className="text-xs font-mono">Loading PAIMAANA Infrastructure Directory...</p>
+          <p className="text-xs font-mono">Loading NIRMAAN AI Infrastructure Directory...</p>
         </div>
       }
     >

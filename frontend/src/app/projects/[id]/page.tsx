@@ -158,7 +158,7 @@ export default async function ProjectDetailPage({
         <div className="p-4 rounded border border-slate-200 bg-white space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-500 pb-1 border-b border-slate-100">
             <span className="font-semibold uppercase tracking-wider text-[11px]">Capital Outlay</span>
-            <span className="text-[10px] font-mono text-slate-400">[LIVE DB]</span>
+            <span className="text-[10px] font-mono text-slate-400">[Current Analytical Dataset]</span>
           </div>
           <div>
             <div className="text-2xl font-serif font-bold text-slate-900">
@@ -189,7 +189,7 @@ export default async function ProjectDetailPage({
         <div className="p-4 rounded border border-slate-200 bg-white space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-500 pb-1 border-b border-slate-100">
             <span className="font-semibold uppercase tracking-wider text-[11px]">Schedule Status</span>
-            <span className="text-[10px] font-mono text-slate-400">[LIVE DB]</span>
+            <span className="text-[10px] font-mono text-slate-400">[Current Analytical Dataset]</span>
           </div>
           <div>
             <div
@@ -224,7 +224,7 @@ export default async function ProjectDetailPage({
         <div className="p-4 rounded border border-slate-200 bg-white space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-500 pb-1 border-b border-slate-100">
             <span className="font-semibold uppercase tracking-wider text-[11px]">Progress Metrics</span>
-            <span className="text-[10px] font-mono text-slate-400">[LIVE DB]</span>
+            <span className="text-[10px] font-mono text-slate-400">[Current Analytical Dataset]</span>
           </div>
           <div className="space-y-2">
             <div>
@@ -270,7 +270,7 @@ export default async function ProjectDetailPage({
         <div className="p-4 rounded border border-slate-200 bg-white space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-500 pb-1 border-b border-slate-100">
             <span className="font-semibold uppercase tracking-wider text-[11px]">Primary Impediment</span>
-            <span className="text-[10px] font-mono text-slate-400">[LIVE DB]</span>
+            <span className="text-[10px] font-mono text-slate-400">[Current Analytical Dataset]</span>
           </div>
           <div className="min-h-[58px] flex items-center">
             <p className="text-xs text-slate-800 leading-relaxed font-semibold">
@@ -308,7 +308,7 @@ export default async function ProjectDetailPage({
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-gov-saffron" />
               <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                PAIMAANA AI Predictive Forecast
+                NIRMAAN AI Predictive Forecast
               </h3>
             </div>
             <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono font-bold border border-slate-200">

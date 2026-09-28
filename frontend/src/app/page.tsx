@@ -138,10 +138,10 @@ async function getDashboardData() {
       liveAlerts: JSON.parse(JSON.stringify(liveAlerts)),
       topRiskProjects: JSON.parse(JSON.stringify(topRiskProjects)),
       riskDistribution: {
-        critical: criticalRiskCount || 142,
-        high: highRiskCount || 428,
-        moderate: moderateRiskCount || 785,
-        low: lowRiskCount || 626,
+        critical: criticalRiskCount,
+        high: highRiskCount,
+        moderate: moderateRiskCount,
+        low: lowRiskCount,
       },
       sectorStats: sectorStats
         .map((s) => ({
@@ -191,6 +191,7 @@ export default async function DashboardPage() {
         netCostEscalationPercent={data.netCostEscalationPercent}
         netCostOverrunLakhCr={data.netCostOverrunLakhCr}
         totalExpLakhCr={data.totalExpLakhCr}
+        projectsAtRisk={data.riskDistribution.critical + data.riskDistribution.high}
         delayedProjectsCount={data.delayedProjectsCount}
         criticalAlertsCount={data.criticalAlertsCount}
       />

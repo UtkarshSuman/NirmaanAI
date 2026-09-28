@@ -62,23 +62,21 @@ export default function GovHeader() {
 
   return (
     <header className="w-full bg-white border-b border-slate-200 text-slate-800 select-none">
-      {/* National Tricolor Top Stripe */}
+      {/* Top Accent Stripe */}
       <div className="gov-tricolor-stripe w-full h-[3px]" />
 
-      {/* Topmost Official Accessibility Bar */}
+      {/* Topmost Utility & Accessibility Bar */}
       <div className="bg-slate-50/80 px-4 lg:px-8 py-1 border-b border-slate-200/70 text-[11px] text-slate-600">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <span className="flex items-center gap-1.5 font-medium text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-              <span>भारत सरकार</span>
+              <span className="font-semibold text-slate-800">NIRMAAN AI</span>
               <span className="text-slate-300">|</span>
-              <span className="hidden sm:inline">Government of India</span>
-              <span className="text-slate-300 hidden md:inline">•</span>
-              <span className="text-slate-500 hidden md:inline">Infrastructure & Project Monitoring Division</span>
+              <span className="text-slate-500 hidden sm:inline">National Infrastructure Observatory</span>
             </span>
-            <span className="hidden lg:inline-block px-1.5 py-0.2 rounded bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-mono">
-              Research Prototype
+            <span className="hidden md:inline-block px-1.5 py-0.2 rounded bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-mono">
+              Research &amp; Demonstration Prototype
             </span>
           </div>
 
@@ -150,48 +148,37 @@ export default function GovHeader() {
         </div>
       </div>
 
-      {/* Main Government Banner & Ministry Identity */}
-      <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Left: National Emblem and Ministry Title */}
+      {/* Main Website Identity Area (NIRMAAN AI First) */}
+      <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Left: NIRMAAN AI Identity */}
         <Link href="/" className="flex items-center gap-3.5 group">
-          <div className="p-1 rounded-md bg-slate-50 border border-slate-200 text-amber-900 shrink-0">
-            <AshokaEmblem className="w-8 h-8 text-amber-900" />
+          <div className="w-10 h-10 rounded bg-[#173f5f] text-white flex items-center justify-center font-serif font-black text-xl tracking-tight shadow-2xs">
+            N
           </div>
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-semibold text-slate-600 tracking-wider">सांख्यिकी एवं कार्यक्रम कार्यान्वयन मंत्रालय</span>
-              <span className="text-slate-300 font-light">•</span>
-              <span className="text-[11px] font-bold text-slate-800 tracking-wider">MoSPI</span>
-            </div>
-            <h1 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight leading-snug">
-              Ministry of Statistics and Programme Implementation
-              <span className="block text-xs font-normal text-slate-500">
-                Infrastructure & Project Monitoring Division (IPMD)
+              <span className="font-serif font-bold text-xl sm:text-2xl text-slate-900 tracking-tight">
+                NIRMAAN <span className="text-orange-600">AI</span>
               </span>
-            </h1>
+              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-semibold">
+                Prototype
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 tracking-tight font-medium">
+              Predictive Infrastructure Intelligence
+            </p>
           </div>
         </Link>
 
-        {/* Right: Institutional Prototype Designation & Scope */}
-        <div className="flex flex-wrap items-center gap-3 text-xs self-start md:self-auto">
-          <div className="border-l border-slate-200 pl-3 hidden sm:block">
-            <span className="font-serif font-bold text-slate-900 text-sm tracking-tight block">
-              PAIMAANA
-            </span>
-            <span className="text-[10px] text-slate-500 block leading-tight">
-              Infrastructure Intelligence Prototype • Research &amp; Demonstration
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200 font-mono text-[11px]">
-              Central Sector ≥ ₹150 Cr
-            </span>
-            <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold text-[11px]">
-              April 2026 Cycle
-            </span>
-          </div>
+        {/* Right: Analytical Dataset Scope Pills */}
+        <div className="flex flex-wrap items-center gap-2.5 text-xs self-start md:self-auto">
+          <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200 font-mono text-[11px]">
+            Central Sector ≥ ₹150 Cr
+          </span>
+          <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200 font-mono text-[11px]">
+            Current Analytical Dataset
+          </span>
         </div>
       </div>
     </header>

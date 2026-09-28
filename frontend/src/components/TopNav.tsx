@@ -49,7 +49,7 @@ export default function TopNav({
         <div className="flex items-center gap-6 h-full">
           <Link href="/" className="font-serif font-bold text-sm tracking-tight text-slate-900 flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-xs bg-orange-600" />
-            <span>PAIMAANA</span>
+            <span>NIRMAAN AI</span>
           </Link>
 
           {/* Navigation Links (Desktop) */}

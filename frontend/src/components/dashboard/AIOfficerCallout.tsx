@@ -14,11 +14,11 @@ export default function AIOfficerCallout() {
         </div>
 
         <h3 className="text-xl font-serif font-bold tracking-tight text-white">
-          PAIMAANA AI Officer
+          NIRMAAN AI Officer
         </h3>
 
         <p className="text-xs text-slate-200 leading-relaxed font-sans">
-          Query India&apos;s infrastructure portfolio in natural language. Audit project dossiers, examine ministry-level delay patterns, simulate cost overrun probabilities, and generate executive policy briefings under IPMD guidelines.
+          Query India&apos;s infrastructure portfolio in natural language. Audit project dossiers, examine ministry-level delay patterns, simulate cost overrun probabilities, and generate executive policy briefings.
         </p>
 
         <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-slate-300 font-mono">

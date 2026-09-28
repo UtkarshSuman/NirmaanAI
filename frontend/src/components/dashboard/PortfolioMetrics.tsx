@@ -8,6 +8,7 @@ interface PortfolioMetricsProps {
   netCostEscalationPercent: string;
   netCostOverrunLakhCr: string;
   totalExpLakhCr: string;
+  projectsAtRisk: number;
   delayedProjectsCount: number;
   criticalAlertsCount: number;
 }
@@ -19,6 +20,7 @@ export default function PortfolioMetrics({
   netCostEscalationPercent,
   netCostOverrunLakhCr,
   totalExpLakhCr,
+  projectsAtRisk,
   delayedProjectsCount,
   criticalAlertsCount,
 }: PortfolioMetricsProps) {
@@ -34,9 +36,9 @@ export default function PortfolioMetrics({
         </div>
 
         <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
-          <span>Source: Live SQLite Repository</span>
+          <span>Scope: Central Sector Projects (≥ ₹150 Cr)</span>
           <span>•</span>
-          <span className="text-orange-700 font-semibold">MoSPI Reference: 1,981 Projects • ₹42.78 L Cr</span>
+          <span className="text-slate-600 font-medium">Current Portfolio Aggregation</span>
         </div>
       </div>
 
@@ -47,9 +49,9 @@ export default function PortfolioMetrics({
           <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 tracking-tight">
             {totalProjects.toLocaleString()}
           </div>
-          <p className="text-xs font-semibold text-slate-800">Monitored Assets</p>
+          <p className="text-xs font-semibold text-slate-800">Projects Monitored</p>
           <p className="text-[10px] text-slate-500 font-mono">
-            [LIVE DB: Central Sector]
+            [Current Analytical Dataset]
           </p>
         </div>
 
@@ -58,9 +60,9 @@ export default function PortfolioMetrics({
           <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 tracking-tight">
             ₹{totalOriginalCostLakhCr} L Cr
           </div>
-          <p className="text-xs font-semibold text-slate-800">Original Sanction</p>
+          <p className="text-xs font-semibold text-slate-800">Original Cost</p>
           <p className="text-[10px] text-slate-500 font-mono">
-            [LIVE DB: Base Outlay]
+            [Current Portfolio Aggregation]
           </p>
         </div>
 
@@ -71,18 +73,18 @@ export default function PortfolioMetrics({
           </div>
           <p className="text-xs font-semibold text-slate-800">Revised Cost</p>
           <p className="text-[10px] text-slate-500 font-mono">
-            [LIVE DB: Latest Estimates]
+            [Current Portfolio Aggregation]
           </p>
         </div>
 
         {/* Metric 4: Net Cost Escalation */}
         <div className="py-2 lg:py-0 px-2 sm:px-4 space-y-0.5">
           <div className="text-2xl sm:text-3xl font-bold font-mono text-rose-700 tracking-tight flex items-center gap-0.5">
-            <span>↑ {netCostEscalationPercent}%</span>
+            <span>+{netCostEscalationPercent}%</span>
           </div>
-          <p className="text-xs font-semibold text-slate-800">Net Cost Escalation</p>
+          <p className="text-xs font-semibold text-slate-800">Cost Escalation</p>
           <p className="text-[10px] text-rose-700 font-mono">
-            +₹{netCostOverrunLakhCr} L Cr overrun
+            +₹{netCostOverrunLakhCr} L Cr Overrun
           </p>
         </div>
 
@@ -93,18 +95,18 @@ export default function PortfolioMetrics({
           </div>
           <p className="text-xs font-semibold text-slate-800">Cumulative Expenditure</p>
           <p className="text-[10px] text-slate-500 font-mono">
-            [LIVE DB: Realized Capital]
+            [Current Portfolio Aggregation]
           </p>
         </div>
 
         {/* Metric 6: Delayed / At-Risk Count */}
         <div className="py-2 lg:py-0 px-2 sm:px-4 last:pr-0 space-y-0.5">
           <div className="text-2xl sm:text-3xl font-bold font-mono text-orange-700 tracking-tight">
-            {delayedProjectsCount}
+            {projectsAtRisk}
           </div>
-          <p className="text-xs font-semibold text-slate-800">Schedule Slippages</p>
+          <p className="text-xs font-semibold text-slate-800">Projects at Risk</p>
           <p className="text-[10px] text-orange-800 font-mono font-medium">
-            {criticalAlertsCount} Critical Early Warnings
+            [Critical &amp; High Risk Tiers]
           </p>
         </div>
       </div>
