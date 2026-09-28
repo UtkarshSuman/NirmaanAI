@@ -1,8 +1,12 @@
 """
-PAIMANA AI — Synthetic Data Generator
-=====================================
-Generates a realistic dataset of ~1,981 infrastructure projects
-matching PAIMANA specifications across 22 sectors and 17 ministries.
+NIRMAAN AI — Synthetic Infrastructure Data Generator
+=====================================================
+Generates a realistic synthetic dataset of ~1,931 infrastructure projects
+for development and demonstration purposes.
+
+IMPORTANT: All generated data is SYNTHETIC. It does NOT represent live or
+official government project records. Project names, costs, timelines, and
+agency assignments are procedurally generated for system demonstration only.
 
 Outputs:
   - projects.csv: Core project data
@@ -792,7 +796,7 @@ def generate_projects():
 
     # Summary stats
     print("=" * 60)
-    print("PAIMANA AI — Synthetic Data Generation Complete")
+    print("NIRMAAN AI — Synthetic Data Generation Complete")
     print("=" * 60)
     print(f"Total Projects: {len(projects)}")
     print(f"Total Snapshots: {len(snapshots)}")

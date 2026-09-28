@@ -1,5 +1,5 @@
 """
-PAIMANA AI — ML Training Pipeline
+NIRMAAN AI — ML Training Pipeline
 ===================================
 End-to-end training pipeline for cost overrun, time overrun,
 and risk scoring models using ensemble of XGBoost, LightGBM,
@@ -41,7 +41,7 @@ from app.pipeline.feature_engineering import FeatureEngineer
 
 class ModelTrainer:
     """
-    End-to-end ML training pipeline for PAIMANA AI.
+    End-to-end ML training pipeline for NIRMAAN AI.
     
     Trains and evaluates:
     - Cost Overrun Classifier (binary: will overrun yes/no)
@@ -68,7 +68,7 @@ class ModelTrainer:
     def run_pipeline(self):
         """Execute the full training pipeline."""
         print("=" * 70)
-        print("PAIMANA AI - ML Training Pipeline")
+        print("NIRMAAN AI - ML Training Pipeline")
         print("=" * 70)
 
         # Step 1: Load data

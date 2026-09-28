@@ -1,5 +1,5 @@
 """
-PAIMANA AI — Feature Engineering Pipeline
+NIRMAAN AI — Feature Engineering Pipeline
 ==========================================
 Transforms raw CUF project data into 47+ engineered features
 for ML model training and prediction.

@@ -88,13 +88,27 @@ export async function getDatasetFreshness(): Promise<DatasetFreshness> {
     statusDescription = "Database active; ML evaluation artifacts unlinked";
   }
 
+  // Resolve dynamic project count from the database
+  let projectCount: number | null = null;
+  if (isDbAvailable) {
+    try {
+      projectCount = await prisma.project.count();
+    } catch {
+      // Non-critical — coverage string will fall back to a generic label
+    }
+  }
+
+  const datasetCoverage = projectCount !== null
+    ? `${projectCount.toLocaleString("en-IN")} Central Sector Infrastructure Projects (≥ ₹150 Cr) — Current portfolio dataset`
+    : "Central Sector Infrastructure Projects (≥ ₹150 Cr) — Current portfolio dataset";
+
   const freshness: DatasetFreshness = {
     databaseSource: "Local SQLite Repository (Prisma dev.db)",
     latestProjectUpdate,
     latestAlertTimestamp,
     latestPredictionTimestamp,
     modelArtifactTimestamp,
-    datasetCoverage: "1,931 Central Sector Infrastructure Projects (≥ ₹150 Cr)",
+    datasetCoverage,
     systemStatus,
     statusDescription,
   };

@@ -1,10 +1,17 @@
 """
-PAIMANA AI — SQLite Database Seeder
-====================================
-Populates the SQLite database (dev.db) for the Next.js frontend with:
-- 1,959 projects from projects.csv
+NIRMAAN AI — SQLite Database Seeder
+=====================================
+Populates the SQLite development database (dev.db) for the Next.js frontend with:
+- Infrastructure projects from projects.csv (synthetic development data)
 - Predictions & risk scores computed using the trained ML models (or fallback logic)
 - Actionable early warning alerts
+
+WARNING: This script is DESTRUCTIVE. It deletes all existing records in the
+alerts, predictions, and projects tables before re-inserting. Do NOT run this
+script as part of routine validation or while the application is in active use.
+
+NOTE: All project data generated and loaded by this script is SYNTHETIC and
+intended for development/demonstration purposes only.
 """
 
 import sqlite3

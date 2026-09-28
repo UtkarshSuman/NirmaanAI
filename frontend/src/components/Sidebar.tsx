@@ -50,11 +50,11 @@ const NAV_ITEMS = [
     desc: "Proactive Risk Signals",
   },
   {
-    name: "AI Policy Officer",
+    name: "AI Officer",
     href: "/assistant",
     icon: Bot,
     badge: "LLM",
-    desc: "Cabinet & IPMD Q&A",
+    desc: "Portfolio Q&A Assistant",
   },
 ];
 
@@ -126,34 +126,34 @@ export default function Sidebar() {
         })}
 
         <div className="pt-5 px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-          Technical Dimensions (SIH 26103)
+          Analytics Modules
         </div>
         <div className="space-y-1">
           <Link
             href="/analytics#dim-a"
             className="flex items-center justify-between px-3 py-2 rounded-lg text-[11px] text-slate-400 hover:text-white hover:bg-[#121c2e] transition-colors"
           >
-            <span>Dim A: Predictive Models</span>
+            <span>Predictive Model Engine</span>
             <span className="text-[10px] text-sky-400 font-mono">Ensemble</span>
           </Link>
           <Link
             href="/analytics#dim-b"
             className="flex items-center justify-between px-3 py-2 rounded-lg text-[11px] text-slate-400 hover:text-white hover:bg-[#121c2e] transition-colors"
           >
-            <span>Dim B: AI vs Conventional</span>
+            <span>AI vs Conventional Benchmark</span>
             <span className="text-[10px] text-emerald-400 font-mono">Benchmark</span>
           </Link>
           <Link
             href="/analytics#dim-c"
             className="flex items-center justify-between px-3 py-2 rounded-lg text-[11px] text-slate-400 hover:text-white hover:bg-[#121c2e] transition-colors"
           >
-            <span>Dim C: CUF Feature Matrix</span>
+            <span>CUF Feature Matrix</span>
             <span className="text-[10px] text-amber-400 font-mono">Taxonomy</span>
           </Link>
         </div>
 
         <div className="pt-5 px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-          Institutional Portals
+          Reference Portals
         </div>
         <div className="space-y-1">
           <a
