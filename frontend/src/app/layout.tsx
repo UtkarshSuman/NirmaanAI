@@ -14,7 +14,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "NIRMAAN AI | Predictive Infrastructure Intelligence",
   description:
-    "NIRMAAN AI — National Capital Execution Observatory for central-sector infrastructure project monitoring, predictive cost escalation forecasting, and early risk detection.",
+    "Predictive infrastructure monitoring, portfolio risk analytics, geospatial intelligence, forecasting, and AI-assisted project analysis.",
   icons: {
     icon: "/icon.svg",
   },
@@ -26,7 +26,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   let unacknowledgedCount = 0;
-  let totalProjectsCount = 1931;
+  let totalProjectsCount: number | null = null;
 
   try {
     const [unack, total] = await Promise.all([
@@ -42,23 +42,23 @@ export default async function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="bg-[#f8fafc] text-slate-900 min-h-screen antialiased flex flex-col selection:bg-orange-500/20 selection:text-orange-950 font-sans">
-        {/* Government of India Official Topmost Banner */}
+        {/* Top Utility and Identity Header */}
         <GovHeader />
 
-        {/* Primary Horizontal Observatory Navigation */}
+        {/* Primary Horizontal Navigation */}
         <TopNav
           unacknowledgedAlertsCount={unacknowledgedCount}
-          totalProjectsCount={totalProjectsCount}
+          totalProjectsCount={totalProjectsCount ?? undefined}
         />
 
-        {/* Main Observatory Content - Generous 1440px Width with Balanced Rhythm */}
+        {/* Main Content Area */}
         <main id="main-content" className="flex-1 w-full bg-[#f8fafc]">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
             {children}
           </div>
         </main>
 
-        {/* Official Footer */}
+        {/* Platform Footer */}
         <GovFooter />
       </body>
     </html>

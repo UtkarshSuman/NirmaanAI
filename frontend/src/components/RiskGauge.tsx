@@ -1,30 +1,37 @@
 import React from "react";
 
 interface RiskGaugeProps {
-  score: number; // 0 - 100
+  score?: number | null; // 0 - 100
   category?: string;
   size?: "sm" | "md" | "lg";
 }
 
 export default function RiskGauge({ score, category, size = "md" }: RiskGaugeProps) {
-  const normalizedScore = Math.min(100, Math.max(0, Math.round(score)));
+  const isAvailable = typeof score === "number" && !isNaN(score);
+  const normalizedScore = isAvailable ? Math.min(100, Math.max(0, Math.round(score))) : 0;
 
-  let strokeColor = "#178b7a"; // Gov Teal
-  let bgClass = "bg-teal-50 text-teal-800 border-teal-200";
-  let label = category || "ON TRACK";
+  let strokeColor = "#94a3b8"; // Slate
+  let bgClass = "bg-slate-100 text-slate-700 border-slate-200";
+  let label = category || (isAvailable ? "ON TRACK" : "UNCLASSIFIED");
 
-  if (normalizedScore >= 70) {
-    strokeColor = "#c63f32"; // Restrained Red
-    bgClass = "bg-red-50 text-red-800 border-red-200";
-    label = category || "CRITICAL";
-  } else if (normalizedScore >= 45) {
-    strokeColor = "#e97824"; // Saffron
-    bgClass = "bg-orange-50 text-orange-800 border-orange-200";
-    label = category || "HIGH";
-  } else if (normalizedScore >= 25) {
-    strokeColor = "#d97706"; // Amber
-    bgClass = "bg-amber-50 text-amber-800 border-amber-200";
-    label = category || "MODERATE";
+  if (isAvailable) {
+    if (normalizedScore >= 70) {
+      strokeColor = "#c63f32"; // Restrained Red
+      bgClass = "bg-red-50 text-red-800 border-red-200";
+      label = category || "CRITICAL";
+    } else if (normalizedScore >= 45) {
+      strokeColor = "#e97824"; // Saffron
+      bgClass = "bg-orange-50 text-orange-800 border-orange-200";
+      label = category || "HIGH";
+    } else if (normalizedScore >= 25) {
+      strokeColor = "#d97706"; // Amber
+      bgClass = "bg-amber-50 text-amber-800 border-amber-200";
+      label = category || "MODERATE";
+    } else {
+      strokeColor = "#178b7a"; // Gov Teal
+      bgClass = "bg-teal-50 text-teal-800 border-teal-200";
+      label = category || "LOW";
+    }
   }
 
   const dimensions = {
@@ -34,7 +41,7 @@ export default function RiskGauge({ score, category, size = "md" }: RiskGaugePro
   }[size];
 
   const circumference = 2 * Math.PI * dimensions.radius;
-  const strokeDashoffset = circumference - (normalizedScore / 100) * circumference;
+  const strokeDashoffset = isAvailable ? circumference - (normalizedScore / 100) * circumference : circumference;
 
   return (
     <div className="flex flex-col items-center justify-center select-none">
@@ -70,7 +77,7 @@ export default function RiskGauge({ score, category, size = "md" }: RiskGaugePro
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
           <span className={`${dimensions.text} text-slate-900 font-mono tracking-tight leading-none`}>
-            {normalizedScore}
+            {isAvailable ? normalizedScore : "N/A"}
           </span>
           {size !== "sm" && <span className="text-[9px] text-slate-500 uppercase tracking-widest mt-0.5">INDEX</span>}
         </div>

@@ -77,7 +77,7 @@ export default function AlertsPage() {
       });
 
       if (res.ok) {
-        toast.success(!currentStatus ? "Alert acknowledged by IPMD desk" : "Alert marked pending");
+        toast.success(!currentStatus ? "Alert acknowledged" : "Alert marked pending");
         fetchAlerts();
       }
     } catch {
@@ -102,12 +102,12 @@ export default function AlertsPage() {
       {/* Editorial Console Header */}
       <div className="border-b border-slate-200 pb-6">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-gov-red">
+          <span className="text-xs font-semibold uppercase tracking-wider text-gov-red">
             Early Warning Protocol
           </span>
           <span className="text-slate-300">/</span>
-          <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">
-            Inter-Ministerial Triage Desk
+          <span className="text-xs text-slate-500">
+            Portfolio Alert Register
           </span>
         </div>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -116,8 +116,8 @@ export default function AlertsPage() {
               Early Warning & Intervention Console
             </h1>
             <p className="text-sm text-slate-600 max-w-3xl mt-2 leading-relaxed">
-              Algorithmic threshold breach detection. Automated triage alerts for inter-ministerial
-              escalation, Revised Cost Committee (RCC) triggers, and milestone recovery interventions.
+              Algorithmic threshold breach detection. Automated triage alerts for project risk escalation,
+              critical cost overruns, and milestone recovery interventions.
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -237,7 +237,7 @@ export default function AlertsPage() {
         {loading ? (
           <div className="py-16 text-center text-slate-500 bg-white border border-slate-200 rounded">
             <div className="w-6 h-6 border-2 border-gov-navy border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-            <p className="text-xs font-medium">Fetching live alert streams from IPMD repository...</p>
+            <p className="text-xs font-medium">Fetching live alert streams from repository...</p>
           </div>
         ) : alerts.length === 0 ? (
           <div className="py-16 text-center text-slate-500 bg-white border border-dashed border-slate-300 rounded">

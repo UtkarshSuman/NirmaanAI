@@ -142,12 +142,24 @@ function ProjectsContent() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
+    const params = new URLSearchParams(searchParams.toString());
+    if (search.trim()) {
+      params.set("search", search.trim());
+    } else {
+      params.delete("search");
+    }
+    params.set("page", "1");
+    router.replace(`/projects?${params.toString()}`);
     fetchProjects();
   };
 
   const clearStateFilter = () => {
     setState("ALL");
     setPage(1);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("state");
+    params.set("page", "1");
+    router.replace(`/projects?${params.toString()}`);
   };
 
   const exportCsv = () => {
@@ -179,8 +191,8 @@ function ProjectsContent() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-3.5 h-[2px] bg-gov-saffron" />
-            <span className="text-[11px] font-bold text-gov-saffron uppercase tracking-wider font-mono">
-              National Infrastructure Ledger • April 2026 Cycle
+            <span className="text-xs font-semibold text-gov-saffron uppercase tracking-wider">
+              National Infrastructure Ledger • Central Sector Assets
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight">

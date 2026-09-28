@@ -114,11 +114,11 @@ How may I assist your portfolio review today?`,
       {/* Editorial Intelligence Header */}
       <div className="border-b border-slate-200 pb-5">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-gov-blue">
+          <span className="text-xs font-semibold uppercase tracking-wider text-gov-blue">
             Institutional Intelligence
           </span>
           <span className="text-slate-300">/</span>
-          <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">
+          <span className="text-xs text-slate-500">
             Natural Language Policy Desk
           </span>
         </div>
@@ -133,10 +133,10 @@ How may I assist your portfolio review today?`,
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <span className="text-[10px] font-mono text-slate-600 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
+            <span className="text-xs text-slate-600 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
               Coverage: Central Sector
             </span>
-            <span className="text-[10px] font-mono text-gov-navy bg-slate-100 px-2.5 py-1 rounded border border-slate-200 font-bold">
+            <span className="text-xs text-gov-navy bg-slate-100 px-2.5 py-1 rounded border border-slate-200 font-semibold">
               [Current Analytical Dataset + ML Model Context]
             </span>
           </div>

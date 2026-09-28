@@ -48,11 +48,11 @@ export default async function MapPage() {
       {/* Editorial Observatory Header */}
       <div className="border-b border-slate-200 pb-6">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-gov-blue">
+          <span className="text-xs font-semibold uppercase tracking-wider text-gov-blue">
             Geo-Spatial Infrastructure Observatory
           </span>
           <span className="text-slate-300">/</span>
-          <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">
+          <span className="text-xs text-slate-500">
             State-Level Portfolio Matrix
           </span>
         </div>
@@ -62,15 +62,15 @@ export default async function MapPage() {
               National Infrastructure Map of India
             </h1>
             <p className="text-sm text-slate-600 max-w-3xl mt-2 leading-relaxed">
-              Geographic distribution, cost escalation intensity, and schedule slippage across all 36 States and
+              Geographic distribution, cost escalation intensity, and schedule slippage across States and
               Union Territories for Central Sector Infrastructure Projects costing ₹150 Crore and above.
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <span className="text-[11px] font-mono text-slate-500 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
-              {stats?.totalStatesCovered ?? 36} States & UTs Logged
+            <span className="text-xs text-slate-600 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
+              {stats?.totalStatesCovered ? `${stats.totalStatesCovered} States & UTs Logged` : "Jurisdictions unavailable"}
             </span>
-            <span className="text-[11px] font-mono text-gov-navy bg-slate-100 px-2.5 py-1 rounded border border-slate-200 font-bold">
+            <span className="text-xs text-gov-navy bg-slate-100 px-2.5 py-1 rounded border border-slate-200 font-semibold">
               [Current Portfolio Aggregation]
             </span>
           </div>
@@ -91,7 +91,7 @@ export default async function MapPage() {
                 <h2 className="text-xl font-bold text-slate-900 tracking-tight">
                   Top States by Infrastructure Project Volume
                 </h2>
-                <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                   [Current Analytical Dataset]
                 </span>
               </div>
@@ -99,8 +99,8 @@ export default async function MapPage() {
                 Central Sector Projects ≥ ₹150 Cr tracked under the NIRMAAN AI framework sorted by capital outlay and project concentration
               </p>
             </div>
-            <span className="text-xs font-mono text-slate-500">
-              Coverage: 10 of {stats.totalStatesCovered} Jurisdictions
+            <span className="text-xs text-slate-500">
+              Coverage: {stats.topStates.length} of {stats.totalStatesCovered} Jurisdictions
             </span>
           </div>
 

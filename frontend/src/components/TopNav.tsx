@@ -12,7 +12,7 @@ interface TopNavProps {
 
 export default function TopNav({
   unacknowledgedAlertsCount = 0,
-  totalProjectsCount = 1931,
+  totalProjectsCount,
 }: TopNavProps) {
   const router = useRouter();
   const pathname = usePathname();

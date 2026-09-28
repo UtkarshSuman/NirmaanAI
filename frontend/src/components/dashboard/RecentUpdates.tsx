@@ -27,11 +27,11 @@ export default function RecentUpdates({ projects }: RecentUpdatesProps) {
       <div className="flex items-center justify-between border-b border-slate-200 pb-2">
         <div className="flex items-center gap-2">
           <span className="w-3.5 h-[2px] bg-orange-600" />
-          <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">
+          <h2 className="text-sm font-bold text-slate-900 tracking-tight">
             Recent Portfolio Updates
           </h2>
-          <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">
-            [LIVE DATABASE STREAM]
+          <span className="text-xs text-slate-500 hidden sm:inline">
+            • Current analytical dataset
           </span>
         </div>
 
@@ -47,13 +47,13 @@ export default function RecentUpdates({ projects }: RecentUpdatesProps) {
       {/* Editorial Table / Row Feed */}
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs">
-          <thead className="text-[11px] text-slate-400 uppercase font-semibold border-b border-slate-100">
+          <thead className="text-xs text-slate-500 font-semibold border-b border-slate-100">
             <tr>
-              <th className="py-2 pr-4 font-normal">Project Asset</th>
-              <th className="py-2 px-4 font-normal">Sector</th>
-              <th className="py-2 px-4 font-normal">Administrative Status</th>
-              <th className="py-2 px-4 font-normal text-right">Variance Indicator</th>
-              <th className="py-2 pl-4 font-normal text-right">Logged Date</th>
+              <th className="py-2 pr-4 font-medium">Project Asset</th>
+              <th className="py-2 px-4 font-medium">Sector</th>
+              <th className="py-2 px-4 font-medium">Administrative Status</th>
+              <th className="py-2 px-4 font-medium text-right">Variance Indicator</th>
+              <th className="py-2 pl-4 font-medium text-right">Logged Date</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -75,7 +75,7 @@ export default function RecentUpdates({ projects }: RecentUpdatesProps) {
                       month: "short",
                       year: "numeric",
                     })
-                  : "April 2026";
+                  : "Date unavailable";
 
                 return (
                   <tr key={p.projectId} className="hover:bg-slate-50/80 transition-colors group">

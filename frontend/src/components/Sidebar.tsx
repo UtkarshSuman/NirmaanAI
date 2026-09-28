@@ -15,7 +15,6 @@ import {
   Layers,
   FileCheck,
 } from "lucide-react";
-import { AshokaEmblem } from "./GovHeader";
 
 const NAV_ITEMS = [
   {
@@ -67,18 +66,15 @@ export default function Sidebar() {
       {/* Brand Header */}
       <div className="p-4 border-b border-[#1a253c] bg-gradient-to-b from-[#0a1020] to-[#070b16]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 via-blue-600/30 to-indigo-600/30 border border-amber-500/30 flex items-center justify-center shadow-lg shadow-amber-500/10">
-            <AshokaEmblem className="w-6 h-6 text-amber-300" />
+          <div className="w-10 h-10 rounded bg-[#173f5f] border border-slate-700 flex items-center justify-center text-white font-serif font-bold text-lg shadow-sm">
+            N
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-base tracking-wider text-white">NIRMAAN AI</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
-                PROTOTYPE
-              </span>
+              <span className="font-bold text-base tracking-tight text-white">NIRMAAN AI</span>
             </div>
-            <p className="text-[10px] text-slate-300 font-medium">Predictive Infrastructure Intelligence</p>
-            <p className="text-[9px] text-slate-400 font-mono">Infrastructure Intelligence Observatory</p>
+            <p className="text-xs text-slate-300 font-medium">Predictive Infrastructure Intelligence</p>
+            <p className="text-[11px] text-slate-400">National Observatory</p>
           </div>
         </div>
       </div>
@@ -193,9 +189,9 @@ export default function Sidebar() {
         <p className="text-[10px] text-slate-400 leading-tight">
           Central Sector Projects ≥ ₹150 Cr
         </p>
-        <div className="mt-2 pt-2 border-t border-slate-800/80 text-[9px] text-slate-500 flex items-center justify-between">
-          <span>MoSPI DIID Host</span>
-          <span className="text-amber-400 font-semibold">April 2026</span>
+        <div className="mt-2 pt-2 border-t border-slate-800/80 text-[10px] text-slate-400 flex items-center justify-between">
+          <span>Platform Status</span>
+          <span className="text-emerald-400 font-medium">Active Operational</span>
         </div>
       </div>
     </aside>

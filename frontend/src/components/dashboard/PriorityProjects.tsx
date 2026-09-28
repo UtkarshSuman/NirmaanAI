@@ -20,12 +20,12 @@ export default function PriorityProjects({
         <div>
           <div className="flex items-center gap-2">
             <span className="w-3.5 h-[2px] bg-rose-600" />
-            <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">
+            <h2 className="text-sm font-bold text-slate-900 tracking-tight">
               Projects Requiring Attention
             </h2>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Assets exhibiting highest cost escalation percentage under implementation [Sorted by Cost Overrun %].
+            Ranked by composite exposure index: ML risk tier, cost escalation %, schedule delay, and unresolved alerts.
           </p>
         </div>
 

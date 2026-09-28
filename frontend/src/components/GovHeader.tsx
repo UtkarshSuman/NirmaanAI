@@ -2,50 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Volume2, Shield, Activity } from "lucide-react";
-
-export function AshokaEmblem({ className = "w-9 h-9" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 100 100"
-      className={className}
-      fill="currentColor"
-      aria-label="State Emblem of India (Ashoka Lion Capital)"
-    >
-      {/* Three Lions stylized representation */}
-      <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="2.5" opacity="0.25" />
-      {/* Central Lion Head */}
-      <path
-        d="M50 16 C42 16 38 22 38 30 C38 37 42 42 45 44 L45 52 L55 52 L55 44 C58 42 62 37 62 30 C62 22 58 16 50 16 Z"
-        fill="currentColor"
-        opacity="0.95"
-      />
-      {/* Left Lion Head Profile */}
-      <path
-        d="M37 24 C30 24 26 30 27 36 C28 41 33 44 38 45 L38 52 L44 52 L44 44 C40 42 36 38 35 32 Z"
-        fill="currentColor"
-        opacity="0.8"
-      />
-      {/* Right Lion Head Profile */}
-      <path
-        d="M63 24 C70 24 74 30 73 36 C72 41 67 44 62 45 L62 52 L56 52 L56 44 C60 42 64 38 65 32 Z"
-        fill="currentColor"
-        opacity="0.8"
-      />
-      {/* Abacus Base */}
-      <rect x="25" y="54" width="50" height="7" rx="1.5" fill="currentColor" opacity="0.9" />
-      {/* Ashoka Chakra in Abacus center */}
-      <circle cx="50" cy="57.5" r="3" fill="#173f5f" />
-      <circle cx="50" cy="57.5" r="1" fill="#ffffff" />
-      {/* Base Pedestal */}
-      <path d="M22 63 L78 63 L74 68 L26 68 Z" fill="currentColor" opacity="0.85" />
-      {/* Satyameva Jayate Banner */}
-      <path d="M28 71 L72 71 L68 76 L32 76 Z" fill="currentColor" opacity="0.75" />
-      {/* Stylized Devanagari text line */}
-      <rect x="34" y="79" width="32" height="2" rx="0.5" fill="currentColor" opacity="0.9" />
-    </svg>
-  );
-}
+import { Volume2 } from "lucide-react";
 
 export default function GovHeader() {
   const [textSize, setTextSize] = useState<"sm" | "base" | "lg">("base");
@@ -62,66 +19,69 @@ export default function GovHeader() {
 
   return (
     <header className="w-full bg-white border-b border-slate-200 text-slate-800 select-none">
-      {/* Top Accent Stripe */}
-      <div className="gov-tricolor-stripe w-full h-[3px]" />
+      {/* Restrained Accent Stripe */}
+      <div className="gov-tricolor-stripe w-full h-[2px]" />
 
-      {/* Topmost Utility & Accessibility Bar */}
-      <div className="bg-slate-50/80 px-4 lg:px-8 py-1 border-b border-slate-200/70 text-[11px] text-slate-600">
+      {/* Top Utility Bar */}
+      <div className="bg-slate-50/90 px-4 sm:px-6 lg:px-8 py-1.5 border-b border-slate-200/80 text-xs text-slate-600">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <span className="flex items-center gap-1.5 font-medium text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-              <span className="font-semibold text-slate-800">NIRMAAN AI</span>
+              <span className="font-semibold text-slate-900">NIRMAAN AI</span>
               <span className="text-slate-300">|</span>
-              <span className="text-slate-500 hidden sm:inline">National Infrastructure Observatory</span>
-            </span>
-            <span className="hidden md:inline-block px-1.5 py-0.2 rounded bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-mono">
-              Research &amp; Demonstration Prototype
+              <span className="text-slate-600 hidden sm:inline">National Infrastructure Observatory</span>
             </span>
           </div>
 
           {/* Accessibility & Language Controls */}
-          <div className="flex items-center gap-3 text-slate-500">
+          <div className="flex items-center gap-3 text-slate-600">
             <a
               href="#main-content"
               className="hover:text-slate-900 transition-colors hidden sm:inline"
               title="Skip to main content"
             >
-              Skip to Main Content
+              Skip to main content
             </a>
             <span className="text-slate-300 hidden sm:inline">|</span>
 
             {/* Screen Reader Access */}
             <button
-              onClick={() => alert("Screen Reader mode active. Standard ARIA 1.2 landmark navigation enabled.")}
+              onClick={() => alert("Screen reader accessibility active. Standard ARIA 1.2 landmark navigation enabled.")}
               className="flex items-center gap-1 hover:text-slate-900 transition-colors"
               title="Screen Reader Accessibility"
             >
               <Volume2 className="w-3.5 h-3.5 text-slate-400" />
-              <span className="hidden sm:inline">Screen Reader</span>
+              <span className="hidden sm:inline">Accessibility</span>
             </button>
             <span className="text-slate-300">|</span>
 
             {/* Text Size Resizer */}
-            <div className="flex items-center gap-0.5 font-medium text-[10px]">
+            <div className="flex items-center gap-0.5 font-medium text-xs">
               <button
                 onClick={() => cycleTextSize("sm")}
-                className={`px-1 rounded hover:bg-slate-200 ${textSize === "sm" ? "text-orange-600 font-bold bg-orange-50" : ""}`}
-                title="Decrease Font Size"
+                className={`px-1.5 py-0.5 rounded hover:bg-slate-200 transition-colors ${
+                  textSize === "sm" ? "text-orange-700 font-bold bg-orange-50" : ""
+                }`}
+                title="Decrease font size"
               >
                 A-
               </button>
               <button
                 onClick={() => cycleTextSize("base")}
-                className={`px-1 rounded hover:bg-slate-200 ${textSize === "base" ? "text-orange-600 font-bold bg-orange-50" : ""}`}
-                title="Standard Font Size"
+                className={`px-1.5 py-0.5 rounded hover:bg-slate-200 transition-colors ${
+                  textSize === "base" ? "text-orange-700 font-bold bg-orange-50" : ""
+                }`}
+                title="Standard font size"
               >
                 A
               </button>
               <button
                 onClick={() => cycleTextSize("lg")}
-                className={`px-1 rounded hover:bg-slate-200 ${textSize === "lg" ? "text-orange-600 font-bold bg-orange-50" : ""}`}
-                title="Increase Font Size"
+                className={`px-1.5 py-0.5 rounded hover:bg-slate-200 transition-colors ${
+                  textSize === "lg" ? "text-orange-700 font-bold bg-orange-50" : ""
+                }`}
+                title="Increase font size"
               >
                 A+
               </button>
@@ -129,17 +89,17 @@ export default function GovHeader() {
             <span className="text-slate-300">|</span>
 
             {/* Language Switch */}
-            <div className="flex items-center gap-1 text-[10px]">
+            <div className="flex items-center gap-1 text-xs">
               <button
                 onClick={() => setLang("EN")}
-                className={`${lang === "EN" ? "text-orange-700 font-bold" : "text-slate-500 hover:text-slate-800"}`}
+                className={`${lang === "EN" ? "text-orange-700 font-bold" : "text-slate-600 hover:text-slate-900"}`}
               >
                 English
               </button>
               <span className="text-slate-300">/</span>
               <button
                 onClick={() => setLang("HI")}
-                className={`${lang === "HI" ? "text-orange-700 font-bold" : "text-slate-500 hover:text-slate-800"}`}
+                className={`${lang === "HI" ? "text-orange-700 font-bold" : "text-slate-600 hover:text-slate-900"}`}
               >
                 हिन्दी
               </button>
@@ -148,11 +108,11 @@ export default function GovHeader() {
         </div>
       </div>
 
-      {/* Main Website Identity Area (NIRMAAN AI First) */}
-      <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Left: NIRMAAN AI Identity */}
+      {/* Main Website Identity Area */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Left: NIRMAAN AI Brand Lockup */}
         <Link href="/" className="flex items-center gap-3.5 group">
-          <div className="w-10 h-10 rounded bg-[#173f5f] text-white flex items-center justify-center font-serif font-black text-xl tracking-tight shadow-2xs">
+          <div className="w-10 h-10 rounded bg-[#173f5f] text-white flex items-center justify-center font-serif font-bold text-xl tracking-tight shadow-sm">
             N
           </div>
 
@@ -161,24 +121,20 @@ export default function GovHeader() {
               <span className="font-serif font-bold text-xl sm:text-2xl text-slate-900 tracking-tight">
                 NIRMAAN <span className="text-orange-600">AI</span>
               </span>
-              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-semibold">
-                Prototype
-              </span>
             </div>
-            <p className="text-xs text-slate-500 tracking-tight font-medium">
+            <p className="text-xs text-slate-600 font-medium">
               Predictive Infrastructure Intelligence
             </p>
           </div>
         </Link>
 
-        {/* Right: Analytical Dataset Scope Pills */}
-        <div className="flex flex-wrap items-center gap-2.5 text-xs self-start md:self-auto">
-          <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200 font-mono text-[11px]">
-            Central Sector ≥ ₹150 Cr
-          </span>
-          <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200 font-mono text-[11px]">
-            Current Analytical Dataset
-          </span>
+        {/* Right: Dataset Scope & Analytical Metadata */}
+        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 self-start md:self-auto font-medium">
+          <span>Central-sector infrastructure</span>
+          <span className="text-slate-300">•</span>
+          <span>₹150 Cr+</span>
+          <span className="text-slate-300">•</span>
+          <span className="text-slate-800 font-semibold">Current analytical dataset</span>
         </div>
       </div>
     </header>

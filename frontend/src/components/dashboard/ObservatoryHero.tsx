@@ -44,17 +44,14 @@ export default function ObservatoryHero({
           {/* Institutional Kicker & Brand */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="w-3.5 h-[2px] bg-gov-saffron" />
-              <span className="text-[11px] font-bold text-gov-saffron tracking-wider uppercase font-mono">
+              <span className="w-3.5 h-[2px] bg-orange-600" />
+              <span className="text-xs font-semibold text-orange-700 tracking-wide uppercase">
                 National Infrastructure Observatory
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold font-serif tracking-tight text-slate-900">
-                NIRMAAN <span className="text-gov-saffron">AI</span>
-              </span>
-              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-semibold">
-                Prototype
+            <div>
+              <span className="text-2xl font-serif font-bold text-slate-900 tracking-tight">
+                NIRMAAN <span className="text-orange-600">AI</span>
               </span>
             </div>
           </div>
@@ -92,13 +89,13 @@ export default function ObservatoryHero({
 
           {/* Sector Quick-Filter Links */}
           <div className="space-y-1.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+            <span className="text-xs font-medium text-slate-500 block">
               Quick Filter by Sector:
             </span>
             <div className="flex flex-wrap items-center gap-1.5 text-xs">
               <Link
                 href="/projects"
-                className="px-2 py-0.5 rounded bg-gov-navy text-white font-medium text-[11px]"
+                className="px-2.5 py-1 rounded bg-slate-900 text-white font-medium text-xs transition-colors"
               >
                 All Sectors
               </Link>
@@ -106,7 +103,7 @@ export default function ObservatoryHero({
                 <Link
                   key={sec}
                   href={`/projects?sector=${encodeURIComponent(sec)}`}
-                  className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] transition-colors"
+                  className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs transition-colors"
                 >
                   {sec}
                 </Link>
@@ -118,7 +115,7 @@ export default function ObservatoryHero({
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               href="/projects"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-gov-saffron hover:bg-orange-600 text-white text-xs font-semibold shadow-2xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold shadow-xs transition-colors"
             >
               <span>Explore Project Portfolio</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -126,9 +123,9 @@ export default function ObservatoryHero({
 
             <Link
               href="/alerts"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 text-xs font-semibold shadow-2xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 text-xs font-semibold shadow-xs transition-colors"
             >
-              <ShieldAlert className="w-3.5 h-3.5 text-gov-red" />
+              <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
               <span>Open Risk Radar</span>
             </Link>
           </div>
@@ -139,19 +136,19 @@ export default function ObservatoryHero({
               <span className="text-xl sm:text-2xl font-bold font-mono text-slate-900 block leading-tight">
                 {totalProjects.toLocaleString()}
               </span>
-              <span className="text-[11px] text-slate-500 font-medium">Monitored Assets (≥ ₹150 Cr)</span>
+              <span className="text-xs text-slate-500 font-medium">Monitored Assets (≥ ₹150 Cr)</span>
             </div>
             <div>
               <span className="text-xl sm:text-2xl font-bold font-mono text-slate-900 block leading-tight">
                 {ministriesCount}
               </span>
-              <span className="text-[11px] text-slate-500 font-medium">Ministries &amp; Agencies</span>
+              <span className="text-xs text-slate-500 font-medium">Ministries &amp; Agencies</span>
             </div>
             <div>
               <span className="text-xl sm:text-2xl font-bold text-slate-900 block leading-tight font-sans">
                 All India
               </span>
-              <span className="text-[11px] text-slate-500 font-medium">National Geographic Scope</span>
+              <span className="text-xs text-slate-500 font-medium">National Geographic Scope</span>
             </div>
           </div>
         </div>

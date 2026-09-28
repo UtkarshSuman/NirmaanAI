@@ -1,4 +1,6 @@
 import React from "react";
+import fs from "fs";
+import path from "path";
 import prisma from "@/lib/prisma";
 import ObservatoryHero from "@/components/dashboard/ObservatoryHero";
 import RecentUpdates from "@/components/dashboard/RecentUpdates";
@@ -66,6 +68,7 @@ async function getDashboardData() {
         updatedAt: true,
         predictions: {
           take: 1,
+          orderBy: { createdAt: "desc" },
           select: { riskCategory: true },
         },
       },
@@ -86,18 +89,51 @@ async function getDashboardData() {
       },
     });
 
-    // Top 6 High-Priority Projects under implementation
-    const topRiskProjects = await prisma.project.findMany({
+    // Priority Projects under implementation
+    // Documented Composite Priority Score (0-100 range):
+    // - ML Model Risk Score (weight: 35%)
+    // - Cost Overrun Escalation (weight: 25%)
+    // - Schedule Delay Factor (weight: 20%)
+    // - Capital Outlay Exposure (weight: 10%)
+    // - Active Unresolved Alerts (weight: 10%)
+    const activeCandidates = await prisma.project.findMany({
       where: {
         projectStatus: "Under Implementation",
       },
+      take: 50,
       orderBy: { costOverrunPercent: "desc" },
-      take: 6,
       include: {
         predictions: { take: 1, orderBy: { createdAt: "desc" } },
-        alerts: { take: 1, where: { isAcknowledged: false } },
+        alerts: { where: { isAcknowledged: false } },
       },
     });
+
+    const scoredProjects = activeCandidates.map((p) => {
+      const pred = p.predictions[0];
+      const riskScore = pred?.riskScore ?? (pred?.riskCategory === "CRITICAL" ? 90 : pred?.riskCategory === "HIGH" ? 70 : 40);
+      const costFactor = Math.min(100, Math.max(0, p.costOverrunPercent));
+      const delayFactor = Math.min(100, Math.max(0, (p.timeOverrunMonths / 36) * 100));
+      const exposureFactor = Math.min(100, (p.revisedCostCrore / 10000) * 100);
+
+      let alertPoints = 0;
+      for (const a of p.alerts) {
+        if (a.severity === "CRITICAL") alertPoints += 50;
+        else if (a.severity === "HIGH") alertPoints += 25;
+      }
+      const alertFactor = Math.min(100, alertPoints);
+
+      const compositePriorityScore = Number(
+        (0.35 * riskScore + 0.25 * costFactor + 0.20 * delayFactor + 0.10 * exposureFactor + 0.10 * alertFactor).toFixed(1)
+      );
+
+      return {
+        ...p,
+        compositePriorityScore,
+      };
+    });
+
+    scoredProjects.sort((a, b) => b.compositePriorityScore - a.compositePriorityScore);
+    const topRiskProjects = scoredProjects.slice(0, 6);
 
     // Sector breakdown
     const sectorStats = await prisma.project.groupBy({
@@ -107,23 +143,61 @@ async function getDashboardData() {
       _avg: { costOverrunPercent: true, timeOverrunMonths: true },
     });
 
-    // Risk tier counts
-    const criticalRiskCount = await prisma.prediction.count({ where: { riskCategory: "CRITICAL" } });
-    const highRiskCount = await prisma.prediction.count({ where: { riskCategory: "HIGH" } });
-    const moderateRiskCount = await prisma.prediction.count({ where: { riskCategory: "MODERATE" } });
-    const lowRiskCount = await prisma.prediction.count({ where: { riskCategory: "LOW" } });
+    // Deduplicated current/latest prediction per project
+    // Querying prediction table directly avoids nested relation overhead in SQLite
+    const allPredictions = await prisma.prediction.findMany({
+      orderBy: { createdAt: "desc" },
+      select: {
+        projectId: true,
+        riskCategory: true,
+      },
+    });
+
+    const latestPredictionByProject = new Map<string, string>();
+    for (const pred of allPredictions) {
+      if (pred.riskCategory && !latestPredictionByProject.has(pred.projectId)) {
+        latestPredictionByProject.set(pred.projectId, pred.riskCategory);
+      }
+    }
+
+    let criticalRiskCount = 0;
+    let highRiskCount = 0;
+    let moderateRiskCount = 0;
+    let lowRiskCount = 0;
+
+    for (const category of latestPredictionByProject.values()) {
+      if (category === "CRITICAL") criticalRiskCount++;
+      else if (category === "HIGH") highRiskCount++;
+      else if (category === "MODERATE") moderateRiskCount++;
+      else if (category === "LOW") lowRiskCount++;
+    }
 
     const origSum = aggregations._sum.originalCostCrore ?? 0;
     const revSum = aggregations._sum.revisedCostCrore ?? 0;
     const expSum = aggregations._sum.cumulativeExpenditureCrore ?? 0;
     const netCostOverrun = Math.max(0, revSum - origSum);
-    const netCostEscalationPercent = origSum > 0 ? (((revSum - origSum) / origSum) * 100).toFixed(1) : "15.2";
+    const netCostEscalationPercent = origSum > 0 ? (((revSum - origSum) / origSum) * 100).toFixed(1) : "0.0";
+
+    // Read trained model artifact metadata safely
+    let modelMetrics: { costEnsembleF1?: string; timeEnsembleF1?: string } | null = null;
+    try {
+      const resultsPath = path.resolve(process.cwd(), "..", "ml-service", "data", "models", "training_results.json");
+      if (fs.existsSync(resultsPath)) {
+        const raw = JSON.parse(fs.readFileSync(resultsPath, "utf-8"));
+        modelMetrics = {
+          costEnsembleF1: raw?.ensemble?.cost_ensemble?.f1_score ? (raw.ensemble.cost_ensemble.f1_score * 100).toFixed(1) + "%" : undefined,
+          timeEnsembleF1: raw?.ensemble?.time_ensemble?.f1_score ? (raw.ensemble.time_ensemble.f1_score * 100).toFixed(1) + "%" : undefined,
+        };
+      }
+    } catch (err) {
+      console.warn("Could not read training_results.json:", err);
+    }
 
     return {
       totalProjects,
       activeProjects,
       completedProjects,
-      ministriesCount: ministries.length || 36,
+      ministriesCount: ministries.length,
       totalOriginalCostLakhCr: (origSum / 100000).toFixed(2),
       totalRevisedCostLakhCr: (revSum / 100000).toFixed(2),
       totalExpLakhCr: (expSum / 100000).toFixed(2),
@@ -152,6 +226,7 @@ async function getDashboardData() {
           avgDelay: Math.round(s._avg.timeOverrunMonths ?? 0),
         }))
         .sort((a, b) => b.totalCost - a.totalCost),
+      modelMetrics,
     };
   } catch (error) {
     console.error("Dashboard data load error:", error);
@@ -166,8 +241,8 @@ export default async function DashboardPage() {
     return (
       <div className="py-20 text-center text-slate-500 bg-white rounded border border-slate-200">
         <AlertTriangle className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-        <h2 className="text-lg font-bold text-slate-900 font-serif">Repository Initializing</h2>
-        <p className="text-xs mt-1 text-slate-500">Please verify connection to the local database.</p>
+        <h2 className="text-lg font-bold text-slate-900 font-serif">Portfolio Data Unavailable</h2>
+        <p className="text-xs mt-1 text-slate-500">Current portfolio dataset is unreachable. Please verify database service connection.</p>
       </div>
     );
   }
@@ -180,10 +255,10 @@ export default async function DashboardPage() {
         ministriesCount={data.ministriesCount}
       />
 
-      {/* 2. Recent Updates: Editorial Live Feed (Outside Hero Composition) */}
+      {/* 2. Recent Updates: Live Feed */}
       <RecentUpdates projects={data.recentProjects} />
 
-      {/* 3. Portfolio Metrics: Editorial Statistics Strip with Strict Provenance */}
+      {/* 3. Portfolio Metrics: Editorial Statistics Strip */}
       <PortfolioMetrics
         totalProjects={data.totalProjects}
         totalOriginalCostLakhCr={data.totalOriginalCostLakhCr}
@@ -196,26 +271,26 @@ export default async function DashboardPage() {
         criticalAlertsCount={data.criticalAlertsCount}
       />
 
-      {/* 4. National Risk Radar: Risk Breakdown & Live Alert Indicators */}
+      {/* 4. National Risk Radar: Risk Breakdown & Active Alerts */}
       <RiskRadar
         distribution={data.riskDistribution}
         alerts={data.liveAlerts}
         criticalAlertsCount={data.criticalAlertsCount}
       />
 
-      {/* 5. Sector Overview: Institutional Report Table with Alternating Whitespace */}
+      {/* 5. Sector Overview: Report Table */}
       <SectorOverview sectorStats={data.sectorStats} />
 
-      {/* 6. Projects Requiring Attention: Formal Portfolio Register */}
+      {/* 6. Projects Requiring Attention: Priority Register */}
       <PriorityProjects
         projects={data.topRiskProjects}
         criticalCount={data.criticalAlertsCount}
       />
 
-      {/* 7. Predictive Outlook: 3 Compact Columns with Model Results */}
-      <PredictiveOutlook />
+      {/* 7. Predictive Outlook: Model Intelligence */}
+      <PredictiveOutlook modelMetrics={data.modelMetrics} />
 
-      {/* 8. AI Officer Callout: Institutional Intelligence System */}
+      {/* 8. AI Officer Callout */}
       <AIOfficerCallout />
     </div>
   );

@@ -47,7 +47,7 @@ export default function RiskRadar({
         <div>
           <div className="flex items-center gap-2">
             <span className="w-3.5 h-[2px] bg-orange-600" />
-            <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">
+            <h2 className="text-sm font-bold text-slate-900 tracking-tight">
               National Risk Radar
             </h2>
           </div>
@@ -65,16 +65,16 @@ export default function RiskRadar({
         </Link>
       </div>
 
-      {/* Two-Column Open Layout (No Giant Rounded Cards) */}
+      {/* Two-Column Open Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column: Risk Category Distribution (5 Cols) */}
         <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">
+            <h3 className="text-xs font-bold text-slate-900 tracking-tight">
               Predictive Tier Breakdown
             </h3>
-            <span className="text-[10px] text-slate-400 font-mono">
-              [STACKING MODEL AUDIT]
+            <span className="text-xs text-slate-500">
+              Current predictive classification
             </span>
           </div>
 
@@ -169,11 +169,11 @@ export default function RiskRadar({
         {/* Right Column: Emerging Live Indicators (7 Cols) */}
         <div className="lg:col-span-7 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">
+            <h3 className="text-xs font-bold text-slate-900 tracking-tight">
               Emerging Systemic Risk Indicators
             </h3>
-            <span className="text-[10px] text-slate-400 font-mono">
-              [LIVE ALERT REGISTER]
+            <span className="text-xs text-slate-500">
+              Current alert register
             </span>
           </div>
 

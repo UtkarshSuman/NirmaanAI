@@ -57,7 +57,7 @@ export default async function ProjectDetailPage({
   }
 
   const pred = project.predictions?.[0];
-  const riskScore = pred?.riskScore ?? 50;
+  const riskScore = pred?.riskScore ?? null;
   const riskCategory = pred?.riskCategory ?? "MODERATE";
 
   // Parse SHAP factors
@@ -87,7 +87,7 @@ export default async function ProjectDetailPage({
 
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs px-2.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-800 font-bold">
-            IPMD ID: {project.projectId}
+            Project ID: {project.projectId}
           </span>
           <span
             className={`text-xs px-2.5 py-0.5 rounded font-bold uppercase border ${
@@ -294,7 +294,7 @@ export default async function ProjectDetailPage({
             </strong>
             <p className="text-slate-700 mt-0.5 leading-relaxed">
               Expenditure ({project.financialProgressPercent.toFixed(1)}%) is outpacing verified physical completion ({project.physicalProgressPercent.toFixed(1)}%).
-              Recommended to initiate stage certification audit under IPMD protocol.
+              Recommended to initiate stage certification audit under monitoring protocol.
             </p>
           </div>
         </div>
@@ -307,12 +307,12 @@ export default async function ProjectDetailPage({
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-gov-saffron" />
-              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                 NIRMAAN AI Predictive Forecast
               </h3>
             </div>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono font-bold border border-slate-200">
-              [MODEL EVALUATION RESULT]
+            <span className="text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+              [CURRENT MODEL OUTPUT]
             </span>
           </div>
 
@@ -320,24 +320,30 @@ export default async function ProjectDetailPage({
             <div className="flex items-center justify-between text-xs">
               <span className="text-slate-600">Overrun Probability (Cost):</span>
               <span className="font-mono font-bold text-gov-red">
-                {((pred?.costOverrunProbability ?? 0.65) * 100).toFixed(1)}%
+                {typeof pred?.costOverrunProbability === "number"
+                  ? `${(pred.costOverrunProbability * 100).toFixed(1)}%`
+                  : "Unavailable"}
               </span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-600">Forecasted Cost Overrun %:</span>
+              <span className="text-slate-600">Forecasted Cost Overrun:</span>
               <span className="font-mono font-bold text-gov-red">
-                +{pred?.predictedCostOverrunPercent?.toFixed(1) ?? project.costOverrunPercent.toFixed(1)}%
+                {typeof pred?.predictedCostOverrunPercent === "number"
+                  ? `+${pred.predictedCostOverrunPercent.toFixed(1)}%`
+                  : "Unavailable"}
               </span>
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="text-slate-600">Forecasted Additional Delay:</span>
               <span className="font-mono font-bold text-gov-saffron">
-                +{pred?.predictedTimeOverrunMonths ?? project.timeOverrunMonths} Months
+                {typeof pred?.predictedTimeOverrunMonths === "number"
+                  ? `+${pred.predictedTimeOverrunMonths} Months`
+                  : "Unavailable"}
               </span>
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="text-slate-600">Model Architecture:</span>
-              <span className="font-mono text-slate-800 font-medium">XGBoost + LightGBM + Meta-Learner</span>
+              <span className="text-slate-800 font-medium">Ensemble (XGBoost + LightGBM + Meta-Learner)</span>
             </div>
           </div>
 
@@ -345,14 +351,14 @@ export default async function ProjectDetailPage({
           <div className="p-3.5 rounded bg-slate-50 border border-slate-200 text-xs space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-slate-900">
               <CheckCircle2 className="w-4 h-4 text-gov-teal" />
-              <span>Recommended IPMD Intervention:</span>
+              <span>Recommended Operational Intervention:</span>
             </div>
             <p className="text-slate-700 leading-relaxed">
               {project.costOverrunPercent > 20
-                ? "Initiate Revised Cost Committee (RCC) meeting with the Administrative Ministry to establish expenditure ceiling and expedite pending contractor claims."
+                ? "Initiate project review meeting with the implementing agency to establish expenditure ceiling and expedite pending contractor claims."
                 : project.timeOverrunMonths > 12
-                ? "Mobilize PM GatiShakti sub-committee to fast-track inter-agency utility relocation and environmental clearances with state authorities."
-                : "Maintain standard quarterly monitoring cycle; current milestone velocity remains within acceptable variance parameters."}
+                ? "Mobilize inter-agency coordination committee to fast-track utility relocation and environmental clearances with state authorities."
+                : "Maintain standard monitoring cycle; current milestone velocity remains within acceptable variance parameters."}
             </p>
           </div>
         </div>
