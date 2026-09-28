@@ -129,13 +129,12 @@ async function getAnalyticsData() {
       timeBenchmarks: modelArtifacts.timeBenchmarks,
       netCostOverrunLakhCr,
       monitoredProjectsCount: totalCostAgg._count.projectId,
-      mlSourcePath: modelArtifacts.artifactPath,
-      hasLiveMlFile: modelArtifacts.hasArtifact,
+      modelMetadata: modelArtifacts.metadata,
       baselineF1,
       ensembleCostF1,
       baselinePrecision,
       ensemblePrecision,
-      f1RelativeGainText,
+      f1RelativeGainText: modelArtifacts.f1RelativeGain.formattedText,
       timeRegressorRmse,
     };
   } catch (error) {
@@ -187,22 +186,34 @@ export default async function AnalyticsPage() {
               [MODEL EVALUATION RESULT]
             </span>
             <span className="text-xs text-slate-600 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
-              Holdout Test Partition: N=288
+              {data.modelMetadata.testSetPartition}
             </span>
           </div>
         </div>
 
         {/* Data Provenance Verification Strip */}
         <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <FileCode className="w-3.5 h-3.5 text-gov-teal shrink-0" />
             <span className="text-slate-600">Model Artifacts: </span>
-            <span className="font-mono text-slate-900 font-medium">{data.mlSourcePath}</span>
-            <span className="text-slate-400 hidden sm:inline">• 5-fold stratified cross-validation</span>
+            <span className="font-mono text-slate-900 font-medium">{data.modelMetadata.artifactPath}</span>
+            <span className="text-slate-400 hidden sm:inline">• {data.modelMetadata.evaluationMethod}</span>
           </div>
-          <span className="text-xs text-gov-teal bg-teal-50 px-2 py-0.5 rounded border border-teal-200 flex items-center gap-1.5 self-start sm:self-auto font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-gov-teal" />
-            {data.hasLiveMlFile ? "Active Model Artifact Synchronized" : "Artifact Unavailable"}
+          <span
+            className={`text-xs px-2 py-0.5 rounded border flex items-center gap-1.5 self-start sm:self-auto font-medium ${
+              data.modelMetadata.artifactStatus === "AVAILABLE"
+                ? "bg-teal-50 text-gov-teal border-teal-200"
+                : "bg-rose-50 text-rose-800 border-rose-200"
+            }`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                data.modelMetadata.artifactStatus === "AVAILABLE" ? "bg-gov-teal" : "bg-rose-600"
+              }`}
+            />
+            {data.modelMetadata.artifactStatus === "AVAILABLE"
+              ? "Active Model Artifact Synchronized"
+              : "Artifact Unavailable"}
           </span>
         </div>
       </div>

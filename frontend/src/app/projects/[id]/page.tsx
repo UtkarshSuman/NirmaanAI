@@ -18,6 +18,7 @@ import {
 import prisma from "@/lib/prisma";
 import RiskGauge from "@/components/RiskGauge";
 import ShapWaterfall from "@/components/ShapWaterfall";
+import { getCurrentPredictionForProject } from "@/lib/services/predictionService";
 
 export const revalidate = 30;
 
@@ -28,16 +29,16 @@ async function getProjectData(id: string) {
         OR: [{ id }, { projectId: id }],
       },
       include: {
-        predictions: {
-          orderBy: { createdAt: "desc" },
-          take: 1,
-        },
         alerts: {
           orderBy: { createdAt: "desc" },
         },
       },
     });
-    return project;
+
+    if (!project) return null;
+
+    const currentPrediction = await getCurrentPredictionForProject(project.projectId);
+    return { project, currentPrediction };
   } catch (error) {
     console.error("Error loading project detail:", error);
     return null;
@@ -50,13 +51,13 @@ export default async function ProjectDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const project = await getProjectData(id);
+  const data = await getProjectData(id);
 
-  if (!project) {
+  if (!data) {
     notFound();
   }
 
-  const pred = project.predictions?.[0];
+  const { project, currentPrediction: pred } = data;
   const riskScore = pred?.riskScore ?? null;
   const riskCategory = pred?.riskCategory ?? undefined;
 

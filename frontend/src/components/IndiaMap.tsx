@@ -3,6 +3,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+// ============================================================================
+// ARCHITECTURAL DISTINCTION:
+// STATIC GEOMETRY: SVG vector paths and coordinates in `indiaMapPaths.ts`
+// vs
+// CURRENT PORTFOLIO DATA: All project counts, financial outlays, risk tiers,
+// delays, and state dossiers are dynamically queried from `/api/states`
+// ============================================================================
 import {
   INDIA_MAP_PATHS,
   MAP_VIEWBOX,

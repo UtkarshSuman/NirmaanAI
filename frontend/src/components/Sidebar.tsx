@@ -46,7 +46,7 @@ const NAV_ITEMS = [
     name: "Early Warning Console",
     href: "/alerts",
     icon: AlertTriangle,
-    badge: "Live",
+    badge: "Active",
     desc: "Proactive Risk Signals",
   },
   {
@@ -83,7 +83,7 @@ export default function Sidebar() {
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         <div className="px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
           <span>Integrated Monitoring</span>
-          <span className="text-[9px] text-emerald-400 font-mono">● LIVE</span>
+          <span className="text-[9px] text-emerald-400 font-mono">● CURRENT DATASET</span>
         </div>
 
         {NAV_ITEMS.map((item) => {

@@ -21,24 +21,34 @@ interface RiskDistribution {
   high: number;
   moderate: number;
   low: number;
+  unclassified?: number;
+  totalClassified?: number;
+  totalProjects?: number;
+  coveragePercent?: number;
 }
 
 interface RiskRadarProps {
   distribution: RiskDistribution;
   alerts: LiveAlertItem[];
   criticalAlertsCount: number;
+  totalMonitored?: number;
 }
 
 export default function RiskRadar({
   distribution,
   alerts,
   criticalAlertsCount,
+  totalMonitored,
 }: RiskRadarProps) {
   const totalAudited =
-    distribution.critical +
-    distribution.high +
-    distribution.moderate +
-    distribution.low || 1;
+    distribution.totalClassified ??
+    (distribution.critical +
+      distribution.high +
+      distribution.moderate +
+      distribution.low || 1);
+  // Ensure totalProjectsValue is always a definite number to satisfy TypeScript
+  const totalProjectsValue: number = distribution.totalProjects ?? totalMonitored ?? totalAudited;
+  const coverage = distribution.coveragePercent ?? Number(((totalAudited / totalProjectsValue) * 100).toFixed(1));
 
   return (
     <section className="space-y-6 pt-4 border-t border-slate-200">
@@ -161,8 +171,11 @@ export default function RiskRadar({
           </div>
 
           <div className="pt-2 text-[11px] text-slate-500 flex items-center justify-between border-t border-slate-100">
-            <span>Portfolio capital under surveillance:</span>
-            <strong className="text-slate-900 font-mono font-bold">All India (100%)</strong>
+            <span>Classification Coverage:</span>
+            <strong className="text-slate-900 font-mono font-bold">
+              {totalAudited.toLocaleString()} of {totalProjectsValue.toLocaleString()} ({coverage}%)
+              {distribution.unclassified ? ` • ${distribution.unclassified} unclassified` : ""}
+            </strong>
           </div>
         </div>
 

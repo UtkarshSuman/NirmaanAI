@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getAllCurrentPredictionsMap } from "@/lib/services/predictionService";
+import type { StateAggregation } from "@/lib/types";
 
 // State metadata with Hindi translations and Geographic Zone
 const STATE_META: Record<string, { hi: string; region: string; capital: string }> = {
@@ -42,7 +44,17 @@ const STATE_META: Record<string, { hi: string; region: string; capital: string }
   "Lakshadweep": { hi: "लक्षद्वीप", region: "South", capital: "Kavaratti" },
 };
 
-let cachedStatesResult: any = null;
+interface StatesPayload {
+  states: StateAggregation[];
+  totalStates: number;
+  nationalTotals: {
+    totalProjects: number;
+    totalRevisedCostCrore: number;
+    totalExpenditureCrore: number;
+  };
+}
+
+let cachedStatesResult: StatesPayload | null = null;
 let cacheStatesTimestamp = 0;
 const CACHE_TTL_MS = 60 * 1000; // 60s in-memory TTL
 
@@ -53,73 +65,64 @@ export async function GET() {
     }
 
     // 1. Group by state with financial aggregations
-    const stateGroups = await prisma.project.groupBy({
-      by: ["state"],
-      _count: { projectId: true },
-      _sum: {
-        originalCostCrore: true,
-        revisedCostCrore: true,
-        cumulativeExpenditureCrore: true,
-      },
-      _avg: {
-        costOverrunPercent: true,
-        timeOverrunMonths: true,
-        physicalProgressPercent: true,
-        financialProgressPercent: true,
-      },
-    });
+    const [stateGroups, delayedPerState, predictionsMap, allProjects] = await Promise.all([
+      prisma.project.groupBy({
+        by: ["state"],
+        _count: { projectId: true },
+        _sum: {
+          originalCostCrore: true,
+          revisedCostCrore: true,
+          cumulativeExpenditureCrore: true,
+        },
+        _avg: {
+          costOverrunPercent: true,
+          timeOverrunMonths: true,
+          physicalProgressPercent: true,
+          financialProgressPercent: true,
+        },
+      }),
+      prisma.project.groupBy({
+        by: ["state"],
+        where: {
+          timeOverrunMonths: { gt: 0 },
+          projectStatus: "Under Implementation",
+        },
+        _count: { projectId: true },
+      }),
+      getAllCurrentPredictionsMap(),
+      prisma.project.findMany({
+        select: {
+          id: true,
+          projectId: true,
+          projectName: true,
+          sector: true,
+          state: true,
+          revisedCostCrore: true,
+          costOverrunPercent: true,
+          timeOverrunMonths: true,
+          physicalProgressPercent: true,
+          implementingAgency: true,
+          projectStatus: true,
+        },
+        orderBy: { revisedCostCrore: "desc" },
+      }),
+    ]);
 
-    // 2. Delayed projects per state
-    const delayedPerState = await prisma.project.groupBy({
-      by: ["state"],
-      where: {
-        timeOverrunMonths: { gt: 0 },
-        projectStatus: "Under Implementation",
-      },
-      _count: { projectId: true },
-    });
     const delayedMap = new Map<string, number>();
     for (const d of delayedPerState) {
       delayedMap.set(d.state, d._count.projectId);
     }
 
-    // 3. Critical risk projects per state
-    const criticalPerState = await prisma.project.groupBy({
-      by: ["state"],
-      where: {
-        predictions: {
-          some: {
-            riskCategory: { in: ["CRITICAL", "HIGH"] },
-          },
-        },
-      },
-      _count: { projectId: true },
-    });
+    // Deduplicated critical + high risk projects per state strictly using current predictions
     const criticalMap = new Map<string, number>();
-    for (const c of criticalPerState) {
-      criticalMap.set(c.state, c._count.projectId);
-    }
+    const topProjectsByState = new Map<string, typeof allProjects>();
 
-    // 4. Sample top projects per state
-    const allProjects = await prisma.project.findMany({
-      select: {
-        id: true,
-        projectId: true,
-        projectName: true,
-        sector: true,
-        state: true,
-        revisedCostCrore: true,
-        costOverrunPercent: true,
-        timeOverrunMonths: true,
-        physicalProgressPercent: true,
-        implementingAgency: true,
-        projectStatus: true,
-      },
-      orderBy: { revisedCostCrore: "desc" },
-    });
-
-    const topProjectsByState = new Map<string, any[]>();
     for (const p of allProjects) {
+      const currentPred = predictionsMap.get(p.projectId);
+      if (currentPred && (currentPred.riskCategory === "CRITICAL" || currentPred.riskCategory === "HIGH")) {
+        criticalMap.set(p.state, (criticalMap.get(p.state) || 0) + 1);
+      }
+
       if (!topProjectsByState.has(p.state)) {
         topProjectsByState.set(p.state, []);
       }

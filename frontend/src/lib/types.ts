@@ -126,3 +126,118 @@ export interface ModelMetricsResponse {
     rule_based: { f1_score: number; precision: number; recall: number; auc_roc: number };
   };
 }
+
+export interface RiskDistribution {
+  critical: number;
+  high: number;
+  moderate: number;
+  low: number;
+  totalClassified: number;
+  unclassified: number;
+  totalProjects: number;
+  coveragePercent: number;
+}
+
+export interface PortfolioMetrics {
+  totalProjects: number;
+  activeProjects: number;
+  completedProjects: number;
+  shelvedProjects: number;
+  ministriesCount: number;
+  totalOriginalCostLakhCr: string;
+  totalRevisedCostLakhCr: string;
+  totalExpLakhCr: string;
+  netCostOverrunLakhCr: string;
+  netCostEscalationPercent: string;
+  avgCostOverrunPercent: number;
+  delayedProjectsCount: number;
+  delayedProjectsPercent: string;
+  avgDelayMonths: number;
+  criticalAlertsCount: number;
+  totalAlertsCount: number;
+  unacknowledgedAlertsCount: number;
+  riskDistribution: RiskDistribution;
+}
+
+export interface ProjectPriority {
+  project: ProjectItem;
+  latestPrediction: PredictionItem | null;
+  activeAlertsCount: number;
+  criticalAlertsCount: number;
+  compositePriorityScore: number;
+  factorBreakdown: {
+    riskComponent: number;
+    costOverrunComponent: number;
+    delayComponent: number;
+    capitalExposureComponent: number;
+    alertsComponent: number;
+  };
+  scoreProvenance: {
+    riskScore: number | null;
+    source: "CURRENT_MODEL_OUTPUT" | "CATEGORY_HEURISTIC" | "UNAVAILABLE";
+    label: string;
+  };
+}
+
+export interface ModelEvaluation {
+  modelName: string;
+  modelVersion: string;
+  task: string;
+  evaluationMethod: string;
+  testSetPartition: string;
+  featureCount: number;
+  artifactPath: string;
+  artifactStatus: "AVAILABLE" | "MISSING" | "INVALID";
+  evaluationDate: string;
+  metrics: {
+    f1_score: number | null;
+    precision: number | null;
+    recall: number | null;
+    auc_roc: number | null;
+  };
+  relativeGainOverBaselinePercent: number | null;
+}
+
+export interface ProjectPrediction {
+  id: string;
+  projectId: string;
+  predictionDate: string;
+  modelVersion: string | null;
+  predictedCostOverrunPercent: number | null;
+  costOverrunProbability: number | null;
+  predictedTimeOverrunMonths: number | null;
+  timeOverrunProbability: number | null;
+  riskScore: number | null;
+  riskCategory: "CRITICAL" | "HIGH" | "MODERATE" | "LOW" | null;
+  topRiskFactors: string | null;
+  shapValues: string | null;
+  createdAt: string;
+}
+
+export interface AlertSummary {
+  totalAlerts: number;
+  criticalAlerts: number;
+  unacknowledgedAlerts: number;
+  acknowledgedAlerts: number;
+}
+
+export interface StateAggregation {
+  state: string;
+  stateHindi: string;
+  region: string;
+  capital: string;
+  projectCount: number;
+  originalCostCrore: number;
+  revisedCostCrore: number;
+  cumulativeExpenditureCrore: number;
+  netEscalationCrore: number;
+  avgCostOverrunPercent: number;
+  avgDelayMonths: number;
+  avgPhysicalProgressPercent: number;
+  avgFinancialProgressPercent: number;
+  delayedProjectsCount: number;
+  delayedProjectsPercent: number;
+  criticalProjectsCount: number;
+  riskTier: "CRITICAL" | "HIGH" | "MODERATE" | "LOW";
+  topProjects: any[];
+}

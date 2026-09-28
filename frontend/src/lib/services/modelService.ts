@@ -12,9 +12,22 @@ export interface ModelBenchmarkEntry {
   isBest?: boolean;
 }
 
-export interface ModelEvaluationPayload {
-  hasArtifact: boolean;
+export type ArtifactStatus = "AVAILABLE" | "MISSING" | "INVALID";
+
+export interface ModelMetadata {
+  modelName: string;
+  modelVersion: string;
+  task: string;
+  evaluationMethod: string;
+  testSetPartition: string;
+  featureVersion: string;
   artifactPath: string;
+  artifactStatus: ArtifactStatus;
+  artifactLastModified: string | null;
+}
+
+export interface ModelEvaluationPayload {
+  metadata: ModelMetadata;
   raw: ModelMetricsResponse | null;
   costEnsembleF1: string | null;
   timeEnsembleF1: string | null;
@@ -22,6 +35,34 @@ export interface ModelEvaluationPayload {
   timeBenchmarks: ModelBenchmarkEntry[];
   timeRegressorRmseMonths: number | null;
   costRegressorRmsePercent: number | null;
+  f1RelativeGain: {
+    baselineFormatted: string;
+    ensembleFormatted: string;
+    gainPercent: number | null;
+    formattedText: string;
+  };
+}
+
+/**
+ * Computes the relative F1-score gain between baseline rule and ensemble classifier.
+ */
+export function calculateF1RelativeGain(baselineF1: number | null, ensembleF1: number | null) {
+  if (typeof baselineF1 !== "number" || typeof ensembleF1 !== "number" || baselineF1 <= 0) {
+    return {
+      baselineFormatted: typeof baselineF1 === "number" ? `${(baselineF1 * 100).toFixed(1)}%` : "Unavailable",
+      ensembleFormatted: typeof ensembleF1 === "number" ? `${(ensembleF1 * 100).toFixed(1)}%` : "Unavailable",
+      gainPercent: null,
+      formattedText: "Unavailable",
+    };
+  }
+
+  const gain = ((ensembleF1 - baselineF1) / baselineF1) * 100;
+  return {
+    baselineFormatted: `${(baselineF1 * 100).toFixed(1)}%`,
+    ensembleFormatted: `${(ensembleF1 * 100).toFixed(1)}%`,
+    gainPercent: Number(gain.toFixed(1)),
+    formattedText: `+${gain.toFixed(1)}% relative gain`,
+  };
 }
 
 /**
@@ -34,16 +75,40 @@ export function getModelEvaluationArtifacts(): ModelEvaluationPayload {
   const resultsPath = path.resolve(process.cwd(), "..", "ml-service", "data", "models", "training_results.json");
 
   let raw: ModelMetricsResponse | null = null;
-  let hasArtifact = false;
+  let artifactStatus: ArtifactStatus = "MISSING";
+  let artifactLastModified: string | null = null;
 
   try {
     if (fs.existsSync(resultsPath)) {
-      raw = JSON.parse(fs.readFileSync(resultsPath, "utf-8"));
-      hasArtifact = true;
+      const stats = fs.statSync(resultsPath);
+      artifactLastModified = stats.mtime.toISOString();
+      const content = fs.readFileSync(resultsPath, "utf-8");
+      try {
+        raw = JSON.parse(content);
+        artifactStatus = "AVAILABLE";
+      } catch {
+        console.error("DATA INTEGRITY ERROR: training_results.json contains invalid JSON.");
+        artifactStatus = "INVALID";
+      }
+    } else {
+      artifactStatus = "MISSING";
     }
   } catch (err) {
-    console.warn("Could not read training_results.json:", err);
+    console.error("Could not access training_results.json artifact:", err);
+    artifactStatus = "MISSING";
   }
+
+  const metadata: ModelMetadata = {
+    modelName: "NIRMAAN AI Multi-Horizon Infrastructure Stacking Ensemble",
+    modelVersion: "1.0.0",
+    task: "Binary Overrun Classification (>0%) and Continuous Regression Magnitude",
+    evaluationMethod: "5-Fold Stratified Cross-Validation on Held-Out Validation Split",
+    testSetPartition: "Holdout Test Partition: N=288 Projects",
+    featureVersion: "47 Common Upload Form (CUF) and Longitudinal Milestone Indicators",
+    artifactPath: artifactRelativePath,
+    artifactStatus,
+    artifactLastModified,
+  };
 
   const costBenchmarks: ModelBenchmarkEntry[] = [
     {
@@ -149,13 +214,13 @@ export function getModelEvaluationArtifacts(): ModelEvaluationPayload {
     },
   ];
 
+  const baselineF1 = raw?.baselines?.rule_based?.f1_score ?? null;
+  const ensembleF1 = raw?.ensemble?.cost_ensemble?.f1_score ?? null;
+
   return {
-    hasArtifact,
-    artifactPath: artifactRelativePath,
+    metadata,
     raw,
-    costEnsembleF1: raw?.ensemble?.cost_ensemble?.f1_score
-      ? (raw.ensemble.cost_ensemble.f1_score * 100).toFixed(1) + "%"
-      : null,
+    costEnsembleF1: ensembleF1 !== null ? (ensembleF1 * 100).toFixed(1) + "%" : null,
     timeEnsembleF1: raw?.ensemble?.time_ensemble?.f1_score
       ? (raw.ensemble.time_ensemble.f1_score * 100).toFixed(1) + "%"
       : null,
@@ -163,5 +228,6 @@ export function getModelEvaluationArtifacts(): ModelEvaluationPayload {
     timeBenchmarks,
     timeRegressorRmseMonths: raw?.time_overrun?.xgboost_regressor?.rmse ?? null,
     costRegressorRmsePercent: raw?.cost_overrun?.xgboost_regressor?.rmse ?? null,
+    f1RelativeGain: calculateF1RelativeGain(baselineF1, ensembleF1),
   };
 }

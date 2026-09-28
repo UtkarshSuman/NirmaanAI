@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       ]);
 
       matchedProjects = projects;
-      contextSummary = `Real-time query for Implementing Agency **${agencyUpper}**: ${count} ongoing projects tracked in repository.`;
+      contextSummary = `Current database query for Implementing Agency **${agencyUpper}**: ${count} ongoing projects tracked in repository.`;
     } else if (detectedState) {
       // Capitalize for DB match
       const stateNameFormatted = detectedState.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
       };
 
       matchedProjects = projects;
-      contextSummary = `Real-time database analysis for **${stateNameFormatted}**: ${aggregateStats.count} Central Sector projects monitored with total sanctioned outlay of ₹${(aggregateStats.totalOutlayCrore / 1000).toFixed(1)}k Crore. ${aggregateStats.delayedCount} projects are currently experiencing schedule slippage (average cost overrun: +${aggregateStats.avgOverrun}%).`;
+      contextSummary = `Current database analysis for **${stateNameFormatted}**: ${aggregateStats.count} Central Sector projects monitored with total sanctioned outlay of ₹${(aggregateStats.totalOutlayCrore / 1000).toFixed(1)}k Crore. ${aggregateStats.delayedCount} projects are currently experiencing schedule slippage (average cost overrun: +${aggregateStats.avgOverrun}%).`;
     } else if (detectedSector) {
       const [count, sumCost, projects] = await Promise.all([
         prisma.project.count({ where: { sector: detectedSector } }),
@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
       };
 
       matchedProjects = projects;
-      contextSummary = `Real-time portfolio query for **${detectedSector} Sector**: ${count} projects tracked with aggregate capital outlay of ₹${(aggregateStats.totalOutlayCrore / 1000).toFixed(1)}k Crore and an average cost overrun of +${aggregateStats.avgOverrun}%.`;
+      contextSummary = `Current portfolio query for **${detectedSector} Sector**: ${count} projects tracked with aggregate capital outlay of ₹${(aggregateStats.totalOutlayCrore / 1000).toFixed(1)}k Crore and an average cost overrun of +${aggregateStats.avgOverrun}%.`;
     } else if (query.includes("delay") || query.includes("overrun") || query.includes("risk") || query.includes("critical")) {
       const [count, projects] = await Promise.all([
         prisma.project.count({
@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
       ]);
 
       matchedProjects = projects;
-      contextSummary = `Live Escalation Watchlist: ${count} projects currently flagged in CRITICAL or HIGH risk categories by the ML Stacking Ensemble.`;
+      contextSummary = `Current Escalation Watchlist: ${count} projects currently flagged in CRITICAL or HIGH risk categories by the ML Stacking Ensemble.`;
     } else {
       // Default national portfolio brief
       const [totalProjects, aggregations, projects] = await Promise.all([

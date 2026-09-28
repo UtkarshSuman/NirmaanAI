@@ -74,7 +74,8 @@ export async function GET() {
     let featureImportance: any = null;
 
     try {
-      const fiRes = await fetch("http://127.0.0.1:8000/ml/feature-importance", {
+      const mlServiceUrl = process.env.ML_SERVICE_URL || "http://127.0.0.1:8000";
+      const fiRes = await fetch(`${mlServiceUrl}/ml/feature-importance`, {
         signal: AbortSignal.timeout(100),
       });
       if (fiRes.ok) {

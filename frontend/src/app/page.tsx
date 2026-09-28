@@ -8,6 +8,7 @@ import SectorOverview from "@/components/dashboard/SectorOverview";
 import PriorityProjects from "@/components/dashboard/PriorityProjects";
 import PredictiveOutlook from "@/components/dashboard/PredictiveOutlook";
 import AIOfficerCallout from "@/components/dashboard/AIOfficerCallout";
+import DataFreshnessBar from "@/components/DataFreshnessBar";
 import { AlertTriangle } from "lucide-react";
 import {
   getNationalPortfolioMetrics,
@@ -16,12 +17,13 @@ import {
   getRecentAlerts,
 } from "@/lib/services/portfolioService";
 import { getModelEvaluationArtifacts } from "@/lib/services/modelService";
+import { getDatasetFreshness } from "@/lib/services/freshnessService";
 
 export const revalidate = 60; // Revalidate every minute
 
 async function getDashboardData() {
   try {
-    const [metrics, topRiskProjects, recentProjects, liveAlerts, sectorStatsRaw] = await Promise.all([
+    const [metrics, topRiskProjects, recentProjects, liveAlerts, sectorStatsRaw, freshness] = await Promise.all([
       getNationalPortfolioMetrics(),
       getTopPriorityProjects(6),
       getRecentProjectUpdates(5),
@@ -32,6 +34,7 @@ async function getDashboardData() {
         _sum: { revisedCostCrore: true },
         _avg: { costOverrunPercent: true, timeOverrunMonths: true },
       }),
+      getDatasetFreshness(),
     ]);
 
     const modelArtifacts = getModelEvaluationArtifacts();
@@ -64,17 +67,13 @@ async function getDashboardData() {
       recentProjects: JSON.parse(JSON.stringify(recentProjects)),
       liveAlerts: JSON.parse(JSON.stringify(liveAlerts)),
       topRiskProjects: JSON.parse(JSON.stringify(topRiskProjects)),
-      riskDistribution: {
-        critical: metrics.riskDistribution.critical,
-        high: metrics.riskDistribution.high,
-        moderate: metrics.riskDistribution.moderate,
-        low: metrics.riskDistribution.low,
-      },
+      riskDistribution: metrics.riskDistribution,
       sectorStats,
       modelMetrics: {
         costEnsembleF1: modelArtifacts.costEnsembleF1 ?? undefined,
         timeEnsembleF1: modelArtifacts.timeEnsembleF1 ?? undefined,
       },
+      freshness,
     };
   } catch (error) {
     console.error("Dashboard data load error:", error);
@@ -98,17 +97,20 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="space-y-10 pb-8">
+    <div className="space-y-8 pb-8">
       {/* 1. Hero: Signature India Map Centerpiece & Editorial Headline */}
       <ObservatoryHero
         totalProjects={data.totalProjects}
         ministriesCount={data.ministriesCount}
       />
 
-      {/* 2. Recent Updates: Live Feed */}
+      {/* 2. Real Data Status & Freshness Indicator */}
+      <DataFreshnessBar freshness={data.freshness} />
+
+      {/* 3. Recent Updates: Live Feed */}
       <RecentUpdates projects={data.recentProjects} />
 
-      {/* 3. Portfolio Metrics: Editorial Statistics Strip */}
+      {/* 4. Portfolio Metrics: Editorial Statistics Strip */}
       <PortfolioMetrics
         totalProjects={data.totalProjects}
         totalOriginalCostLakhCr={data.totalOriginalCostLakhCr}
@@ -121,26 +123,27 @@ export default async function DashboardPage() {
         criticalAlertsCount={data.criticalAlertsCount}
       />
 
-      {/* 4. National Risk Radar: Risk Breakdown & Active Alerts */}
+      {/* 5. National Risk Radar: Risk Breakdown & Active Alerts */}
       <RiskRadar
         distribution={data.riskDistribution}
         alerts={data.liveAlerts}
         criticalAlertsCount={data.criticalAlertsCount}
+        totalMonitored={data.totalProjects}
       />
 
-      {/* 5. Sector Overview: Report Table */}
+      {/* 6. Sector Overview: Report Table */}
       <SectorOverview sectorStats={data.sectorStats} />
 
-      {/* 6. Projects Requiring Attention: Priority Register */}
+      {/* 7. Projects Requiring Attention: Priority Register */}
       <PriorityProjects
         projects={data.topRiskProjects}
         criticalCount={data.criticalAlertsCount}
       />
 
-      {/* 7. Predictive Outlook: Model Intelligence */}
+      {/* 8. Predictive Outlook: Model Intelligence */}
       <PredictiveOutlook modelMetrics={data.modelMetrics} />
 
-      {/* 8. AI Officer Callout */}
+      {/* 9. AI Officer Callout */}
       <AIOfficerCallout />
     </div>
   );

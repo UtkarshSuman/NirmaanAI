@@ -1,5 +1,5 @@
 """
-PAIMANA AI — FastAPI ML Service
+NIRMAAN AI — FastAPI ML Service
 ================================
 Main application entry point for the ML prediction and analytics API.
 """
@@ -16,7 +16,7 @@ import shap
 from pathlib import Path
 
 app = FastAPI(
-    title="PAIMANA AI - ML Service",
+    title="NIRMAAN AI - ML Service",
     description="AI-Powered Predictive Analytics for Infrastructure Project Monitoring",
     version="1.0.0",
 )
@@ -125,7 +125,7 @@ def load_models():
 @app.on_event("startup")
 async def startup():
     """Load models on startup."""
-    print("\nLoading PAIMANA AI models...")
+    print("\nLoading NIRMAAN AI models...")
     load_models()
     print("Ready!\n")
 
@@ -167,7 +167,7 @@ class PredictionResponse(BaseModel):
 @app.get("/")
 async def root():
     return {
-        "service": "PAIMANA AI - ML Service",
+        "service": "NIRMAAN AI - ML Service",
         "version": "1.0.0",
         "models_loaded": len(models),
         "status": "ready" if len(models) > 0 else "no models loaded"

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getCurrentPredictionForProject } from "@/lib/services/predictionService";
 
 export async function GET(
   req: NextRequest,
@@ -27,9 +28,15 @@ export async function GET(
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    return NextResponse.json(project);
+    const currentPrediction = await getCurrentPredictionForProject(project.id);
+
+    return NextResponse.json({
+      ...project,
+      currentPrediction,
+    });
   } catch (error) {
     console.error("Error fetching project detail:", error);
     return NextResponse.json({ error: "Failed to fetch project details" }, { status: 500 });
   }
 }
+
