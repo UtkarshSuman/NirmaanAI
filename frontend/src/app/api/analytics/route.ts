@@ -3,8 +3,16 @@ import { prisma } from "@/lib/prisma";
 import fs from "fs";
 import path from "path";
 
+let cachedAnalyticsResult: any = null;
+let cacheAnalyticsTimestamp = 0;
+const CACHE_TTL_MS = 60 * 1000;
+
 export async function GET() {
   try {
+    if (cachedAnalyticsResult && Date.now() - cacheAnalyticsTimestamp < CACHE_TTL_MS) {
+      return NextResponse.json(cachedAnalyticsResult);
+    }
+
     // 1. Sector analytics
     const sectorGroups = await prisma.project.groupBy({
       by: ["sector"],
@@ -64,7 +72,7 @@ export async function GET() {
     let featureImportance = null;
 
     try {
-      const mlRes = await fetch("http://127.0.0.1:8000/ml/model-metrics", { next: { revalidate: 300 } });
+      const mlRes = await fetch("http://127.0.0.1:8000/ml/model-metrics", { signal: AbortSignal.timeout(100) });
       if (mlRes.ok) {
         mlMetrics = await mlRes.json();
       }
@@ -77,7 +85,7 @@ export async function GET() {
     }
 
     try {
-      const fiRes = await fetch("http://127.0.0.1:8000/ml/feature-importance", { next: { revalidate: 300 } });
+      const fiRes = await fetch("http://127.0.0.1:8000/ml/feature-importance", { signal: AbortSignal.timeout(100) });
       if (fiRes.ok) {
         featureImportance = await fiRes.json();
       }
@@ -95,13 +103,18 @@ export async function GET() {
       };
     }
 
-    return NextResponse.json({
+    const payload = {
       sectors,
       delayBreakdown,
       stateBreakdown,
       mlMetrics,
       featureImportance,
-    });
+    };
+
+    cachedAnalyticsResult = payload;
+    cacheAnalyticsTimestamp = Date.now();
+
+    return NextResponse.json(payload);
   } catch (error) {
     console.error("Error generating analytics:", error);
     return NextResponse.json({ error: "Failed to generate analytics" }, { status: 500 });

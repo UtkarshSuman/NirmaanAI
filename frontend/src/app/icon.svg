@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <rect width="100" height="100" rx="22" fill="#070b16"/>
+  <rect x="2" y="2" width="96" height="96" rx="20" stroke="#f59e0b" stroke-width="2" stroke-opacity="0.4"/>
+  <circle cx="50" cy="50" r="44" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.3"/>
+  
+  <!-- Ashoka Emblem stylized in gold/amber -->
+  <circle cx="50" cy="46" r="30" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.4"/>
+  
+  <!-- Central Lion Head -->
+  <path d="M50 20 C43 20 40 25 40 32 C40 38 43 42 46 44 L46 51 L54 51 L54 44 C57 42 60 38 60 32 C60 25 57 20 50 20 Z" fill="#fbbf24"/>
+  
+  <!-- Left Lion Head Profile -->
+  <path d="M39 27 C33 27 29 32 30 37 C31 41 35 44 39 45 L39 51 L45 51 L45 44 C42 42 38 39 37 34 Z" fill="#f59e0b" opacity="0.85"/>
+  
+  <!-- Right Lion Head Profile -->
+  <path d="M61 27 C67 27 71 32 70 37 C69 41 65 44 61 45 L61 51 L55 51 L55 44 C58 42 62 39 63 34 Z" fill="#f59e0b" opacity="0.85"/>
+  
+  <!-- Abacus Base -->
+  <rect x="28" y="53" width="44" height="6" rx="1.5" fill="#f59e0b"/>
+  <!-- Ashoka Chakra in Center -->
+  <circle cx="50" cy="56" r="2.5" fill="#0284c7"/>
+  <circle cx="50" cy="56" r="0.8" fill="#ffffff"/>
+  
+  <!-- Pedestal -->
+  <path d="M25 61 L75 61 L71 66 L29 66 Z" fill="#d97706"/>
+  <!-- Satyameva Jayate Banner -->
+  <path d="M30 68 L70 68 L67 72 L33 72 Z" fill="#b45309"/>
+  
+  <!-- Tricolor Accent Bar -->
+  <rect x="30" y="76" width="13.3" height="3" rx="1" fill="#f97316"/>
+  <rect x="43.3" y="76" width="13.3" height="3" rx="1" fill="#ffffff"/>
+  <rect x="56.6" y="76" width="13.3" height="3" rx="1" fill="#22c55e"/>
+</svg>

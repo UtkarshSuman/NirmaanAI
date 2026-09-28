@@ -11,6 +11,8 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
+  MapPin,
+  X,
 } from "lucide-react";
 import ProjectTable from "@/components/ProjectTable";
 import type { ProjectItem } from "@/lib/types";
@@ -31,6 +33,41 @@ const SECTORS = [
 const RISKS = ["ALL", "CRITICAL", "HIGH", "MODERATE", "LOW"];
 const STATUSES = ["ALL", "Under Implementation", "Completed", "Shelved"];
 
+const STATES_LIST = [
+  "ALL",
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+  "Delhi",
+  "Jammu & Kashmir",
+  "Ladakh",
+];
+
 function ProjectsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -39,6 +76,7 @@ function ProjectsContent() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [sector, setSector] = useState(searchParams.get("sector") || "ALL");
+  const [state, setState] = useState(searchParams.get("state") || "ALL");
   const [risk, setRisk] = useState(searchParams.get("risk") || "ALL");
   const [status, setStatus] = useState(searchParams.get("status") || "ALL");
   const [sortBy, setSortBy] = useState("revisedCostCrore");
@@ -46,12 +84,22 @@ function ProjectsContent() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
+  // Sync state param from URL if it changes
+  useEffect(() => {
+    const urlState = searchParams.get("state");
+    if (urlState && urlState !== state) {
+      setState(urlState);
+      setPage(1);
+    }
+  }, [searchParams]);
+
   const fetchProjects = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (search) params.set("search", search);
       if (sector && sector !== "ALL") params.set("sector", sector);
+      if (state && state !== "ALL") params.set("state", state);
       if (risk && risk !== "ALL") params.set("risk", risk);
       if (status && status !== "ALL") params.set("status", status);
       params.set("sortBy", sortBy);
@@ -70,7 +118,7 @@ function ProjectsContent() {
     } finally {
       setLoading(false);
     }
-  }, [search, sector, risk, status, sortBy, page]);
+  }, [search, sector, state, risk, status, sortBy, page]);
 
   useEffect(() => {
     fetchProjects();
@@ -80,6 +128,11 @@ function ProjectsContent() {
     e.preventDefault();
     setPage(1);
     fetchProjects();
+  };
+
+  const clearStateFilter = () => {
+    setState("ALL");
+    setPage(1);
   };
 
   const exportCsv = () => {
@@ -111,12 +164,12 @@ function ProjectsContent() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[11px] font-semibold text-sky-400 uppercase tracking-wider bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
-              National Infrastructure Ledger
+              National Infrastructure Ledger • April 2026 Cycle
             </span>
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Central Sector Projects Directory</h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Query across 1,931 projects with algorithmic risk classification, milestone velocity, and budget variance.
+            Query across Central Sector projects costing <strong className="text-white">₹150 Crore & above</strong> with algorithmic risk classification, milestone velocity, and budget variance.
           </p>
         </div>
 
@@ -152,7 +205,25 @@ function ProjectsContent() {
             />
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            {/* State Filter Selector */}
+            <select
+              value={state}
+              onChange={(e) => {
+                setState(e.target.value);
+                setPage(1);
+              }}
+              className="px-3.5 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-sky-500/50"
+            >
+              <option value="ALL">All States / UTs</option>
+              {STATES_LIST.filter((s) => s !== "ALL").map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+
+            {/* Sort Selector */}
             <select
               value={sortBy}
               onChange={(e) => {
@@ -175,6 +246,20 @@ function ProjectsContent() {
             </button>
           </div>
         </form>
+
+        {/* Active Filter Badges */}
+        {state !== "ALL" && (
+          <div className="flex items-center gap-2 pt-1 text-xs">
+            <span className="text-slate-400">Active State Filter:</span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-500/30 text-xs font-semibold">
+              <MapPin className="w-3 h-3 text-sky-400" />
+              <span>{state}</span>
+              <button onClick={clearStateFilter} className="hover:text-white ml-1">
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          </div>
+        )}
 
         {/* Sector Filter Chips */}
         <div className="space-y-2.5 pt-1">
@@ -241,9 +326,9 @@ function ProjectsContent() {
                     setStatus(s);
                     setPage(1);
                   }}
-                  className={`px-2.5 py-0.5 rounded-lg text-[11px] font-medium transition-all ${
+                  className={`px-2.5 py-0.5 rounded-lg text-[11px] font-semibold transition-all ${
                     status === s
-                      ? "bg-slate-100 text-slate-900 font-bold shadow-sm"
+                      ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30"
                       : "bg-slate-800/60 text-slate-400 hover:text-white"
                   }`}
                 >
@@ -255,46 +340,61 @@ function ProjectsContent() {
         </div>
       </div>
 
-      {/* Results Count Summary */}
-      <div className="flex items-center justify-between text-xs text-gray-400 px-1">
-        <span>
-          Showing <strong className="text-white">{projects.length}</strong> of{" "}
-          <strong className="text-white">{totalCount.toLocaleString()}</strong> projects
-        </span>
-        <span>
-          Page {page} of {totalPages}
-        </span>
-      </div>
-
-      {/* Table Component */}
-      <ProjectTable projects={projects} loading={loading} />
-
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2">
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#121929] border border-[#222f46] text-xs font-medium text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#1a253c] transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>Previous</span>
-          </button>
-
-          <span className="text-xs text-gray-400 font-mono">
-            {page} / {totalPages}
-          </span>
-
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page >= totalPages}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#121929] border border-[#222f46] text-xs font-medium text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#1a253c] transition-colors"
-          >
-            <span>Next</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
+      {/* Main Table */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between text-xs text-slate-400">
+          <div>
+            Showing <strong className="text-white font-mono">{projects.length}</strong> of{" "}
+            <strong className="text-white font-mono">{totalCount}</strong> matching projects
+          </div>
+          <div>
+            Page <strong className="text-white font-mono">{page}</strong> of{" "}
+            <strong className="text-white font-mono">{totalPages}</strong>
+          </div>
         </div>
-      )}
+
+        {loading ? (
+          <div className="p-16 rounded-2xl bg-slate-900/40 border border-slate-800 flex flex-col items-center justify-center gap-3">
+            <RefreshCw className="w-6 h-6 text-sky-400 animate-spin" />
+            <p className="text-xs text-slate-400">Querying PAIMANA Ledger Database...</p>
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="p-16 rounded-2xl bg-slate-900/40 border border-slate-800 text-center space-y-2">
+            <Building2 className="w-8 h-8 text-slate-600 mx-auto" />
+            <p className="text-sm font-semibold text-slate-300">No matching projects found</p>
+            <p className="text-xs text-slate-500">Try adjusting your search terms, state, sector, or risk filters.</p>
+          </div>
+        ) : (
+          <ProjectTable projects={projects} />
+        )}
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Previous</span>
+            </button>
+
+            <span className="font-mono text-slate-400">
+              Page {page} of {totalPages}
+            </span>
+
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -303,9 +403,9 @@ export default function ProjectsPage() {
   return (
     <Suspense
       fallback={
-        <div className="py-20 text-center text-gray-400">
-          <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-sm">Loading projects directory...</p>
+        <div className="p-16 text-center text-slate-400">
+          <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-sky-400" />
+          <p className="text-xs">Loading PAIMANA Infrastructure Directory...</p>
         </div>
       }
     >

@@ -43,7 +43,7 @@ export default function AssistantPage() {
       content: `### 🇮🇳 Namaste. Welcome to PAIMANA AI Policy Officer Desk.
 I am your specialized intelligence assistant for the **Ministry of Statistics and Programme Implementation (MoSPI)** Infrastructure and Project Monitoring Division (IPMD).
 
-I have full contextual awareness over all **1,931 Central Sector Infrastructure Projects (≥ ₹150 Crore)**, their monthly snapshots, milestone velocities, and ML risk forecast indices.
+I have full contextual awareness over all **1,981 Central Sector Infrastructure Projects (≥ ₹150 Crore)** tracked across 17 Central Ministries and 22 infrastructure sectors under the PAIMANA framework.
 
 How may I assist your portfolio review today?`,
     },

@@ -7,9 +7,13 @@ import { Search, Bell, Sparkles, Shield, Activity } from "lucide-react";
 
 interface TopNavProps {
   unacknowledgedAlertsCount?: number;
+  totalProjectsCount?: number;
 }
 
-export default function TopNav({ unacknowledgedAlertsCount = 14 }: TopNavProps) {
+export default function TopNav({
+  unacknowledgedAlertsCount = 0,
+  totalProjectsCount = 1931,
+}: TopNavProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -28,7 +32,7 @@ export default function TopNav({ unacknowledgedAlertsCount = 14 }: TopNavProps) 
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-sky-400 transition-colors" />
           <input
             type="text"
-            placeholder="Search 1,931 projects (e.g. NH-44, Bullet Train, Metro, NTPC)..."
+            placeholder="Search 1,981 projects (e.g. NH-44, Bullet Train, Metro, NTPC)..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-12 py-2 bg-[#0f172a]/90 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500/50 focus:ring-2 focus:ring-sky-500/15 transition-all shadow-inner"
@@ -48,7 +52,7 @@ export default function TopNav({ unacknowledgedAlertsCount = 14 }: TopNavProps) 
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
           <span className="text-[11px] font-medium tracking-wide">
-            OCMS 2.0 Live Sync • <strong className="text-white font-mono">1,931</strong> Projects
+            PAIMANA Live Sync • <strong className="text-white font-mono">{totalProjectsCount.toLocaleString()}</strong> Projects
           </span>
         </div>
 

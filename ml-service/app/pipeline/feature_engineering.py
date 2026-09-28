@@ -98,6 +98,30 @@ class FeatureEngineer:
     def _basic_derived_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """12 basic derived features from CUF fields."""
 
+        # Ensure essential columns exist with safe fallback defaults
+        required_defaults = {
+            'original_cost_crore': 1000.0,
+            'revised_cost_crore': 1000.0,
+            'cumulative_expenditure_crore': 0.0,
+            'physical_progress_percent': 0.0,
+            'financial_progress_percent': 0.0,
+            'milestone_total_count': 10,
+            'milestone_achieved_count': 0,
+            'land_acquisition_cost_crore': 0.0,
+            'expenditure_current_year_crore': 0.0,
+            'expenditure_previous_year_crore': 0.0,
+            'original_start_date': pd.to_datetime('2023-01-01'),
+            'original_completion_date': pd.to_datetime('2027-01-01'),
+            'year_of_approval': 2023,
+            'sector': 'National Highways',
+            'ministry_department': 'Ministry of Road Transport & Highways',
+            'implementing_agency': 'NHAI',
+            'state': 'Maharashtra',
+        }
+        for col, val in required_defaults.items():
+            if col not in df.columns:
+                df[col] = val
+
         # 1. Cost revision ratio
         df['cost_revision_ratio'] = np.where(
             df['original_cost_crore'] > 0,
@@ -262,7 +286,15 @@ class FeatureEngineer:
         df = df.merge(self._cost_category_stats, on='cost_category', how='left')
 
         # 10. Approval cohort performance
-        df = df.merge(self._cohort_stats, on='year_of_approval', how='left')
+        if 'year_of_approval' in df.columns and hasattr(self, '_cohort_stats') and self._cohort_stats is not None:
+            df = df.merge(self._cohort_stats, on='year_of_approval', how='left')
+        else:
+            default_cohort = (
+                float(self._cohort_stats['approval_cohort_performance'].mean())
+                if hasattr(self, '_cohort_stats') and self._cohort_stats is not None and len(self._cohort_stats) > 0
+                else 0.0
+            )
+            df['approval_cohort_performance'] = default_cohort
 
         return df
 

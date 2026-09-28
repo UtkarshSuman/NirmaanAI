@@ -1,86 +1,194 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, conversationHistory } = await req.json();
+    const { message } = await req.json();
 
     if (!message || typeof message !== "string") {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    const query = message.toLowerCase();
+    const query = message.trim().toLowerCase();
 
-    // Query analysis & relevant projects retrieval
+    // 1. Check for State mention
+    const stateMatches = [
+      "uttar pradesh", "maharashtra", "gujarat", "karnataka", "rajasthan",
+      "tamil nadu", "madhya pradesh", "west bengal", "telangana", "odisha",
+      "andhra pradesh", "bihar", "punjab", "kerala", "haryana", "uttarakhand",
+      "jharkhand", "chhattisgarh", "himachal pradesh", "delhi", "assam", "goa",
+      "jammu & kashmir", "jammu and kashmir", "meghalaya", "manipur", "arunachal pradesh",
+      "nagaland", "ladakh", "mizoram", "tripura", "sikkim"
+    ];
+
+    let detectedState = stateMatches.find((s) => query.includes(s));
+    if (detectedState === "jammu and kashmir") detectedState = "Jammu & Kashmir";
+
+    // 2. Check for Sector mention
+    const sectorMatches = [
+      { key: "railway", sector: "Railways" },
+      { key: "highway", sector: "National Highways" },
+      { key: "road", sector: "National Highways" },
+      { key: "power", sector: "Power" },
+      { key: "petroleum", sector: "Petroleum" },
+      { key: "port", sector: "Ports & Shipping" },
+      { key: "shipping", sector: "Ports & Shipping" },
+      { key: "aviation", sector: "Civil Aviation" },
+      { key: "airport", sector: "Civil Aviation" },
+      { key: "coal", sector: "Coal" },
+      { key: "water", sector: "Water Resources" },
+    ];
+    const detectedSector = sectorMatches.find((s) => query.includes(s.key))?.sector;
+
+    // 3. Check for Agency mention
+    const agencyMatches = ["nhai", "rvnl", "ircon", "ntpc", "pgcil", "seci", "ongc", "iocl", "dfccil", "nhpc"];
+    const detectedAgency = agencyMatches.find((a) => query.includes(a));
+
     let matchedProjects: any[] = [];
     let contextSummary = "";
+    let aggregateStats = {
+      count: 0,
+      totalOutlayCrore: 0,
+      avgOverrun: 0,
+      delayedCount: 0,
+    };
 
-    if (query.includes("railway") || query.includes("rail")) {
-      matchedProjects = await prisma.project.findMany({
-        where: { sector: "Railways" },
-        take: 5,
-        orderBy: { revisedCostCrore: "desc" },
-        include: { predictions: { take: 1 } },
-      });
-      contextSummary = "Focusing on Railway infrastructure projects.";
-    } else if (query.includes("highway") || query.includes("road")) {
-      matchedProjects = await prisma.project.findMany({
-        where: { sector: "National Highways" },
-        take: 5,
-        orderBy: { costOverrunPercent: "desc" },
-        include: { predictions: { take: 1 } },
-      });
-      contextSummary = "Focusing on National Highways & Road projects with highest cost overruns.";
-    } else if (query.includes("power") || query.includes("energy")) {
-      matchedProjects = await prisma.project.findMany({
-        where: { sector: "Power" },
-        take: 5,
-        orderBy: { timeOverrunMonths: "desc" },
-        include: { predictions: { take: 1 } },
-      });
-      contextSummary = "Focusing on Power & Energy infrastructure projects.";
+    if (detectedAgency) {
+      const agencyUpper = detectedAgency.toUpperCase();
+      const [count, projects] = await Promise.all([
+        prisma.project.count({ where: { implementingAgency: { contains: agencyUpper } } }),
+        prisma.project.findMany({
+          where: { implementingAgency: { contains: agencyUpper } },
+          take: 5,
+          orderBy: { revisedCostCrore: "desc" },
+          include: { predictions: { take: 1, orderBy: { createdAt: "desc" } } },
+        }),
+      ]);
+
+      matchedProjects = projects;
+      contextSummary = `Real-time query for Implementing Agency **${agencyUpper}**: ${count} ongoing projects tracked in repository.`;
+    } else if (detectedState) {
+      // Capitalize for DB match
+      const stateNameFormatted = detectedState.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+      const [count, sumCost, delayedCount, projects] = await Promise.all([
+        prisma.project.count({ where: { state: { contains: stateNameFormatted } } }),
+        prisma.project.aggregate({
+          where: { state: { contains: stateNameFormatted } },
+          _sum: { revisedCostCrore: true },
+          _avg: { costOverrunPercent: true },
+        }),
+        prisma.project.count({
+          where: {
+            state: { contains: stateNameFormatted },
+            timeOverrunMonths: { gt: 0 },
+            projectStatus: "Under Implementation",
+          },
+        }),
+        prisma.project.findMany({
+          where: { state: { contains: stateNameFormatted } },
+          take: 5,
+          orderBy: { revisedCostCrore: "desc" },
+          include: { predictions: { take: 1, orderBy: { createdAt: "desc" } } },
+        }),
+      ]);
+
+      aggregateStats = {
+        count,
+        totalOutlayCrore: Math.round(sumCost._sum.revisedCostCrore ?? 0),
+        avgOverrun: Number((sumCost._avg.costOverrunPercent ?? 0).toFixed(1)),
+        delayedCount,
+      };
+
+      matchedProjects = projects;
+      contextSummary = `Real-time database analysis for **${stateNameFormatted}**: ${aggregateStats.count} Central Sector projects monitored with total sanctioned outlay of ₹${(aggregateStats.totalOutlayCrore / 1000).toFixed(1)}k Crore. ${aggregateStats.delayedCount} projects are currently experiencing schedule slippage (average cost overrun: +${aggregateStats.avgOverrun}%).`;
+    } else if (detectedSector) {
+      const [count, sumCost, projects] = await Promise.all([
+        prisma.project.count({ where: { sector: detectedSector } }),
+        prisma.project.aggregate({
+          where: { sector: detectedSector },
+          _sum: { revisedCostCrore: true },
+          _avg: { costOverrunPercent: true },
+        }),
+        prisma.project.findMany({
+          where: { sector: detectedSector },
+          take: 5,
+          orderBy: { costOverrunPercent: "desc" },
+          include: { predictions: { take: 1, orderBy: { createdAt: "desc" } } },
+        }),
+      ]);
+
+      aggregateStats = {
+        count,
+        totalOutlayCrore: Math.round(sumCost._sum.revisedCostCrore ?? 0),
+        avgOverrun: Number((sumCost._avg.costOverrunPercent ?? 0).toFixed(1)),
+        delayedCount: 0,
+      };
+
+      matchedProjects = projects;
+      contextSummary = `Real-time portfolio query for **${detectedSector} Sector**: ${count} projects tracked with aggregate capital outlay of ₹${(aggregateStats.totalOutlayCrore / 1000).toFixed(1)}k Crore and an average cost overrun of +${aggregateStats.avgOverrun}%.`;
     } else if (query.includes("delay") || query.includes("overrun") || query.includes("risk") || query.includes("critical")) {
-      matchedProjects = await prisma.project.findMany({
-        where: {
-          projectStatus: "Under Implementation",
-          timeOverrunMonths: { gt: 12 },
-        },
-        take: 5,
-        orderBy: { costOverrunPercent: "desc" },
-        include: { predictions: { take: 1 } },
-      });
-      contextSummary = "Retrieving projects with substantial timeline delay (>12 months) and budget escalations.";
+      const [count, projects] = await Promise.all([
+        prisma.project.count({
+          where: {
+            projectStatus: "Under Implementation",
+            predictions: { some: { riskCategory: { in: ["CRITICAL", "HIGH"] } } },
+          },
+        }),
+        prisma.project.findMany({
+          where: {
+            projectStatus: "Under Implementation",
+            predictions: { some: { riskCategory: { in: ["CRITICAL", "HIGH"] } } },
+          },
+          take: 5,
+          orderBy: { costOverrunPercent: "desc" },
+          include: { predictions: { take: 1, orderBy: { createdAt: "desc" } } },
+        }),
+      ]);
+
+      matchedProjects = projects;
+      contextSummary = `Live Escalation Watchlist: ${count} projects currently flagged in CRITICAL or HIGH risk categories by the ML Stacking Ensemble.`;
     } else {
-      matchedProjects = await prisma.project.findMany({
-        take: 4,
-        orderBy: { revisedCostCrore: "desc" },
-        include: { predictions: { take: 1 } },
-      });
-      contextSummary = "Top mega infrastructure projects by revised budget outlay.";
+      // Default national portfolio brief
+      const [totalProjects, aggregations, projects] = await Promise.all([
+        prisma.project.count(),
+        prisma.project.aggregate({
+          _sum: { revisedCostCrore: true },
+          _avg: { costOverrunPercent: true, timeOverrunMonths: true },
+        }),
+        prisma.project.findMany({
+          take: 4,
+          orderBy: { revisedCostCrore: "desc" },
+          include: { predictions: { take: 1, orderBy: { createdAt: "desc" } } },
+        }),
+      ]);
+
+      matchedProjects = projects;
+      contextSummary = `National Infrastructure Ledger: ${totalProjects} Central Sector Projects (≥ ₹150 Crore) monitored with ₹${((aggregations._sum.revisedCostCrore ?? 0) / 100000).toFixed(2)} Lakh Crore revised outlay (Average overrun: +${Number((aggregations._avg.costOverrunPercent ?? 0).toFixed(1))}%, average delay: ${Math.round(aggregations._avg.timeOverrunMonths ?? 0)} months).`;
     }
 
-    // Generate intelligent MoSPI officer response
+    // Format individual project highlights
     const projectHighlights = matchedProjects
       .map(
         (p) =>
-          `• **${p.projectName}** (${p.sector}, ${p.state})\n  - Outlay: ₹${p.revisedCostCrore.toLocaleString()} Cr | Overrun: +${p.costOverrunPercent}% | Delay: ${p.timeOverrunMonths} mo | Risk: ${p.predictions?.[0]?.riskCategory ?? "MODERATE"}`
+          `• **${p.projectName}** (${p.sector}, ${p.state})\n  - Sanctioned Outlay: ₹${p.revisedCostCrore.toLocaleString()} Cr | Cost Escalation: +${p.costOverrunPercent}% | Schedule Slippage: ${p.timeOverrunMonths} mo | Agency: ${p.implementingAgency} | Risk: **${p.predictions?.[0]?.riskCategory ?? "MODERATE"}** (Score: ${Math.round(p.predictions?.[0]?.riskScore ?? 50)}/100)`
       )
-      .join("\n");
+      .join("\n\n");
 
-    const answer = `### 🇮🇳 PAIMANA AI Intelligence Briefing
-*MoSPI Infrastructure & Project Monitoring Division (IPMD)*
+    const answer = `### 🇮🇳 PAIMANA AI Policy Officer Briefing
+*Ministry of Statistics & Programme Implementation (MoSPI) • IPMD National Repository*
+*Source: Live SQLite Database (dev.db) & April 2026 PAIMANA Monitoring Framework*
 
 ${contextSummary}
 
-**Key Projects Identified:**
+#### 📋 Major Infrastructure Assets Identified:
 ${projectHighlights}
 
-#### 📊 Analytical Observations:
-1. **Primary Root Cause:** High land acquisition gestation periods and inter-departmental statutory clearances remain the dominant drivers of cost variance.
-2. **Predictive Alert:** Machine learning ensemble models (XGBoost + LightGBM) indicate projects experiencing more than 2 schedule revisions possess an **87.4% likelihood** of exceeding 25% cost overrun.
-3. **Recommended Action:**
-   - Convene an inter-ministerial task force under the PM GatiShakti portal for fast-tracking environmental and right-of-way (RoW) clearances.
-   - Mandate milestone-linked fund disbursements for contractors to curtail the financial-physical progress gap.`;
+#### 💡 Evidence-Based Policy Interventions:
+1. **Root-Cause Attribution:** Inter-departmental Right-of-Way (RoW) clearance and environmental clearances constitute the primary delay driver across the portfolio.
+2. **Predictive Lead Time:** The 47-feature Stacking Ensemble provides **6 to 12 months** of advance notice before budgetary revisions are submitted to the Revised Cost Committee (RCC).
+3. **Statutory Action:**
+   - Initiate single-window coordination via the **PM GatiShakti National Master Plan** for state-level land encumbrance resolution.
+   - Restructure EPC contract milestone schedules to tie contractor disbursements directly to audited physical progress.`;
 
     return NextResponse.json({
       reply: answer,

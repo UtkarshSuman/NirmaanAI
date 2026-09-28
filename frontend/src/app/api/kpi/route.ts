@@ -2,8 +2,16 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { NationalKpis } from "@/lib/types";
 
+let cachedKpiResult: NationalKpis | null = null;
+let cacheKpiTimestamp = 0;
+const CACHE_TTL_MS = 60 * 1000;
+
 export async function GET() {
   try {
+    if (cachedKpiResult && Date.now() - cacheKpiTimestamp < CACHE_TTL_MS) {
+      return NextResponse.json(cachedKpiResult);
+    }
+
     const totalProjects = await prisma.project.count();
     const activeProjects = await prisma.project.count({
       where: { projectStatus: "Under Implementation" },
@@ -79,6 +87,9 @@ export async function GET() {
       totalAlertsCount,
       unacknowledgedAlertsCount,
     };
+
+    cachedKpiResult = kpiData;
+    cacheKpiTimestamp = Date.now();
 
     return NextResponse.json(kpiData);
   } catch (error) {
