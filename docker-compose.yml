@@ -22,8 +22,8 @@ services:
 
   ml-service:
     build:
-      context: .
-      dockerfile: ml-service/Dockerfile
+      context: ./ml-service
+      dockerfile: Dockerfile
     container_name: nirmaan-ml-service
     ports:
       - "8000:8000"

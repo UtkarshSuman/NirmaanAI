@@ -8,13 +8,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for layer caching
-COPY requirements.txt .
+# Copy requirements from ml-service
+COPY ml-service/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code, trained models, and raw baseline data
-COPY app/ ./app/
-COPY data/ ./data/
+COPY ml-service/app/ ./app/
+COPY ml-service/data/ ./data/
+COPY data/raw/ ./data/raw/
 
 EXPOSE 8000
 ENV PORT=8000

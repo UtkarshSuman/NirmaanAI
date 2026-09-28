@@ -37,10 +37,16 @@ app.add_middleware(
 # ─── PATHS ──────────────────────────────────────────────────────────────────────
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-PROJECT_ROOT = BASE_DIR.parent  # SIH2 root
+PROJECT_ROOT = BASE_DIR.parent
 DATA_DIR = BASE_DIR / "data"
 MODEL_DIR = DATA_DIR / "models"
+
+# Check both repo root and local container data/raw directory
 RAW_DIR = PROJECT_ROOT / "data" / "raw"
+if not RAW_DIR.exists():
+    RAW_DIR = DATA_DIR / "raw"
+if not RAW_DIR.exists():
+    RAW_DIR = Path("/app/data/raw")
 
 # ─── GLOBAL MODEL CACHE ────────────────────────────────────────────────────────
 
