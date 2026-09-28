@@ -241,3 +241,4 @@ export interface StateAggregation {
   riskTier: "CRITICAL" | "HIGH" | "MODERATE" | "LOW";
   topProjects: any[];
 }
+
