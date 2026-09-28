@@ -134,21 +134,21 @@ export default function Sidebar() {
             className="flex items-center justify-between px-3 py-2 rounded-lg text-[11px] text-slate-400 hover:text-white hover:bg-[#121c2e] transition-colors"
           >
             <span>Dim A: Predictive Models</span>
-            <span className="text-[10px] text-sky-400 font-mono">99.4% F1</span>
+            <span className="text-[10px] text-sky-400 font-mono">Ensemble</span>
           </Link>
           <Link
             href="/analytics#dim-b"
             className="flex items-center justify-between px-3 py-2 rounded-lg text-[11px] text-slate-400 hover:text-white hover:bg-[#121c2e] transition-colors"
           >
             <span>Dim B: AI vs Conventional</span>
-            <span className="text-[10px] text-emerald-400 font-mono">+46% Gain</span>
+            <span className="text-[10px] text-emerald-400 font-mono">Benchmark</span>
           </Link>
           <Link
             href="/analytics#dim-c"
             className="flex items-center justify-between px-3 py-2 rounded-lg text-[11px] text-slate-400 hover:text-white hover:bg-[#121c2e] transition-colors"
           >
-            <span>Dim C: CUF Field Analysis</span>
-            <span className="text-[10px] text-amber-400 font-mono">25.8% Ext</span>
+            <span>Dim C: CUF Feature Matrix</span>
+            <span className="text-[10px] text-amber-400 font-mono">Taxonomy</span>
           </Link>
         </div>
 

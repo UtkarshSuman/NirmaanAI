@@ -58,7 +58,7 @@ export default async function ProjectDetailPage({
 
   const pred = project.predictions?.[0];
   const riskScore = pred?.riskScore ?? null;
-  const riskCategory = pred?.riskCategory ?? "MODERATE";
+  const riskCategory = pred?.riskCategory ?? undefined;
 
   // Parse SHAP factors
   let factors = [];

@@ -168,10 +168,12 @@ export async function POST(req: NextRequest) {
 
     // Format individual project highlights
     const projectHighlights = matchedProjects
-      .map(
-        (p) =>
-          `• **${p.projectName}** (${p.sector}, ${p.state})\n  - Sanctioned Outlay: ₹${p.revisedCostCrore.toLocaleString()} Cr | Cost Escalation: +${p.costOverrunPercent}% | Schedule Slippage: ${p.timeOverrunMonths} mo | Agency: ${p.implementingAgency} | Risk: **${p.predictions?.[0]?.riskCategory ?? "MODERATE"}** (Score: ${Math.round(p.predictions?.[0]?.riskScore ?? 50)}/100)`
-      )
+      .map((p) => {
+        const pred = p.predictions?.[0];
+        const riskCategory = pred?.riskCategory ?? "UNCLASSIFIED";
+        const scoreText = typeof pred?.riskScore === "number" ? `${Math.round(pred.riskScore)}/100` : "Score unrecorded";
+        return `• **${p.projectName}** (${p.sector}, ${p.state})\n  - Sanctioned Outlay: ₹${p.revisedCostCrore.toLocaleString()} Cr | Cost Escalation: +${p.costOverrunPercent}% | Schedule Slippage: ${p.timeOverrunMonths} mo | Agency: ${p.implementingAgency} | Risk: **${riskCategory}** (${scoreText})`;
+      })
       .join("\n\n");
 
     const answer = `### 🇮🇳 NIRMAAN AI Officer Briefing
@@ -185,7 +187,7 @@ ${projectHighlights}
 
 #### 💡 Evidence-Based Policy Interventions:
 1. **Root-Cause Attribution:** Inter-departmental Right-of-Way (RoW) clearance and environmental clearances constitute the primary delay driver across the portfolio.
-2. **Predictive Lead Time:** The 47-feature Stacking Ensemble provides **6 to 12 months** of advance notice before budgetary revisions are submitted to the Revised Cost Committee (RCC).
+2. **Predictive Forecasting:** The calibrated Stacking Ensemble (XGBoost + LightGBM + Meta-Learner) delivers multi-horizon classification and continuous overrun regression to detect early drift before formal budgetary revision submissions.
 3. **Statutory Action:**
    - Initiate single-window coordination via the **PM GatiShakti National Master Plan** for state-level land encumbrance resolution.
    - Restructure EPC contract milestone schedules to tie contractor disbursements directly to audited physical progress.`;
@@ -199,7 +201,7 @@ ${projectHighlights}
         costCrore: p.revisedCostCrore,
         costOverrun: p.costOverrunPercent,
         delay: p.timeOverrunMonths,
-        risk: p.predictions?.[0]?.riskCategory ?? "MODERATE",
+        risk: p.predictions?.[0]?.riskCategory ?? "UNCLASSIFIED",
       })),
     });
   } catch (error) {

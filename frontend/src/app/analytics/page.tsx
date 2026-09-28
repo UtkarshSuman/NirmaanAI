@@ -1,7 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import fs from "fs";
-import path from "path";
 import {
   Brain,
   BarChart3,
@@ -22,8 +20,24 @@ import {
   FileCode,
 } from "lucide-react";
 import prisma from "@/lib/prisma";
+import { getModelEvaluationArtifacts, type ModelBenchmarkEntry } from "@/lib/services/modelService";
 
 export const revalidate = 60;
+
+// Qualitative Common Upload Form (CUF) vs Non-CUF Feature Schema Taxonomy
+// Provenance: [POLICY TAXONOMY & DATA ARCHITECTURE]
+const CUF_SCHEMA_TAXONOMY = [
+  { field: "Cost Revision Count", source: "In-CUF Data Schema", category: "Governance", desc: "Sanctioned revision iterations logged on Central Sector OCMS portal." },
+  { field: "Cost Revision Ratio (Revised / Original)", source: "In-CUF Data Schema", category: "Financial", desc: "Cumulative expansion ratio from original sanctioned baseline budget." },
+  { field: "Months Since Last Revision", source: "In-CUF Data Schema", category: "Timeline", desc: "Recency of administrative and financial baseline reset." },
+  { field: "Cost Revision Acceleration Rate", source: "In-CUF Data Schema", category: "Velocity", desc: "Rate of change in successive revised estimates across quarters." },
+  { field: "Progress Lag (2-Month Rolling)", source: "In-CUF Data Schema", category: "Milestone", desc: "Discrepancy between scheduled and verified physical achievement." },
+  { field: "Agency Historical Performance Index", source: "External Variable", category: "Institutional", desc: "Historical delivery reliability index across past 15 years." },
+  { field: "Land Acquisition Right-of-Way (RoW) %", source: "External Variable", category: "External Statutory", desc: "Direct land acquisition encumbrance proportion prior to financial release." },
+  { field: "Statutory Clearances Lead Time", source: "External Variable", category: "External Regulatory", desc: "Forest, wildlife, and regulatory approvals lag." },
+  { field: "Geotechnical / Terrain Hazard Index", source: "External Variable", category: "Spatial Terrain", desc: "Seismic, landslide, and tunneling geological surprise rating." },
+  { field: "Contractor Working Capital Liquidity", source: "External Variable", category: "Concessionaire", desc: "Concessionaire liquidity buffer and debt-service capability." },
+];
 
 async function getAnalyticsData() {
   try {
@@ -35,7 +49,7 @@ async function getAnalyticsData() {
       _avg: { costOverrunPercent: true, timeOverrunMonths: true, physicalProgressPercent: true },
     });
 
-    // 2. Delay reasons
+    // 2. Delay reasons citations
     const delayReasons = await prisma.project.groupBy({
       by: ["reasonForDelay"],
       where: {
@@ -68,136 +82,21 @@ async function getAnalyticsData() {
     const netCostOverrunLakhCr = (netCostOverrunCrore / 100000).toFixed(2);
 
     // 5. ML evaluation metrics parsed directly from trained artifacts
-    let rawMl: any = null;
-    const mlSourcePath = "ml-service/data/models/training_results.json";
-    try {
-      const resultsPath = path.resolve(process.cwd(), "..", "ml-service", "data", "models", "training_results.json");
-      if (fs.existsSync(resultsPath)) {
-        rawMl = JSON.parse(fs.readFileSync(resultsPath, "utf-8"));
-      }
-    } catch (e) {
-      console.warn("Could not read training_results.json directly:", e);
+    const modelArtifacts = getModelEvaluationArtifacts();
+    const rawMl = modelArtifacts.raw;
+
+    // Dynamic metrics from artifact
+    const baselineF1 = rawMl?.baselines?.rule_based?.f1_score ?? null;
+    const ensembleCostF1 = rawMl?.ensemble?.cost_ensemble?.f1_score ?? null;
+    const baselinePrecision = rawMl?.baselines?.rule_based?.precision ?? null;
+    const ensemblePrecision = rawMl?.ensemble?.cost_ensemble?.precision ?? null;
+    const timeRegressorRmse = rawMl?.time_overrun?.xgboost_regressor?.rmse ?? null;
+
+    let f1RelativeGainText = "Unavailable";
+    if (baselineF1 != null && ensembleCostF1 != null && baselineF1 > 0) {
+      const gain = ((ensembleCostF1 - baselineF1) / baselineF1) * 100;
+      f1RelativeGainText = `+${gain.toFixed(1)}% relative gain`;
     }
-
-    // Build Cost Overrun Benchmarks dynamically from raw ML file or null if unavailable
-    const costBenchmarks = [
-      {
-        model: "Rule-Based Baseline (Legacy OCMS)",
-        type: "Conventional Heuristic",
-        f1: rawMl?.baselines?.rule_based?.f1_score ?? null,
-        precision: rawMl?.baselines?.rule_based?.precision ?? null,
-        recall: rawMl?.baselines?.rule_based?.recall ?? null,
-        auc: rawMl?.baselines?.rule_based?.auc_roc ?? null,
-        leadTime: "0 mo (Retro)",
-        falseAlarmRate: "33.8%",
-      },
-      {
-        model: "Logistic Regression (Linear)",
-        type: "Linear ML Baseline",
-        f1: rawMl?.baselines?.logistic_regression?.f1_score ?? null,
-        precision: rawMl?.baselines?.logistic_regression?.precision ?? null,
-        recall: rawMl?.baselines?.logistic_regression?.recall ?? null,
-        auc: rawMl?.baselines?.logistic_regression?.auc_roc ?? null,
-        leadTime: "4 mo",
-        falseAlarmRate: "2.1%",
-      },
-      {
-        model: "Decision Tree (CART)",
-        type: "Tree ML Baseline",
-        f1: rawMl?.baselines?.decision_tree?.f1_score ?? null,
-        precision: rawMl?.baselines?.decision_tree?.precision ?? null,
-        recall: rawMl?.baselines?.decision_tree?.recall ?? null,
-        auc: rawMl?.baselines?.decision_tree?.auc_roc ?? null,
-        leadTime: "4 mo",
-        falseAlarmRate: "3.5%",
-      },
-      {
-        model: "Random Forest Classifier",
-        type: "Bagging Ensemble",
-        f1: rawMl?.cost_overrun?.random_forest?.f1_score ?? null,
-        precision: rawMl?.cost_overrun?.random_forest?.precision ?? null,
-        recall: rawMl?.cost_overrun?.random_forest?.recall ?? null,
-        auc: rawMl?.cost_overrun?.random_forest?.auc_roc ?? null,
-        leadTime: "6 mo",
-        falseAlarmRate: "1.1%",
-      },
-      {
-        model: "LightGBM Gradient Boosting",
-        type: "Boosting Ensemble",
-        f1: rawMl?.cost_overrun?.lightgbm?.f1_score ?? null,
-        precision: rawMl?.cost_overrun?.lightgbm?.precision ?? null,
-        recall: rawMl?.cost_overrun?.lightgbm?.recall ?? null,
-        auc: rawMl?.cost_overrun?.lightgbm?.auc_roc ?? null,
-        leadTime: "8 mo",
-        falseAlarmRate: "1.0%",
-      },
-      {
-        model: "XGBoost Classifier",
-        type: "Boosting Ensemble",
-        f1: rawMl?.cost_overrun?.xgboost?.f1_score ?? null,
-        precision: rawMl?.cost_overrun?.xgboost?.precision ?? null,
-        recall: rawMl?.cost_overrun?.xgboost?.recall ?? null,
-        auc: rawMl?.cost_overrun?.xgboost?.auc_roc ?? null,
-        leadTime: "10 mo",
-        falseAlarmRate: "1.0%",
-      },
-      {
-        model: "NIRMAAN AI Stacking Meta-Learner",
-        type: "Stacking Meta-Ensemble",
-        f1: rawMl?.ensemble?.cost_ensemble?.f1_score ?? null,
-        precision: rawMl?.ensemble?.cost_ensemble?.precision ?? null,
-        recall: rawMl?.ensemble?.cost_ensemble?.recall ?? null,
-        auc: rawMl?.ensemble?.cost_ensemble?.auc_roc ?? null,
-        leadTime: "6–12 mo",
-        falseAlarmRate: "0.0%",
-        isBest: true,
-      },
-    ];
-
-    // Build Time Overrun Benchmarks dynamically or null if unavailable
-    const timeBenchmarks = [
-      {
-        model: "Linear Regression Baseline",
-        type: "Conventional Heuristic",
-        f1: null,
-        precision: null,
-        recall: null,
-        auc: null,
-      },
-      {
-        model: "Random Forest Classifier",
-        type: "Bagging Ensemble",
-        f1: rawMl?.time_overrun?.random_forest?.f1_score ?? null,
-        precision: rawMl?.time_overrun?.random_forest?.precision ?? null,
-        recall: rawMl?.time_overrun?.random_forest?.recall ?? null,
-        auc: rawMl?.time_overrun?.random_forest?.auc_roc ?? null,
-      },
-      {
-        model: "LightGBM Classifier",
-        type: "Boosting Ensemble",
-        f1: rawMl?.time_overrun?.lightgbm?.f1_score ?? null,
-        precision: rawMl?.time_overrun?.lightgbm?.precision ?? null,
-        recall: rawMl?.time_overrun?.lightgbm?.recall ?? null,
-        auc: rawMl?.time_overrun?.lightgbm?.auc_roc ?? null,
-      },
-      {
-        model: `XGBoost Regressor ${rawMl?.time_overrun?.xgboost_regressor?.rmse ? `(RMSE: ${rawMl.time_overrun.xgboost_regressor.rmse.toFixed(1)} mo)` : ""}`,
-        type: "Boosting Regressor",
-        f1: rawMl?.time_overrun?.xgboost?.f1_score ?? null,
-        precision: rawMl?.time_overrun?.xgboost?.precision ?? null,
-        recall: rawMl?.time_overrun?.xgboost?.recall ?? null,
-        auc: rawMl?.time_overrun?.xgboost?.auc_roc ?? null,
-      },
-      {
-        model: "NIRMAAN AI Time Stacking Ensemble",
-        type: "Ensemble",
-        f1: rawMl?.ensemble?.time_ensemble?.f1_score ?? null,
-        precision: rawMl?.ensemble?.time_ensemble?.precision ?? null,
-        recall: rawMl?.ensemble?.time_ensemble?.recall ?? null,
-        auc: rawMl?.ensemble?.time_ensemble?.auc_roc ?? null,
-        isBest: true,
-      },
-    ];
 
     return {
       sectors: sectorStats
@@ -226,32 +125,24 @@ async function getAnalyticsData() {
           count: d._count.projectId,
         }))
         .sort((a, b) => b.count - a.count),
-      costBenchmarks,
-      timeBenchmarks,
+      costBenchmarks: modelArtifacts.costBenchmarks,
+      timeBenchmarks: modelArtifacts.timeBenchmarks,
       netCostOverrunLakhCr,
       monitoredProjectsCount: totalCostAgg._count.projectId,
-      mlSourcePath,
-      hasLiveMlFile: Boolean(rawMl),
+      mlSourcePath: modelArtifacts.artifactPath,
+      hasLiveMlFile: modelArtifacts.hasArtifact,
+      baselineF1,
+      ensembleCostF1,
+      baselinePrecision,
+      ensemblePrecision,
+      f1RelativeGainText,
+      timeRegressorRmse,
     };
   } catch (error) {
     console.error("Error loading analytics:", error);
     return null;
   }
 }
-
-// Technical Dimension C: CUF vs Non-CUF Feature Attribution (Research Evaluation Benchmark)
-const CUF_ATTRIBUTION = [
-  { field: "Cost Revision Count", source: "In-CUF", category: "Governance", importance: 0.4624, desc: "Sanctioned revision iterations logged on NIRMAAN AI" },
-  { field: "Cost Revision Ratio (Rev / Orig)", source: "In-CUF", category: "Financial", importance: 0.4562, desc: "Cumulative expansion ratio from original sanctioned budget" },
-  { field: "Months Since Last Revision", source: "In-CUF", category: "Timeline", importance: 0.0438, desc: "Recency of administrative and financial baseline reset" },
-  { field: "Cost Revision Acceleration Rate", source: "In-CUF", category: "Velocity", importance: 0.0196, desc: "Rate of change in successive revised estimates" },
-  { field: "Progress Lag (2-Month Rolling)", source: "In-CUF", category: "Milestone", importance: 0.0098, desc: "Discrepancy between scheduled and verified physical achievement" },
-  { field: "Agency Historical Performance Index", source: "Non-CUF", category: "Institutional", importance: 0.0081, desc: "Historical delivery reliability index across past 15 years" },
-  { field: "Land Acquisition Right-of-Way (RoW) %", source: "Non-CUF", category: "External Statutory", importance: 0.0042, desc: "Direct land acquisition encumbrance proportion" },
-  { field: "Statutory Clearances Lead Time", source: "Non-CUF", category: "External Regulatory", importance: 0.0035, desc: "Forest, wildlife, and regulatory approvals lag" },
-  { field: "Geotechnical / Terrain Hazard Index", source: "Non-CUF", category: "Spatial Terrain", importance: 0.0028, desc: "Seismic, landslide, and tunneling geological surprise rating" },
-  { field: "Contractor Working Capital Liquidity", source: "Non-CUF", category: "Concessionaire", importance: 0.0021, desc: "Concessionaire liquidity buffer and debt-service capability" },
-];
 
 export default async function AnalyticsPage() {
   const data = await getAnalyticsData();
@@ -264,8 +155,8 @@ export default async function AnalyticsPage() {
     );
   }
 
-  const bestCostModel = data.costBenchmarks.find((b: any) => b.isBest);
-  const bestTimeModel = data.timeBenchmarks.find((b: any) => b.isBest);
+  const bestCostModel = data.costBenchmarks.find((b) => b.isBest);
+  const bestTimeModel = data.timeBenchmarks.find((b) => b.isBest);
 
   return (
     <div className="space-y-12">
@@ -277,17 +168,17 @@ export default async function AnalyticsPage() {
           </span>
           <span className="text-slate-300">/</span>
           <span className="text-xs text-slate-500">
-            Model Evaluation & Feature Attribution Monograph
+            Model Evaluation &amp; Feature Attribution Monograph
           </span>
         </div>
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl lg:text-4xl font-serif text-slate-900 tracking-tight">
-              Predictive Architecture, Benchmarks & CUF Evaluation
+              Predictive Architecture, Benchmarks &amp; CUF Evaluation
             </h1>
             <p className="text-sm text-slate-600 max-w-3xl mt-2 leading-relaxed">
               Empirical validation addressing the <strong>3 Technical Dimensions</strong>: quantifying machine-learning
-              superiority over conventional heuristics, attributing Common Upload Form (CUF) predictive power, and
+              performance over conventional heuristics, examining Common Upload Form (CUF) predictive variables, and
               benchmarking cross-ministry performance.
             </p>
           </div>
@@ -301,7 +192,7 @@ export default async function AnalyticsPage() {
           </div>
         </div>
 
-        {/* Live Data Provenance Verification Strip */}
+        {/* Data Provenance Verification Strip */}
         <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
           <div className="flex items-center gap-2">
             <FileCode className="w-3.5 h-3.5 text-gov-teal shrink-0" />
@@ -316,7 +207,7 @@ export default async function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Quick Dimension Anchor Navigation */}
+      {/* Dimension Anchor Navigation */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <a
           href="#dim-a"
@@ -346,7 +237,7 @@ export default async function AnalyticsPage() {
         >
           <div>
             <span className="text-xs font-semibold text-gov-saffron uppercase tracking-wider block">Technical Dim C</span>
-            <span className="text-sm font-semibold text-slate-900 group-hover:text-gov-saffron">CUF Field Attribution (74.2%)</span>
+            <span className="text-sm font-semibold text-slate-900 group-hover:text-gov-saffron">CUF Feature Architecture</span>
           </div>
           <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-gov-saffron group-hover:translate-x-0.5 transition-all" />
         </a>
@@ -375,40 +266,50 @@ export default async function AnalyticsPage() {
           </div>
 
           <span className="text-xs px-2.5 py-1 rounded bg-teal-50 border border-teal-200 text-gov-teal font-semibold">
-            Precision: 100.0% (Zero False Alarms)
+            Ensemble Precision: {data.ensemblePrecision != null ? `${(data.ensemblePrecision * 100).toFixed(1)}%` : "Unavailable"}
           </span>
         </div>
 
-        {/* Highlights Statistics Strip */}
+        {/* Highlights Statistics Strip - Strictly grounded in artifact data */}
         <div className="grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 border-y border-slate-200 py-4 bg-white">
           <div className="px-4 py-2">
             <span className="text-xs text-slate-500 block">F1-Score Gain</span>
-            <div className="text-2xl font-serif font-bold text-gov-teal mt-0.5">79.7% → 99.5%</div>
-            <p className="text-xs text-slate-500 mt-0.5">+24.9% relative gain over heuristic baseline</p>
+            <div className="text-2xl font-serif font-bold text-gov-teal mt-0.5">
+              {data.baselineF1 != null && data.ensembleCostF1 != null
+                ? `${(data.baselineF1 * 100).toFixed(1)}% → ${(data.ensembleCostF1 * 100).toFixed(1)}%`
+                : "Unavailable"}
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">{data.f1RelativeGainText} over heuristic baseline</p>
           </div>
 
           <div className="px-4 py-2">
-            <span className="text-xs text-slate-500 block">False Alarm Reduction</span>
-            <div className="text-2xl font-serif font-bold text-gov-blue mt-0.5">33.8% → 0.0%</div>
-            <p className="text-xs text-slate-500 mt-0.5">Eliminates officer fatigue from false alerts</p>
+            <span className="text-xs text-slate-500 block">Precision Accuracy</span>
+            <div className="text-2xl font-serif font-bold text-gov-blue mt-0.5">
+              {data.baselinePrecision != null && data.ensemblePrecision != null
+                ? `${(data.baselinePrecision * 100).toFixed(1)}% → ${(data.ensemblePrecision * 100).toFixed(1)}%`
+                : "Unavailable"}
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">Heuristic baseline vs Stacking Ensemble</p>
           </div>
 
           <div className="px-4 py-2">
-            <span className="text-xs text-slate-500 block">Early Warning Lead Time</span>
-            <div className="text-2xl font-serif font-bold text-gov-saffron mt-0.5">6 to 12 Months</div>
-            <p className="text-xs text-slate-500 mt-0.5">vs 0 months for retrospective monthly reports</p>
+            <span className="text-xs text-slate-500 block">Schedule Regressor RMSE</span>
+            <div className="text-2xl font-serif font-bold text-gov-saffron mt-0.5">
+              {data.timeRegressorRmse != null ? `${data.timeRegressorRmse.toFixed(1)} Months` : "Unavailable"}
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">Continuous delay forecast error margin (XGBoost)</p>
           </div>
 
           <div className="px-4 py-2">
             <span className="text-xs text-slate-500 block">Portfolio Cost Escalation</span>
             <div className="text-2xl font-serif font-bold text-slate-900 mt-0.5">
-              {data.netCostOverrunLakhCr ? `₹${data.netCostOverrunLakhCr} Lakh Cr` : "Data unavailable"}
+              {data.netCostOverrunLakhCr ? `₹${data.netCostOverrunLakhCr} Lakh Cr` : "Unavailable"}
             </div>
             <p className="text-xs text-slate-500 mt-0.5">Net observed escalation [Current Portfolio Aggregation]</p>
           </div>
         </div>
 
-        {/* Side-by-Side Model Comparison Table */}
+        {/* Side-by-Side Model Comparison Table (Purged of unbacked leadTime / falseAlarm columns) */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border border-slate-200">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
@@ -419,12 +320,10 @@ export default async function AnalyticsPage() {
                 <th className="py-3 px-4 text-right">Precision</th>
                 <th className="py-3 px-4 text-right">Recall</th>
                 <th className="py-3 px-4 text-right">AUC-ROC</th>
-                <th className="py-3 px-4 text-right">Lead Time</th>
-                <th className="py-3 px-4 text-right">False Alarm</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-800">
-              {data.costBenchmarks.map((m: any, i: number) => (
+              {data.costBenchmarks.map((m: ModelBenchmarkEntry, i: number) => (
                 <tr
                   key={i}
                   className={`transition-colors ${
@@ -455,34 +354,28 @@ export default async function AnalyticsPage() {
                   <td className="py-3 px-4 text-right font-mono font-bold text-gov-blue">
                     {typeof m.auc === "number" ? m.auc.toFixed(4) : "Unavailable"}
                   </td>
-                  <td className="py-3 px-4 text-right font-mono text-gov-saffron font-semibold">
-                    {m.leadTime || "Unavailable"}
-                  </td>
-                  <td className="py-3 px-4 text-right font-mono text-gov-red font-semibold">
-                    {m.falseAlarmRate || "Unavailable"}
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* Qualitative Explanation Callout */}
+        {/* Qualitative Analytical Explanation */}
         <div className="p-4 rounded bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
           <div className="font-bold text-slate-900 flex items-center gap-1.5">
             <Info className="w-4 h-4 text-gov-blue shrink-0" />
-            <span>Analytical Findings: Why AI/ML Substantially Outperforms Conventional Rules</span>
+            <span>Analytical Findings: Why Ensemble ML Substantially Outperforms Conventional Rules</span>
           </div>
           <p className="text-[11px] leading-relaxed text-slate-600">
-            <strong>1. Multi-factor Non-linear Interactions:</strong> Conventional OCMS relied on static thresholds
-            (e.g., alert if delay &gt; 6 months or cost &gt; 10%). However, actual cost overruns stem from subtle coupled
-            dynamics—such as financial progress outpacing physical progress while milestone velocity decelerates. Tree-based
-            ensembles naturally capture these high-order interactions.
+            <strong>1. Multi-factor Non-linear Interactions:</strong> Conventional monitoring relied on static linear thresholds
+            (e.g., flag if delay &gt; 6 months or cost overrun &gt; 10%). Actual infrastructure cost overruns stem from subtle coupled
+            dynamics—such as financial disbursement outpacing verified physical progress while milestone velocity decelerates. Tree-based
+            ensembles capture these high-order interactions without manual threshold tuning.
           </p>
           <p className="text-[11px] leading-relaxed text-slate-600">
-            <strong>2. Elimination of False Alarm Burden:</strong> Conventional rules generated a 33.8% false-positive
-            rate, causing PMU alert fatigue. The Stacking Ensemble achieves 100% precision on holdout testing, ensuring
-            every alert escalated to the Revised Cost Committee (RCC) is high-confidence and actionable.
+            <strong>2. High Precision Filtering:</strong> Conventional single-threshold alerts frequently trigger on minor schedule revisions,
+            inducing alert fatigue among project directors. The calibrated Stacking Ensemble combines multiple base classifiers
+            to prioritize high-confidence escalations requiring administrative and inter-ministerial intervention.
           </p>
         </div>
       </section>
@@ -498,41 +391,40 @@ export default async function AnalyticsPage() {
                 Technical Dimension C
               </span>
               <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-                [MODEL EVALUATION RESULT]
+                [DATA SCHEMA &amp; POLICY TAXONOMY]
               </span>
             </div>
             <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
-              NIRMAAN AI Common Upload Form (CUF) Field Evaluation
+              Common Upload Form (CUF) Feature Architecture &amp; Governance Evaluation
             </h2>
             <p className="text-xs text-slate-500 mt-1">
-              Attribution of predictive performance between existing CUF fields versus non-CUF external variables.
+              Systematic classification of core CUF reporting fields versus non-CUF external variables for infrastructure intelligence.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-900 font-mono font-bold">
-              In-CUF: 74.2%
+          <div className="flex items-center gap-2 text-xs">
+            <span className="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-900 font-medium">
+              In-CUF Variables: Core Reporting
             </span>
-            <span className="text-xs px-2.5 py-1 rounded bg-orange-50 border border-orange-200 text-gov-saffron font-mono font-bold">
-              Non-CUF: 25.8%
+            <span className="px-2.5 py-1 rounded bg-orange-50 border border-orange-200 text-gov-saffron font-medium">
+              External Variables: Context Augmentation
             </span>
           </div>
         </div>
 
-        {/* Feature Importance & Attribution Table */}
+        {/* Feature Architecture Matrix (Honest Qualitative Schema Mapping) */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border border-slate-200">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
               <tr>
                 <th className="py-3 px-4">Feature Name</th>
-                <th className="py-3 px-4">Source</th>
+                <th className="py-3 px-4">Schema Domain</th>
                 <th className="py-3 px-4">Category</th>
-                <th className="py-3 px-4 text-right">Normalized Gain</th>
-                <th className="py-3 px-4">Policy Impact / Description</th>
+                <th className="py-3 px-4">Analytical &amp; Policy Rationale</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-800">
-              {CUF_ATTRIBUTION.map((item, idx) => (
+              {CUF_SCHEMA_TAXONOMY.map((item, idx) => (
                 <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
                   <td className="py-3 px-4 font-bold text-slate-900 flex items-center gap-2">
                     <span className="w-4 h-4 rounded bg-slate-100 text-[10px] text-slate-600 flex items-center justify-center font-mono font-semibold">
@@ -543,7 +435,7 @@ export default async function AnalyticsPage() {
                   <td className="py-3 px-4">
                     <span
                       className={`text-[10px] px-2 py-0.5 rounded font-bold ${
-                        item.source === "In-CUF"
+                        item.source.startsWith("In-CUF")
                           ? "bg-slate-100 text-slate-700 border border-slate-200"
                           : "bg-orange-50 text-gov-saffron border border-orange-200"
                       }`}
@@ -552,10 +444,7 @@ export default async function AnalyticsPage() {
                     </span>
                   </td>
                   <td className="py-3 px-4 text-slate-500 font-medium">{item.category}</td>
-                  <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">
-                    {(item.importance * 100).toFixed(2)}%
-                  </td>
-                  <td className="py-3 px-4 text-slate-600 text-[11px]">{item.desc}</td>
+                  <td className="py-3 px-4 text-slate-600 text-[11px] leading-relaxed">{item.desc}</td>
                 </tr>
               ))}
             </tbody>
@@ -578,8 +467,8 @@ export default async function AnalyticsPage() {
                 1. Mandatory Land Acquisition RoW Milestone
               </strong>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Land acquisition accounted for 43% of cited schedule delays. Reporting standards should mandate verified
-                percentage of unencumbered Right-of-Way (RoW) handed over prior to 20% financial disbursement.
+                Land acquisition and Right-of-Way (RoW) encumbrances represent a primary cause of cited schedule delays.
+                Reporting guidelines should mandate verified percentage of unencumbered land handed over prior to 20% financial disbursement.
               </p>
             </div>
 
@@ -589,7 +478,7 @@ export default async function AnalyticsPage() {
                 2. Automated Environmental Clearance API Sync
               </strong>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Statutory forest and environmental clearances should sync automatically into NIRMAAN AI,
+                Statutory forest and environmental clearance workflows should sync directly with monitoring repositories,
                 eliminating manual agency reporting lag and capturing regulatory bottlenecks early.
               </p>
             </div>
@@ -597,18 +486,18 @@ export default async function AnalyticsPage() {
             <div className="p-3 rounded bg-white border border-slate-200 space-y-1">
               <strong className="text-slate-900 flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-gov-teal" />
-                3. Concessionaire Liquidity & Working Capital Metric
+                3. Concessionaire Liquidity &amp; Working Capital Metric
               </strong>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Include contractor credit rating and working capital sufficiency ratio to flag concessionaire insolvency
-                risks before project execution halts.
+                Incorporate contractor credit rating and working capital sufficiency ratio to flag concessionaire insolvency
+                risks before physical project execution halts.
               </p>
             </div>
 
             <div className="p-3 rounded bg-white border border-slate-200 space-y-1">
               <strong className="text-slate-900 flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-gov-teal" />
-                4. Geotechnical & Terrain Complexity Flag
+                4. Geotechnical &amp; Terrain Complexity Flag
               </strong>
               <p className="text-xs text-slate-600 leading-relaxed">
                 Tag projects with mountainous, coastal, or seismic difficulty ratings to adjust baseline milestone
@@ -634,10 +523,10 @@ export default async function AnalyticsPage() {
               </span>
             </div>
             <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
-              Statistical & Machine Learning Predictive Pipeline
+              Statistical &amp; Machine Learning Predictive Pipeline
             </h2>
             <p className="text-xs text-slate-500 mt-1">
-              Cost Overrun & Schedule Delay forecasting with probability calibration and continuous regression magnitude across 47 indicators.
+              Cost Overrun &amp; Schedule Delay forecasting with probability calibration and continuous regression magnitude across 47 indicators.
             </p>
           </div>
 
@@ -656,7 +545,7 @@ export default async function AnalyticsPage() {
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <Clock className="w-3.5 h-3.5 text-gov-saffron" />
-              <span>Time Overrun & Schedule Delay Prediction Models</span>
+              <span>Time Overrun &amp; Schedule Delay Prediction Models</span>
             </h3>
             <span className="text-xs text-slate-500">Target: Time Overrun &gt; 0 Months</span>
           </div>
@@ -674,7 +563,7 @@ export default async function AnalyticsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-800">
-                {data.timeBenchmarks.map((m: any, i: number) => (
+                {data.timeBenchmarks.map((m: ModelBenchmarkEntry, i: number) => (
                   <tr
                     key={i}
                     className={`transition-colors ${
@@ -723,7 +612,7 @@ export default async function AnalyticsPage() {
               </span>
             </div>
             <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
-              Benchmarking & Comparative Performance Module
+              Benchmarking &amp; Comparative Performance Module
             </h2>
             <p className="text-xs text-slate-500 mt-1">
               Cross-Ministry and Cross-Sector capital efficiency, delay variance, and execution velocity.
@@ -782,7 +671,7 @@ export default async function AnalyticsPage() {
               </span>
             </div>
             <h2 className="text-xl lg:text-2xl font-serif text-slate-900 tracking-tight">
-              Cost Escalation Driver Analysis & Impediment Breakdown
+              Cost Escalation Driver Analysis &amp; Impediment Breakdown
             </h2>
             <p className="text-xs text-slate-500 mt-1">
               Empirical root-cause distribution cited across delayed Central Sector infrastructure projects.
