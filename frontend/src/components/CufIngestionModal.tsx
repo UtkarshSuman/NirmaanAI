@@ -238,27 +238,27 @@ export default function CufIngestionModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-[#0b1324] border border-[#1e2e4f] rounded-2xl shadow-2xl text-slate-100 overflow-hidden font-sans"
+        className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-white border border-slate-200 rounded-lg shadow-2xl text-slate-900 overflow-hidden font-sans"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top MoSPI / PAIMANA Badge Header */}
-        <div className="px-6 py-4 border-b border-[#1e2e4f] bg-gradient-to-r from-[#0c162c] via-[#101e3d] to-[#0c162c] flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-slate-100 bg-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-orange-600/20 border border-orange-500/40 flex items-center justify-center text-orange-400">
+            <div className="w-9 h-9 rounded bg-slate-900 flex items-center justify-center text-white shadow-2xs">
               <FileSpreadsheet className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold tracking-wider uppercase text-orange-400 font-mono">
+                <span className="text-[10px] font-bold tracking-wider uppercase text-gov-saffron font-mono">
                   MoSPI PAIMANA • CUF Protocol
                 </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold uppercase">
+                <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold uppercase">
                   Live ML Connected
                 </span>
               </div>
-              <h2 className="text-lg font-serif font-bold text-white tracking-tight">
+              <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900 tracking-tight">
                 Live CUF Ingestion Console
               </h2>
             </div>
@@ -266,7 +266,7 @@ export default function CufIngestionModal({
 
           <button
             onClick={handleClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
+            className="p-1.5 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
             title="Close"
           >
             <X className="w-5 h-5" />
@@ -274,62 +274,62 @@ export default function CufIngestionModal({
         </div>
 
         {/* Stepper Progress Bar */}
-        <div className="px-6 py-2.5 bg-[#080d19] border-b border-[#16233d] flex items-center justify-between text-xs text-slate-400">
-          <div className="flex items-center gap-6">
+        <div className="px-6 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs text-slate-500 shrink-0">
+          <div className="flex items-center gap-3 sm:gap-6">
             <div
               className={`flex items-center gap-2 ${
-                step === "upload" ? "text-orange-400 font-semibold" : "text-slate-400"
+                step === "upload" ? "text-slate-900 font-bold" : "text-slate-500"
               }`}
             >
               <span
-                className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${
+                className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-semibold ${
                   step === "upload"
-                    ? "bg-orange-500 text-white"
+                    ? "bg-slate-900 text-white"
                     : validationResult
-                    ? "bg-emerald-500/30 text-emerald-300"
-                    : "bg-slate-800 text-slate-400"
+                    ? "bg-emerald-100 text-emerald-800"
+                    : "bg-slate-200 text-slate-600"
                 }`}
               >
                 1
               </span>
               <span>Upload &amp; Options</span>
             </div>
-            <span className="text-slate-700">/</span>
+            <span className="text-slate-300">/</span>
             <div
               className={`flex items-center gap-2 ${
-                step === "preview" ? "text-orange-400 font-semibold" : "text-slate-400"
+                step === "preview" ? "text-slate-900 font-bold" : "text-slate-500"
               }`}
             >
               <span
-                className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${
+                className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-semibold ${
                   step === "preview"
-                    ? "bg-orange-500 text-white"
+                    ? "bg-slate-900 text-white"
                     : step === "processing" || step === "success"
-                    ? "bg-emerald-500/30 text-emerald-300"
-                    : "bg-slate-800 text-slate-400"
+                    ? "bg-emerald-100 text-emerald-800"
+                    : "bg-slate-200 text-slate-600"
                 }`}
               >
                 2
               </span>
               <span>Validation &amp; Preview</span>
             </div>
-            <span className="text-slate-700">/</span>
+            <span className="text-slate-300">/</span>
             <div
               className={`flex items-center gap-2 ${
                 step === "processing"
-                  ? "text-orange-400 font-semibold"
+                  ? "text-gov-saffron font-bold"
                   : step === "success"
-                  ? "text-emerald-400 font-semibold"
-                  : "text-slate-400"
+                  ? "text-emerald-700 font-bold"
+                  : "text-slate-500"
               }`}
             >
               <span
-                className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${
+                className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-semibold ${
                   step === "processing"
-                    ? "bg-orange-500 text-white animate-pulse"
+                    ? "bg-gov-saffron text-white animate-pulse"
                     : step === "success"
-                    ? "bg-emerald-500 text-white"
-                    : "bg-slate-800 text-slate-400"
+                    ? "bg-emerald-600 text-white"
+                    : "bg-slate-200 text-slate-600"
                 }`}
               >
                 3
@@ -338,7 +338,7 @@ export default function CufIngestionModal({
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-500">
+          <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-400 font-mono">
             <span>Standard: 30 CUF Fields</span>
             <span>•</span>
             <span>Inference: 47 Features</span>
@@ -346,30 +346,30 @@ export default function CufIngestionModal({
         </div>
 
         {/* Modal Body Container */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
           {errorMessage && (
-            <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
-              <AlertOctagon className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
+            <div className="p-3.5 rounded bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5">
+              <AlertOctagon className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
               <div>
                 <p className="font-semibold">Ingestion Notice</p>
-                <p className="mt-0.5 text-rose-200/90">{errorMessage}</p>
+                <p className="mt-0.5 text-rose-700">{errorMessage}</p>
               </div>
             </div>
           )}
 
           {/* STEP 1: FILE UPLOAD & CONFIGURATION */}
           {step === "upload" && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Drag and drop zone */}
               <div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`relative border-2 border-dashed rounded-2xl p-8 sm:p-10 text-center cursor-pointer transition-all duration-200 flex flex-col items-center justify-center gap-3 ${
+                className={`relative border-2 border-dashed rounded-lg p-8 sm:p-10 text-center cursor-pointer transition-all duration-200 flex flex-col items-center justify-center gap-3 ${
                   dragActive
-                    ? "border-orange-500 bg-orange-500/10 scale-[1.008]"
-                    : "border-slate-700/80 bg-slate-900/50 hover:border-slate-500 hover:bg-slate-900/80"
+                    ? "border-gov-saffron bg-orange-50/50 scale-[1.005]"
+                    : "border-slate-300 bg-slate-50 hover:border-slate-400 hover:bg-slate-100/60"
                 }`}
               >
                 <input
@@ -384,48 +384,48 @@ export default function CufIngestionModal({
                   className="hidden"
                 />
 
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-orange-600/30 to-amber-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 shadow-inner">
+                <div className="w-14 h-14 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center text-gov-saffron shadow-2xs">
                   {parsing ? (
-                    <div className="w-8 h-8 border-3 border-orange-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-7 h-7 border-2 border-gov-saffron border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    <UploadCloud className="w-8 h-8" />
+                    <UploadCloud className="w-7 h-7" />
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-base font-semibold text-white">
+                  <h3 className="text-base font-bold text-slate-900 font-serif">
                     {parsing ? "Parsing CUF Document..." : "Drop Common Upload Form (CUF) File Here"}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+                  <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
                     Upload official MoSPI/PAIMANA monthly project progress reports in Excel (
-                    <strong className="text-slate-300">.xlsx / .xls</strong>) or{" "}
-                    <strong className="text-slate-300">.csv</strong> format.
+                    <strong className="text-slate-800">.xlsx / .xls</strong>) or{" "}
+                    <strong className="text-slate-800">.csv</strong> format.
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
-                  <span className="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-300 font-mono border border-slate-700">
+                <div className="flex flex-wrap items-center justify-center gap-2 mt-1">
+                  <span className="px-2 py-0.5 rounded bg-white text-[10px] text-slate-700 font-mono border border-slate-200 shadow-2xs font-semibold">
                     .CSV
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-300 font-mono border border-slate-700">
+                  <span className="px-2 py-0.5 rounded bg-white text-[10px] text-slate-700 font-mono border border-slate-200 shadow-2xs font-semibold">
                     .XLSX
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-300 font-mono border border-slate-700">
+                  <span className="px-2 py-0.5 rounded bg-white text-[10px] text-slate-700 font-mono border border-slate-200 shadow-2xs font-semibold">
                     .XLS
                   </span>
-                  <span className="text-xs text-slate-500">• Max 50MB</span>
+                  <span className="text-xs text-slate-400 font-mono">• Max 50MB</span>
                 </div>
               </div>
 
               {/* Template & Demo Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between">
+                <div className="p-4 rounded-lg bg-white border border-slate-200 shadow-2xs flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-2 text-slate-200 font-semibold text-xs mb-1">
-                      <Download className="w-3.5 h-3.5 text-orange-400" />
+                    <div className="flex items-center gap-2 text-slate-900 font-bold text-xs mb-1">
+                      <Download className="w-3.5 h-3.5 text-gov-saffron" />
                       <span>Official MoSPI CUF Template</span>
                     </div>
-                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
                       Download pre-formatted headers with all 30 mandatory and optional CUF fields.
                     </p>
                   </div>
@@ -433,29 +433,29 @@ export default function CufIngestionModal({
                     <button
                       type="button"
                       onClick={() => downloadCufTemplate("csv")}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 border border-slate-300 transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
-                      <FileText className="w-3.5 h-3.5 text-slate-400" />
+                      <FileText className="w-3.5 h-3.5 text-slate-500" />
                       <span>CSV Template</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => downloadCufTemplate("xlsx")}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 border border-slate-300 transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
-                      <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+                      <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
                       <span>Excel (.xlsx)</span>
                     </button>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-gradient-to-br from-blue-950/40 to-indigo-950/40 border border-blue-800/30 flex flex-col justify-between">
+                <div className="p-4 rounded-lg bg-orange-50/50 border border-orange-200/80 shadow-2xs flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-2 text-blue-200 font-semibold text-xs mb-1">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <div className="flex items-center gap-2 text-slate-900 font-bold text-xs mb-1">
+                      <Sparkles className="w-3.5 h-3.5 text-gov-saffron" />
                       <span>Instant 1-Click Verification Batch</span>
                     </div>
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
                       Load 5 realistic Central Sector infrastructure projects across NHAI, DFCCIL, NTPC, BMRCL to test the live ML pipeline.
                     </p>
                   </div>
@@ -463,7 +463,7 @@ export default function CufIngestionModal({
                     <button
                       type="button"
                       onClick={handleLoadDemoData}
-                      className="w-full px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-md shadow-blue-900/30 transition-colors flex items-center justify-center gap-2"
+                      className="w-full px-3.5 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-xs font-semibold text-white shadow-2xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>Load 5-Project MoSPI Batch</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -473,38 +473,38 @@ export default function CufIngestionModal({
               </div>
 
               {/* Ingestion Parameters */}
-              <div className="p-4 rounded-xl bg-[#0e1628] border border-slate-800 space-y-3">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                   Ingestion Policy Configuration
                 </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                  <label className="flex items-start gap-3 p-3 rounded-lg bg-slate-900/70 border border-slate-800 cursor-pointer hover:border-slate-700">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <label className="flex items-start gap-3 p-3 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-slate-300 shadow-2xs">
                     <input
                       type="radio"
                       name="updateType"
                       value="incremental"
                       checked={updateType === "incremental"}
                       onChange={() => setUpdateType("incremental")}
-                      className="mt-0.5 text-orange-500 focus:ring-orange-500"
+                      className="mt-0.5 text-gov-saffron focus:ring-orange-500"
                     />
                     <div>
-                      <div className="text-xs font-semibold text-white">Incremental Upsert (Recommended)</div>
-                      <div className="text-[11px] text-slate-400">
-                        Updates existing projects by Project ID and inserts new entries. Preserves past historical snapshots.
+                      <div className="text-xs font-semibold text-slate-900">Incremental Upsert (Recommended)</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Updates existing projects by Project ID and inserts new entries. Preserves historical records.
                       </div>
                     </div>
                   </label>
 
-                  <label className="flex items-start gap-3 p-3 rounded-lg bg-slate-900/70 border border-slate-800 cursor-pointer hover:border-slate-700">
+                  <label className="flex items-start gap-3 p-3 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-slate-300 shadow-2xs">
                     <input
                       type="checkbox"
                       checked={isDryRun}
                       onChange={(e) => setIsDryRun(e.target.checked)}
-                      className="mt-0.5 text-orange-500 rounded focus:ring-orange-500"
+                      className="mt-0.5 text-gov-saffron rounded focus:ring-orange-500"
                     />
                     <div>
-                      <div className="text-xs font-semibold text-white">Dry Run Simulation Mode</div>
-                      <div className="text-[11px] text-slate-400">
+                      <div className="text-xs font-semibold text-slate-900">Dry Run Simulation Mode</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
                         Simulate schema mapping and run validation without committing any records to database.
                       </div>
                     </div>
@@ -516,28 +516,28 @@ export default function CufIngestionModal({
 
           {/* STEP 2: VALIDATION & DATA PREVIEW */}
           {step === "preview" && validationResult && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               {/* Summary Metric Ribbon */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase font-medium">Total Rows</span>
-                  <div className="text-xl font-bold font-mono text-white mt-0.5">
+                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">Total Rows</span>
+                  <div className="text-xl font-bold font-mono text-slate-900 mt-0.5">
                     {validationResult.totalRows}
                   </div>
                   <span className="text-[10px] text-slate-500">Processed from file</span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-800/40">
-                  <span className="text-[10px] text-emerald-400 uppercase font-medium">Valid Records</span>
-                  <div className="text-xl font-bold font-mono text-emerald-300 mt-0.5">
+                <div className="p-3.5 rounded-lg bg-emerald-50/60 border border-emerald-200 shadow-2xs">
+                  <span className="text-[10px] text-emerald-700 uppercase font-semibold">Valid Records</span>
+                  <div className="text-xl font-bold font-mono text-emerald-800 mt-0.5">
                     {validationResult.validCount}
                   </div>
-                  <span className="text-[10px] text-emerald-500/80">Ready for ML sync</span>
+                  <span className="text-[10px] text-emerald-600">Ready for ML sync</span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase font-medium">Portfolio Volume</span>
-                  <div className="text-xl font-bold font-mono text-amber-300 mt-0.5">
+                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">Portfolio Volume</span>
+                  <div className="text-xl font-bold font-mono text-slate-900 mt-0.5">
                     ₹{validationResult.totalCostCrore.toLocaleString()} Cr
                   </div>
                   <span className="text-[10px] text-slate-500">
@@ -545,18 +545,18 @@ export default function CufIngestionModal({
                   </span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase font-medium">Validation Status</span>
+                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">Validation Status</span>
                   <div className="flex items-center gap-1.5 mt-1">
                     {validationResult.errorCount === 0 ? (
                       <>
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        <span className="text-xs font-semibold text-emerald-300">Clean Schema</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span className="text-xs font-semibold text-emerald-700">Clean Schema</span>
                       </>
                     ) : (
                       <>
-                        <AlertTriangle className="w-4 h-4 text-amber-400" />
-                        <span className="text-xs font-semibold text-amber-300">
+                        <AlertTriangle className="w-4 h-4 text-amber-600" />
+                        <span className="text-xs font-semibold text-amber-700">
                           {validationResult.errorCount} skipped
                         </span>
                       </>
@@ -570,11 +570,11 @@ export default function CufIngestionModal({
 
               {/* Detected Sectors Badges */}
               <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                <span className="text-[11px] text-slate-400 font-medium">Sectors:</span>
+                <span className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Sectors:</span>
                 {validationResult.sectorsDetected.map((sector) => (
                   <span
                     key={sector}
-                    className="px-2 py-0.5 rounded-md bg-slate-800/80 text-[11px] text-slate-300 border border-slate-700"
+                    className="px-2 py-0.5 rounded bg-slate-100 text-[11px] text-slate-700 border border-slate-200 font-medium"
                   >
                     {sector}
                   </span>
@@ -582,19 +582,19 @@ export default function CufIngestionModal({
               </div>
 
               {/* Data Preview Table */}
-              <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/70">
-                <div className="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-200">
+              <div className="border border-slate-200 rounded-lg overflow-hidden bg-white shadow-2xs">
+                <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-900">
                     CUF Record Validation Grid ({validationResult.records.length} items)
                   </span>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[11px] text-slate-500 font-mono">
                     All 30 CUF columns normalized
                   </span>
                 </div>
 
                 <div className="overflow-x-auto max-h-72">
                   <table className="w-full text-left text-xs border-collapse">
-                    <thead className="bg-[#0b1220] sticky top-0 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                    <thead className="bg-slate-100/80 sticky top-0 text-[11px] font-semibold text-slate-600 uppercase tracking-wider border-b border-slate-200">
                       <tr>
                         <th className="px-3 py-2.5">Project ID</th>
                         <th className="px-3 py-2.5">Project Name</th>
@@ -606,28 +606,28 @@ export default function CufIngestionModal({
                         <th className="px-3 py-2.5">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/60 font-sans">
+                    <tbody className="divide-y divide-slate-100 font-sans text-slate-700">
                       {validationResult.records.map((r, i) => (
-                        <tr key={r.projectId || i} className="hover:bg-slate-900/60 transition-colors">
-                          <td className="px-3 py-2 font-mono text-orange-400 font-medium whitespace-nowrap">
+                        <tr key={r.projectId || i} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="px-3 py-2 font-mono text-slate-900 font-semibold whitespace-nowrap">
                             {r.projectId}
                           </td>
-                          <td className="px-3 py-2 text-slate-200 max-w-[220px] truncate" title={r.projectName}>
+                          <td className="px-3 py-2 text-slate-900 font-medium max-w-[220px] truncate" title={r.projectName}>
                             {r.projectName}
                           </td>
-                          <td className="px-3 py-2 text-slate-400 whitespace-nowrap">{r.sector}</td>
-                          <td className="px-3 py-2 text-slate-400 whitespace-nowrap">{r.state}</td>
-                          <td className="px-3 py-2 text-right font-mono text-slate-200 whitespace-nowrap">
+                          <td className="px-3 py-2 text-slate-600 whitespace-nowrap">{r.sector}</td>
+                          <td className="px-3 py-2 text-slate-600 whitespace-nowrap">{r.state}</td>
+                          <td className="px-3 py-2 text-right font-mono text-slate-900 whitespace-nowrap">
                             ₹{r.revisedCostCrore.toLocaleString()} Cr
                           </td>
                           <td className="px-3 py-2 text-right font-mono whitespace-nowrap">
                             <span
-                              className={`px-1.5 py-0.5 rounded text-[11px] font-semibold ${
+                              className={`px-1.5 py-0.5 rounded text-[11px] font-semibold border ${
                                 r.costOverrunPercent > 20
-                                  ? "bg-rose-500/20 text-rose-400"
+                                  ? "bg-rose-50 text-rose-700 border-rose-200"
                                   : r.costOverrunPercent > 0
-                                  ? "bg-amber-500/20 text-amber-400"
-                                  : "bg-emerald-500/20 text-emerald-400"
+                                  ? "bg-amber-50 text-amber-700 border-amber-200"
+                                  : "bg-emerald-50 text-emerald-700 border-emerald-200"
                               }`}
                             >
                               {r.costOverrunPercent > 0 ? `+${r.costOverrunPercent}%` : `${r.costOverrunPercent}%`}
@@ -637,17 +637,17 @@ export default function CufIngestionModal({
                             <span
                               className={`font-semibold ${
                                 r.timeOverrunMonths > 12
-                                  ? "text-rose-400"
+                                  ? "text-rose-600"
                                   : r.timeOverrunMonths > 0
-                                  ? "text-amber-400"
-                                  : "text-slate-400"
+                                  ? "text-amber-600"
+                                  : "text-slate-600"
                               }`}
                             >
                               {r.timeOverrunMonths}m
                             </span>
                           </td>
                           <td className="px-3 py-2 whitespace-nowrap">
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-800 text-slate-300 border border-slate-700">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
                               {r.projectStatus}
                             </span>
                           </td>
@@ -663,20 +663,20 @@ export default function CufIngestionModal({
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 rounded bg-white hover:bg-slate-50 border border-slate-300 text-xs font-semibold text-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Choose Another File</span>
                 </button>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <button
                     type="button"
                     onClick={() => {
                       setIsDryRun(true);
                       triggerIngestion();
                     }}
-                    className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-300 transition-colors"
+                    className="px-3.5 py-1.5 rounded bg-white hover:bg-slate-50 border border-slate-300 text-xs font-semibold text-slate-700 transition-colors shadow-2xs cursor-pointer"
                   >
                     Run Dry-Run Audit
                   </button>
@@ -687,9 +687,9 @@ export default function CufIngestionModal({
                       setIsDryRun(false);
                       triggerIngestion();
                     }}
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-xs font-bold text-white shadow-lg shadow-orange-600/30 transition-all flex items-center gap-2"
+                    className="px-4 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-xs font-bold text-white shadow-2xs transition-colors flex items-center gap-2 cursor-pointer"
                   >
-                    <Database className="w-4 h-4" />
+                    <Database className="w-3.5 h-3.5 text-gov-saffron" />
                     <span>Commit Live CUF Ingestion</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
@@ -700,46 +700,46 @@ export default function CufIngestionModal({
 
           {/* STEP 3: HIGH-TECH PROCESSING ANIMATION */}
           {step === "processing" && (
-            <div className="py-10 px-4 flex flex-col items-center justify-center text-center space-y-6">
-              <div className="relative w-20 h-20">
-                <div className="absolute inset-0 rounded-full border-4 border-orange-500/20 border-t-orange-500 animate-spin" />
-                <div className="absolute inset-2 rounded-full border-4 border-blue-500/20 border-b-blue-400 animate-spin [animation-duration:1.5s]" />
+            <div className="py-10 px-4 flex flex-col items-center justify-center text-center space-y-5">
+              <div className="relative w-16 h-16">
+                <div className="absolute inset-0 rounded-full border-3 border-orange-200 border-t-gov-saffron animate-spin" />
+                <div className="absolute inset-2 rounded-full border-3 border-slate-200 border-b-slate-900 animate-spin [animation-duration:1.5s]" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Cpu className="w-8 h-8 text-orange-400 animate-pulse" />
+                  <Cpu className="w-6 h-6 text-gov-saffron animate-pulse" />
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-serif font-bold text-white tracking-tight">
+                <h3 className="text-base font-serif font-bold text-slate-900 tracking-tight">
                   Executing Live CUF Ingestion Pipeline
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-md">
+                <p className="text-xs text-slate-500 mt-1 max-w-md">
                   Normalizing Common Upload Form data, writing to persistent database, and updating ML ensemble risk inference.
                 </p>
               </div>
 
               {/* Pipeline Step Progress Visualizer */}
-              <div className="w-full max-w-md space-y-2.5 text-left text-xs bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+              <div className="w-full max-w-md space-y-2 text-left text-xs bg-slate-50 p-4 rounded-lg border border-slate-200">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-300 flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span className="text-slate-800 font-medium flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     <span>1. CUF Schema Parsing &amp; Type Sanitization</span>
                   </span>
-                  <span className="text-[10px] text-emerald-400 font-mono">COMPLETE</span>
+                  <span className="text-[10px] text-emerald-700 font-mono font-bold">COMPLETE</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-300 flex items-center gap-2">
+                  <span className="text-slate-800 font-medium flex items-center gap-2">
                     {processingPhase >= 2 ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" />
+                      <div className="w-4 h-4 rounded-full border-2 border-gov-saffron border-t-transparent animate-spin" />
                     )}
-                    <span>2. SQLite / Prisma Database Upsert</span>
+                    <span>2. PostgreSQL / Prisma Database Upsert</span>
                   </span>
                   <span
-                    className={`text-[10px] font-mono ${
-                      processingPhase >= 2 ? "text-emerald-400" : "text-orange-400 animate-pulse"
+                    className={`text-[10px] font-mono font-bold ${
+                      processingPhase >= 2 ? "text-emerald-700" : "text-gov-saffron animate-pulse"
                     }`}
                   >
                     {processingPhase >= 2 ? "SAVED" : "WRITING..."}
@@ -747,23 +747,23 @@ export default function CufIngestionModal({
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-300 flex items-center gap-2">
+                  <span className="text-slate-800 font-medium flex items-center gap-2">
                     {processingPhase >= 3 ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     ) : processingPhase === 2 ? (
-                      <div className="w-4 h-4 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" />
+                      <div className="w-4 h-4 rounded-full border-2 border-gov-saffron border-t-transparent animate-spin" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                      <div className="w-4 h-4 rounded-full border border-slate-300" />
                     )}
                     <span>3. 47-Feature Transformation &amp; Lag Index</span>
                   </span>
                   <span
-                    className={`text-[10px] font-mono ${
+                    className={`text-[10px] font-mono font-bold ${
                       processingPhase >= 3
-                        ? "text-emerald-400"
+                        ? "text-emerald-700"
                         : processingPhase === 2
-                        ? "text-orange-400 animate-pulse"
-                        : "text-slate-600"
+                        ? "text-gov-saffron animate-pulse"
+                        : "text-slate-400"
                     }`}
                   >
                     {processingPhase >= 3 ? "ENGINEERED" : processingPhase === 2 ? "COMPUTING..." : "PENDING"}
@@ -771,23 +771,23 @@ export default function CufIngestionModal({
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-300 flex items-center gap-2">
+                  <span className="text-slate-800 font-medium flex items-center gap-2">
                     {processingPhase >= 4 ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     ) : processingPhase === 3 ? (
-                      <div className="w-4 h-4 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" />
+                      <div className="w-4 h-4 rounded-full border-2 border-gov-saffron border-t-transparent animate-spin" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                      <div className="w-4 h-4 rounded-full border border-slate-300" />
                     )}
                     <span>4. XGBoost/LightGBM Risk Scoring</span>
                   </span>
                   <span
-                    className={`text-[10px] font-mono ${
+                    className={`text-[10px] font-mono font-bold ${
                       processingPhase >= 4
-                        ? "text-emerald-400"
+                        ? "text-emerald-700"
                         : processingPhase === 3
-                        ? "text-orange-400 animate-pulse"
-                        : "text-slate-600"
+                        ? "text-gov-saffron animate-pulse"
+                        : "text-slate-400"
                     }`}
                   >
                     {processingPhase >= 4 ? "CALIBRATED" : processingPhase === 3 ? "INFERRING..." : "QUEUED"}
@@ -799,16 +799,16 @@ export default function CufIngestionModal({
 
           {/* STEP 4: SUCCESS & AUDIT SUMMARY */}
           {step === "success" && ingestionOutcome && (
-            <div className="space-y-6">
-              <div className="p-6 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-800/40 text-center space-y-3">
-                <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto shadow-lg shadow-emerald-900/30">
-                  <Check className="w-7 h-7 stroke-[2.5]" />
+            <div className="space-y-5">
+              <div className="p-6 rounded-lg bg-emerald-50/70 border border-emerald-200 text-center space-y-2">
+                <div className="w-12 h-12 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700 mx-auto shadow-2xs">
+                  <Check className="w-6 h-6 stroke-[2.5]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-serif font-bold text-white tracking-tight">
+                  <h3 className="text-lg font-serif font-bold text-slate-900 tracking-tight">
                     {ingestionOutcome.dry_run ? "Simulation Audit Completed" : "CUF Data Successfully Ingested"}
                   </h3>
-                  <p className="text-xs text-slate-300 mt-1 max-w-lg mx-auto">
+                  <p className="text-xs text-slate-600 mt-1 max-w-lg mx-auto">
                     {ingestionOutcome.dry_run
                       ? "Validation check passed. All records conform to PAIMANA Common Upload Form standard."
                       : "The projects ledger has been refreshed. Predictive risk models and early warning alerts have been recalibrated."}
@@ -818,33 +818,33 @@ export default function CufIngestionModal({
 
               {/* Metric Highlights */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase font-medium">New Projects Created</span>
-                  <div className="text-2xl font-bold font-mono text-emerald-400 mt-0.5">
+                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">New Projects Created</span>
+                  <div className="text-2xl font-bold font-mono text-emerald-700 mt-0.5">
                     {ingestionOutcome.records_created ?? ingestionOutcome.records_valid}
                   </div>
                   <span className="text-[10px] text-slate-500">Added to repository</span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase font-medium">Existing Updated</span>
-                  <div className="text-2xl font-bold font-mono text-blue-400 mt-0.5">
+                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">Existing Updated</span>
+                  <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5">
                     {ingestionOutcome.records_updated ?? 0}
                   </div>
                   <span className="text-[10px] text-slate-500">Incremental revision</span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase font-medium">Portfolio Delta</span>
-                  <div className="text-2xl font-bold font-mono text-amber-300 mt-0.5">
+                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">Portfolio Delta</span>
+                  <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5">
                     ₹{ingestionOutcome.total_cost_crore?.toLocaleString()} Cr
                   </div>
                   <span className="text-[10px] text-slate-500">Total volume represented</span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase font-medium">Pipeline Latency</span>
-                  <div className="text-2xl font-bold font-mono text-purple-400 mt-0.5">
+                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">Pipeline Latency</span>
+                  <div className="text-2xl font-bold font-mono text-slate-900 mt-0.5">
                     {ingestionOutcome.processing_time_ms} ms
                   </div>
                   <span className="text-[10px] text-slate-500">End-to-end execution</span>
@@ -856,7 +856,7 @@ export default function CufIngestionModal({
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
+                  className="px-3.5 py-1.5 rounded bg-white hover:bg-slate-50 border border-slate-300 text-xs font-semibold text-slate-700 transition-colors cursor-pointer shadow-2xs"
                 >
                   Ingest Another Batch
                 </button>
@@ -864,9 +864,9 @@ export default function CufIngestionModal({
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white shadow-lg shadow-emerald-700/30 transition-all flex items-center gap-1.5"
+                  className="px-4 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-xs font-bold text-white shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
-                  <ShieldCheck className="w-4 h-4" />
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   <span>Done &amp; View Ledger</span>
                 </button>
               </div>
@@ -875,12 +875,12 @@ export default function CufIngestionModal({
         </div>
 
         {/* Footer Audit Notice */}
-        <div className="px-6 py-2.5 bg-[#070b15] border-t border-[#16233d] flex items-center justify-between text-[11px] text-slate-400">
+        <div className="px-6 py-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <span>Grounded on MoSPI OCMS / PAIMANA Architecture</span>
           </div>
-          <div className="font-mono text-[10px] text-slate-500">
+          <div className="font-mono text-[10px] text-slate-400">
             NIRMAAN AI • Common Upload Form Ingestion v1.4
           </div>
         </div>
@@ -888,3 +888,4 @@ export default function CufIngestionModal({
     </div>
   );
 }
+

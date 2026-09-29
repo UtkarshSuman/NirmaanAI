@@ -16,6 +16,7 @@ import {
   X,
   UploadCloud,
   Plus,
+  FileSpreadsheet,
 } from "lucide-react";
 import ProjectTable from "@/components/ProjectTable";
 import CufIngestionModal from "@/components/CufIngestionModal";
@@ -228,11 +229,13 @@ function ProjectsContent() {
             <span>Ingest CUF Service</span>
           </Link>
           <button
+            id="btn-quick-ingest-modal"
             onClick={() => setShowIngestModal(true)}
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-white hover:bg-slate-50 border border-slate-300 text-xs font-semibold text-slate-700 transition-colors shadow-2xs cursor-pointer"
-            title="Open Quick Ingest Modal"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-slate-50 border border-slate-300 text-xs font-semibold text-slate-700 transition-colors shadow-2xs cursor-pointer"
+            title="Open Quick CUF Ingestion Modal"
           >
-            <span>Quick Modal</span>
+            <FileSpreadsheet className="w-3.5 h-3.5 text-slate-500" />
+            <span>Quick Ingest Modal</span>
           </button>
           <button
             onClick={exportCsv}
