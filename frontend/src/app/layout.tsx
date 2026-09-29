@@ -19,7 +19,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "NIRMAAN AI | Predictive Infrastructure Intelligence",
   description:
-    "Predictive infrastructure monitoring, portfolio risk analytics, geospatial intelligence, forecasting, and AI-assisted project analysis.",
+    "Predictive Infrastructure Monitoring and Alert System for India — portfolio risk analytics, geospatial intelligence, forecasting, and AI-assisted project analysis.",
   icons: {
     icon: "/icon.svg",
   },

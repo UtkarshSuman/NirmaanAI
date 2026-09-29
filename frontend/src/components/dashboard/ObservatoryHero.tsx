@@ -59,7 +59,7 @@ export default function ObservatoryHero({
           {/* Headline - Editorial Serif / Display Hierarchy */}
           <div>
             <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-serif font-bold text-slate-900 tracking-tight leading-[1.14]">
-              Predictive Infrastructure Monitoring for India
+              Predictive Infrastructure Monitoring and Alert System for India
             </h1>
             <p className="text-sm sm:text-base text-slate-600 mt-3 leading-relaxed font-sans">
               Unified intelligence for monitoring project cost, execution, schedule, and emerging risk across India&apos;s central-sector infrastructure portfolio.
