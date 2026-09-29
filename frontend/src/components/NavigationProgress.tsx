@@ -1,25 +1,40 @@
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export default function NavigationProgress() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const timersRef = useRef<NodeJS.Timeout[]>([]);
 
-  // When pathname or searchParams change, mark loading complete
+  const clearAllTimers = () => {
+    timersRef.current.forEach((t) => clearTimeout(t));
+    timersRef.current = [];
+  };
+
+  // Trigger smooth completion when navigation finishes
   useEffect(() => {
+    clearAllTimers();
+    // Complete to 100%
     setProgress(100);
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      setProgress(0);
-    }, 250);
-    return () => clearTimeout(timeout);
+
+    const fadeTimer = setTimeout(() => {
+      setVisible(false);
+      const resetTimer = setTimeout(() => {
+        setProgress(0);
+      }, 300);
+      timersRef.current.push(resetTimer);
+    }, 200);
+
+    timersRef.current.push(fadeTimer);
+
+    return () => clearAllTimers();
   }, [pathname, searchParams]);
 
-  // Intercept client-side link clicks to start progress bar instantly
+  // Intercept client-side link clicks to start progress bar
   useEffect(() => {
     const handleDocumentClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest("a");
@@ -32,38 +47,50 @@ export default function NavigationProgress() {
       const isDownload = target.hasAttribute("download");
 
       if (isInternal && !isHash && !isModified && !isDownload && targetUrl.pathname !== pathname) {
-        setLoading(true);
-        setProgress(25);
-        const timer1 = setTimeout(() => setProgress(65), 180);
-        const timer2 = setTimeout(() => setProgress(85), 450);
+        clearAllTimers();
+        setVisible(true);
+        setProgress(20);
 
-        return () => {
-          clearTimeout(timer1);
-          clearTimeout(timer2);
-        };
+        // Incremental progression
+        const t1 = setTimeout(() => setProgress(45), 120);
+        const t2 = setTimeout(() => setProgress(75), 300);
+        const t3 = setTimeout(() => setProgress(90), 650);
+
+        // Failsafe auto-complete so it never gets stuck midway
+        const tFailsafe = setTimeout(() => {
+          setProgress(100);
+          setTimeout(() => {
+            setVisible(false);
+            setProgress(0);
+          }, 250);
+        }, 1400);
+
+        timersRef.current.push(t1, t2, t3, tFailsafe);
       }
     };
 
     document.addEventListener("click", handleDocumentClick, { capture: true });
-    return () => document.removeEventListener("click", handleDocumentClick, { capture: true });
+    return () => {
+      document.removeEventListener("click", handleDocumentClick, { capture: true });
+      clearAllTimers();
+    };
   }, [pathname]);
 
-  if (!loading && progress === 0) return null;
+  if (!visible && progress === 0) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[9999] pointer-events-none">
-      {/* Top Progress Track */}
-      <div className="h-[3px] w-full bg-orange-100/40 overflow-hidden">
+    <div
+      className="fixed top-0 left-0 right-0 z-[9999] pointer-events-none transition-opacity duration-300"
+      style={{ opacity: visible ? 1 : 0 }}
+    >
+      <div className="h-[2.5px] w-full bg-transparent overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 transition-all duration-300 ease-out shadow-[0_0_10px_rgba(249,115,22,0.8)]"
-          style={{ width: `${progress}%` }}
+          className="h-full bg-gradient-to-r from-orange-500 via-amber-400 to-orange-600 transition-all duration-200 ease-out shadow-[0_0_8px_rgba(249,115,22,0.9)]"
+          style={{
+            width: `${progress}%`,
+            transition: progress === 100 ? "width 150ms ease-out" : "width 250ms ease-out",
+          }}
         />
-      </div>
-
-      {/* Floating telemetry toast indicator */}
-      <div className="absolute top-3 right-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 text-white text-xs font-mono shadow-lg backdrop-blur-xs border border-slate-700/60 transition-opacity animate-in fade-in duration-200">
-        <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-        <span>Syncing Registry Telemetry...</span>
       </div>
     </div>
   );
