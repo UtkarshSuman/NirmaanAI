@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import TopNav from "@/components/TopNav";
@@ -6,7 +7,9 @@ import GovHeader from "@/components/GovHeader";
 import GovFooter from "@/components/GovFooter";
 import ChatWidget from "@/components/ChatWidget";
 import DeviceAlertModal from "@/components/DeviceAlertModal";
+import NavigationProgress from "@/components/NavigationProgress";
 import prisma from "@/lib/prisma";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,6 +47,11 @@ export default async function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="bg-[#f8fafc] text-slate-900 min-h-screen antialiased flex flex-col selection:bg-orange-500/20 selection:text-orange-950 font-sans">
+        {/* Real-time Route Navigation Progress Bar */}
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
+
         {/* Top Utility and Identity Header */}
         <GovHeader />
 
