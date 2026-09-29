@@ -15,9 +15,11 @@ import {
   MapPin,
   X,
   UploadCloud,
+  Plus,
 } from "lucide-react";
 import ProjectTable from "@/components/ProjectTable";
 import CufIngestionModal from "@/components/CufIngestionModal";
+import AddProjectModal from "@/components/AddProjectModal";
 import type { ProjectItem } from "@/lib/types";
 
 const SECTORS = [
@@ -87,6 +89,7 @@ function ProjectsContent() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [showIngestModal, setShowIngestModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   // Sync state & search param from URL if it changes
   useEffect(() => {
@@ -208,6 +211,15 @@ function ProjectsContent() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          <button
+            id="btn-add-new-project"
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-xs font-semibold text-white transition-colors shadow-2xs cursor-pointer"
+            title="Register New Infrastructure Project"
+          >
+            <Plus className="w-3.5 h-3.5 text-gov-saffron" />
+            <span>Add Project</span>
+          </button>
           <Link
             href="/ingest"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-orange-600 hover:bg-orange-700 text-xs font-semibold text-white transition-colors shadow-2xs"
@@ -407,10 +419,19 @@ function ProjectsContent() {
             <p className="text-xs text-slate-600 font-mono">Querying NIRMAAN AI Ledger Database...</p>
           </div>
         ) : projects.length === 0 ? (
-          <div className="p-12 rounded bg-white border border-dashed border-slate-200 text-center space-y-1">
+          <div className="p-12 rounded bg-white border border-dashed border-slate-200 text-center space-y-2">
             <Building2 className="w-7 h-7 text-slate-300 mx-auto" />
             <p className="text-xs font-semibold text-slate-700">No matching projects found</p>
             <p className="text-[11px] text-slate-400">Try adjusting your search terms, state, sector, or risk filters.</p>
+            <div className="pt-2">
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-xs font-semibold text-white transition-colors shadow-2xs cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5 text-gov-saffron" />
+                <span>Register New Project</span>
+              </button>
+            </div>
           </div>
         ) : (
           <ProjectTable projects={projects} />
@@ -449,6 +470,15 @@ function ProjectsContent() {
         isOpen={showIngestModal}
         onClose={() => setShowIngestModal(false)}
         onIngestionSuccess={() => {
+          fetchProjects();
+        }}
+      />
+
+      {/* Manual Entry Add Project Modal */}
+      <AddProjectModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSuccess={() => {
           fetchProjects();
         }}
       />

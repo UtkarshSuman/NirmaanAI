@@ -31,81 +31,146 @@ import {
   Server,
   Terminal,
   Radio,
+  Clock,
 } from "lucide-react";
 import FeatureVariablesModal from "@/components/FeatureVariablesModal";
 
 export const metadata = {
-
   title: "About NIRMAAN AI | SIH Methodology & Predictive Architecture",
   description:
     "Comprehensive methodology monograph explaining how NIRMAAN AI solves India's Smart India Hackathon (SIH) infrastructure project monitoring challenge for MoSPI PAIMANA.",
 };
 
-const SIH_OUTCOMES = [
+const PLATFORM_FEATURES = [
   {
     id: "a",
+    letter: "a",
     title: "Cost Overrun Prediction Model",
-    spec: "Binary classification (>0% overrun) + continuous regression magnitude.",
-    delivered: "XGBoost + LightGBM + Random Forest stacking ensemble meta-learner. Achieved 99.48% F1 and 1.00 AUC-ROC.",
+    route: "/predict",
+    actionText: "Test Cost Predictor",
+    icon: TrendingUp,
+    badge: "99.48% F1 Score",
     status: "Implemented & Validated",
+    spec: "Binary classification (>0% overrun) + continuous regression magnitude.",
+    delivered:
+      "XGBoost + LightGBM + Random Forest stacking ensemble meta-learner predicting continuous percentage and quantum cost overruns (₹ Crore) with 1.00 AUC-ROC.",
+    highlights: ["Level-1 Stacking Meta-Learner", "Continuous ₹ Cr Overrun Forecast", "Trained on MoSPI CUF Repositories"],
   },
   {
     id: "b",
+    letter: "b",
     title: "Time Overrun Prediction Model",
-    spec: "Multi-horizon delay classification + continuous months prolongation regression.",
-    delivered: "Gradient-boosted regressor (RMSE: 9.83 months) + classification ensemble (91.26% F1).",
+    route: "/predict",
+    actionText: "Test Schedule Forecaster",
+    icon: Clock,
+    badge: "RMSE 9.83 Mo",
     status: "Implemented & Validated",
+    spec: "Multi-horizon delay classification + continuous months prolongation regression.",
+    delivered:
+      "Gradient-boosted regressor (RMSE: 9.83 months) + classification ensemble (91.26% F1) predicting schedule variance distributions and milestone slippage.",
+    highlights: ["Multi-Horizon Delay Regressors", "91.26% Delay Classification F1", "Milestone Decoupling Metrics"],
   },
   {
     id: "c",
+    letter: "c",
     title: "Project Risk Scoring Framework",
-    spec: "Composite 0–100 index categorizing assets into standardized risk tiers.",
-    delivered: "Calibrated 5-factor scoring model segmenting projects into CRITICAL, HIGH, MODERATE, and LOW tiers.",
+    route: "/projects",
+    actionText: "Inspect Risk Scores",
+    icon: Target,
+    badge: "Composite 0–100 Index",
     status: "Implemented & Validated",
+    spec: "Composite 0–100 index categorizing assets into standardized risk tiers.",
+    delivered:
+      "Calibrated 5-factor scoring engine segmenting projects into CRITICAL, HIGH, MODERATE, and LOW operational risk tiers.",
+    highlights: ["Statutory Compliance Index", "Physical vs Financial Divergence", "Standardized Saffron/Red Tiers"],
   },
   {
     id: "d",
+    letter: "d",
     title: "Early Warning Alert System",
-    spec: "Proactive signal generator for monitoring officers before formal baseline budget reset.",
-    delivered: "Automated alert engine with 4 severity classes, priority queue, and acknowledgement workflow.",
+    route: "/alerts",
+    actionText: "Live Alert Telemetry",
+    icon: ShieldAlert,
+    badge: "Event-Driven Telemetry",
     status: "Implemented & Validated",
+    spec: "Proactive signal generator for monitoring officers before formal baseline budget reset.",
+    delivered:
+      "Automated event-driven alert triggers (>15% cost overrun, >6 months delay, stalled milestones) with multi-tier severity, audio chimes, and browser notifications.",
+    highlights: ["Native Audio Chimes & Notifications", "Prioritized Triage Queues", "Resolution & Acknowledgment Audit"],
   },
   {
     id: "e",
-    title: "Benchmarking & Comparative Analytics",
-    spec: "Cross-Ministry and Cross-Sector comparative performance analytics.",
-    delivered: "Multi-dimensional performance ledgers benchmarking 17 Ministries and 22 infrastructure sectors.",
+    letter: "e",
+    title: "Benchmarking and Comparative Analytics Module",
+    route: "/analytics",
+    actionText: "Explore Analytics",
+    icon: BarChart3,
+    badge: "17 Ministries Monitored",
     status: "Implemented & Validated",
+    spec: "Cross-Ministry and Cross-Sector comparative performance analytics.",
+    delivered:
+      "Multi-dimensional performance ledgers benchmarking 17 Ministries and 22 infrastructure sectors with Pearson correlation matrices and empirical percentiles.",
+    highlights: ["Cross-Sectoral Overrun Benchmarks", "State Performance Rankings", "Variance Correlation Matrices"],
   },
   {
     id: "f",
-    title: "Cost Escalation Driver Analysis",
-    spec: "Granular root-cause decomposition of project delays and cost variances.",
-    delivered: "SHAP TreeExplainer feature attributions explaining local top risk drivers for every asset.",
+    letter: "f",
+    title: "Cost Escalation Driver Analysis Module",
+    route: "/projects",
+    actionText: "Inspect TreeSHAP Drivers",
+    icon: Layers,
+    badge: "TreeSHAP Local Attribution",
     status: "Implemented & Validated",
+    spec: "Granular root-cause decomposition of project delays and cost variances.",
+    delivered:
+      "Computes game-theoretic local Shapley values (TreeExplainer) to decompose risk into exact percentage drivers (RoW, forest clearances, contractor liquidity).",
+    highlights: ["Shapley Value Waterfall Charts", "Black-Box Model De-anonymization", "Factor-Level Sensitivity Curves"],
   },
   {
     id: "g",
-    title: "AI-Powered Monitoring Dashboard",
-    spec: "Institutional web console with interactive geospatial and analytical visualizers.",
-    delivered: "Next.js 16 national observatory with 36-state SVG choropleth, executive KPI cards, and live ledgers.",
+    letter: "g",
+    title: "AI-powered Monitoring Dashboard",
+    route: "/",
+    actionText: "National Dashboard",
+    icon: Activity,
+    badge: "National Observatory",
     status: "Implemented & Validated",
+    spec: "Institutional web console with interactive geospatial and analytical visualizers.",
+    delivered:
+      "Next.js national executive decision cockpit with interactive National Risk Radar, 36-state choropleth map, ministerial overview, and real-time project filtering.",
+    highlights: ["36-State Interactive Choropleth", "National Risk Radar Visualizer", "Instant CUF Ledger Search"],
   },
   {
     id: "h",
-    title: "LLM-Enabled Project Intelligence",
-    spec: "Conversational portfolio Q&A grounded on real-time database rows.",
-    delivered: "NIRMAAN AI Officer utilizing Google Gemini 2.0 Flash with live RAG database context injection.",
+    letter: "h",
+    title: "LLM-enabled Project Intelligence Assistant",
+    route: "/assistant",
+    actionText: "Consult AI Officer",
+    icon: Bot,
+    badge: "RAG + Gemini 2.0",
     status: "Implemented & Validated",
+    spec: "Conversational portfolio Q&A grounded on real-time database rows.",
+    delivered:
+      "RAG conversational AI officer powered by Google Gemini and live database context, with indexed statutory guidelines for Highways, Railways, and Nuclear Plants.",
+    highlights: ["Context-Grounding Against 1,931 Assets", "Highways, Railways & Nuclear Guidelines", "Instant Cabinet Briefing Notes"],
   },
   {
     id: "i",
-    title: "Documentation, Ingestion & Deployment",
-    spec: "Standardized CUF data intake, Docker deployment, and technical monographs.",
-    delivered: "Live Excel/CSV CUF ingestion pipeline with schema validator, test suites, and Docker containerization.",
+    letter: "i",
+    title: "Documentation and deployment framework",
+    route: "/api-docs",
+    actionText: "Architecture & OpenAPI",
+    icon: Server,
+    badge: "Docker Containerized",
     status: "Implemented & Validated",
+    spec: "Standardized CUF data intake, Docker deployment, and technical monographs.",
+    delivered:
+      "Complete production-ready containerization (Docker, Next.js, FastAPI, Prisma, PostgreSQL/SQLite) with comprehensive OpenAPI documentation and automated test suites.",
+    highlights: ["Docker Compose Multi-Container", "Interactive Swagger & OpenAPI Suite", "50-Test Verification Harness"],
   },
 ];
+
+const SIH_OUTCOMES = PLATFORM_FEATURES;
 
 const METHODOLOGY_PILLARS = [
   {
@@ -359,7 +424,91 @@ export default function AboutPage() {
           })}
         </div>
 
+        {/* WEBPAGE INTEGRATED FEATURES & FUNCTIONAL MODULES CARD */}
+        <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-orange-700 uppercase tracking-wider font-mono">
+                  Full Platform Capabilities
+                </span>
+                <span className="text-slate-300">•</span>
+                <span className="text-[10px] text-slate-500 font-mono">
+                  Modules [a] to [i]
+                </span>
+              </div>
+              <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 tracking-tight mt-0.5">
+                Core Webpage Features &amp; Functional Modules
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Integrated technical modules operationalized across NIRMAAN AI, delivering end-to-end predictive intelligence, explainability, and governance.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+              <span className="px-3 py-1 rounded-full bg-emerald-50 text-xs font-mono font-bold text-emerald-800 border border-emerald-200 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                9/9 Operational
+              </span>
+            </div>
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {PLATFORM_FEATURES.map((feat) => {
+              const Icon = feat.icon;
+              return (
+                <div
+                  key={feat.letter}
+                  className="p-4 rounded-xl bg-slate-50/70 border border-slate-200/90 hover:border-orange-300 hover:bg-white transition-all shadow-2xs flex flex-col justify-between space-y-3 group"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-md bg-orange-100 border border-orange-200 text-orange-800 font-mono font-bold text-xs flex items-center justify-center">
+                          {feat.letter}
+                        </span>
+                        <div className="w-7 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center text-slate-700 group-hover:text-orange-600 transition-colors">
+                          <Icon className="w-3.5 h-3.5" />
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200">
+                        {feat.badge}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-900 group-hover:text-orange-950 transition-colors">
+                        {feat.letter}. {feat.title}
+                      </h4>
+                      <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">
+                        {feat.delivered}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-200/70 space-y-1">
+                      {feat.highlights.map((h, idx) => (
+                        <div key={idx} className="flex items-center gap-1.5 text-[10px] text-slate-500">
+                          <Check className="w-3 h-3 text-emerald-600 shrink-0" />
+                          <span>{h}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-2.5 border-t border-slate-200/70 flex items-center justify-between text-xs">
+                    <span className="text-[10px] text-slate-400 font-mono">Status: Verified</span>
+                    <Link
+                      href={feat.route}
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-orange-700 hover:text-orange-800 group-hover:translate-x-0.5 transition-all"
+                    >
+                      <span>{feat.actionText}</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Feature Taxonomy Table */}
         <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-4">

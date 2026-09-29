@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+  searchGuidelines,
+  formatGuidelinesForPrompt,
+  generateSectorGuidelineResponse,
+  StatutoryGuideline,
+} from "@/lib/rag/guidelines";
 
 const GEMINI_API_KEY =
   process.env.GEMINI_API_KEY ||
@@ -28,6 +34,8 @@ const SECTOR_MAP = [
   { key: "highway", sector: "National Highways" },
   { key: "road", sector: "National Highways" },
   { key: "power", sector: "Power" },
+  { key: "atomic", sector: "Atomic Energy" },
+  { key: "nuclear", sector: "Atomic Energy" },
   { key: "petroleum", sector: "Petroleum" },
   { key: "port", sector: "Ports & Shipping" },
   { key: "shipping", sector: "Ports & Shipping" },
@@ -38,13 +46,12 @@ const SECTOR_MAP = [
   { key: "metro", sector: "Urban Transport" },
   { key: "telecom", sector: "Telecom" },
   { key: "defence", sector: "Defence" },
-  { key: "nuclear", sector: "Power" },
 ];
 
 const AGENCY_KEYWORDS = [
   "nhai", "rvnl", "ircon", "ntpc", "pgcil", "seci", "ongc", "iocl",
   "dfccil", "nhpc", "sail", "coalindia", "ail", "bpcl", "hpcl", "bsnl",
-  "aai", "irb", "hal",
+  "aai", "irb", "hal", "npcil", "dae", "barc", "bhavini", "nfc", "aerb",
 ];
 
 // ─── Conversational Intent Detection ───────────────────────────────────────
@@ -157,14 +164,27 @@ async function assembleContext(query: string) {
     );
     referencedProjects = stateProjects;
   } else if (detectedSector) {
+    const sectorWhere =
+      detectedSector === "Atomic Energy"
+        ? {
+            OR: [
+              { sector: "Atomic Energy" },
+              { sector: "Power" },
+              { sector: "Power Generation" },
+              { subSector: { contains: "Nuclear" } },
+              { implementingAgency: { in: ["NPCIL", "DAE", "BARC", "BHAVINI", "NFC", "AERB"] } },
+            ],
+          }
+        : { sector: detectedSector };
+
     const sectorProjects = await prisma.project.findMany({
-      where: { sector: detectedSector },
+      where: sectorWhere,
       take: 6,
       orderBy: { costOverrunPercent: "desc" },
       include: { predictions: { take: 1, orderBy: { createdAt: "desc" } } },
     });
     const sectorAgg = await prisma.project.aggregate({
-      where: { sector: detectedSector },
+      where: sectorWhere,
       _count: { projectId: true },
       _avg: { costOverrunPercent: true, timeOverrunMonths: true },
       _sum: { revisedCostCrore: true },
@@ -226,10 +246,18 @@ async function assembleContext(query: string) {
     contextParts.push(`\nRELEVANT PROJECT DATA:\n${projectDetails}`);
   }
 
+  // 6. RAG Statutory Sector Guidelines Retrieval (Highways, Railways, Nuclear Plants)
+  const matchedGuidelines = searchGuidelines(query);
+  if (matchedGuidelines.length > 0) {
+    const formattedGuidelines = formatGuidelinesForPrompt(matchedGuidelines);
+    contextParts.push(`\nSOVEREIGN STATUTORY GUIDELINES & CLEARANCE DIRECTIVES:\n${formattedGuidelines}`);
+  }
+
   return {
     kpi: { totalProjects, revisedLakhCr, avgOverrun, avgDelay, alertCount },
     detectedEntity: { state: detectedState, sector: detectedSector, agency: detectedAgency },
     systemContext: contextParts.join("\n\n"),
+    matchedGuidelines,
     referencedProjects: referencedProjects.map((p: any) => ({
       id: p.id,
       projectId: p.projectId,
@@ -249,13 +277,19 @@ async function callGemini(userMessage: string, dbContext: string): Promise<strin
 
 You have real-time access to the PAIMANA (Project Assessment, Infrastructure Monitoring and Analytics for Nation-building) national database tracking Central Sector Projects (≥ ₹150 Cr).
 
-Guidelines:
-1. When the user gives a greeting (e.g. "hello", "hi"), respond warmly, introduce yourself concisely as NIRMAAN AI Officer, give a 1-sentence pulse of the national portfolio, and offer 3-4 specific topics they can ask you about. Do NOT dump long briefings for simple greetings.
-2. For specific questions (delays, cost overruns, agencies like NHAI or NTPC, sectors like Railways or Power, states), provide evidence-based, structured answers with numbers cited from the provided database context.
-3. Suggest PM GatiShakti and MoSPI PMU policy recommendations when discussing delayed assets.
-4. Keep responses structured, professional, and readable with Markdown formatting.
+You also have integrated RAG access to sovereign statutory guidelines and regulatory frameworks for:
+1. National Highways (MoRTH / NHAI / IRC guidelines, CALA land acquisition under NH Act 1956, Parivesh Stage I/II forest clearances, 80-90% unencumbered RoW appointed date thresholds, IRC:37/58/78 standards).
+2. Railways & DFC (Ministry of Railways / RDSO / Commission of Railway Safety CRS statutory sanctions under Railways Act 1989, GAD bridge approvals, 25 kV AC OHE energization by EIG, Kavach ATP).
+3. Nuclear Power Plants (Department of Atomic Energy DAE / AERB 4-tier licensing: Siting Consent, Construction Consent, Commissioning, Operating License; 1.5 km Exclusion Zone & 5 km Sterilized Zone; ASME Sec III / AERB/SC/G safety codes).
 
-LIVE DATABASE CONTEXT:
+Guidelines:
+1. When asked about guidelines, clearances, regulations, or procedures for Highways, Railways, or Nuclear Plants, provide authoritative, structured, and legally cited explanations incorporating the exact acts, regulatory bodies, and threshold rules from the context.
+2. When the user gives a greeting (e.g. "hello", "hi"), respond warmly, introduce yourself concisely as NIRMAAN AI Officer, give a 1-sentence pulse of the national portfolio, and offer 3-4 specific topics they can ask you about. Do NOT dump long briefings for simple greetings.
+3. For specific questions (delays, cost overruns, agencies like NHAI or NTPC or NPCIL, sectors like Railways, Highways, or Nuclear Power), provide evidence-based, structured answers with numbers cited from the provided database context.
+4. Suggest PM GatiShakti and MoSPI PMU policy recommendations when discussing delayed assets.
+5. Keep responses structured, professional, and readable with Markdown formatting.
+
+LIVE DATABASE & REGULATORY GUIDELINE CONTEXT:
 ${dbContext}`;
 
   let lastError: any = null;
@@ -298,10 +332,11 @@ function buildIntelligentResponse(
     kpi: any;
     detectedEntity: any;
     systemContext: string;
+    matchedGuidelines?: StatutoryGuideline[];
     referencedProjects: any[];
   }
 ): string {
-  const { kpi, detectedEntity } = contextData;
+  const { kpi, detectedEntity, matchedGuidelines } = contextData;
 
   // 1. Natural Greeting
   if (isGreeting(userMessage)) {
@@ -317,37 +352,55 @@ I am ready to assist you with real-time analytics, cost overrun predictions, and
 - **Pending Risk Alerts:** ${kpi.alertCount} signals
 
 **You can ask me questions like:**
-- *"What are the most delayed projects in Railways?"*
-- *"Show me NHAI highway performance in Maharashtra"*
-- *"Which projects have CRITICAL risk status?"*
-- *"Give me a summary of root causes for infrastructure delays"*`;
+- *"Show NHAI Highway Right-of-Way and statutory clearance guidelines"*
+- *"What are Railway CRS statutory safety clearance and GAD approval guidelines?"*
+- *"Explain AERB 4-tier licensing and siting guidelines for Nuclear Power Plants"*
+- *"What are the most delayed projects in Railways or Atomic Energy?"*
+- *"Show me NHAI highway performance in Maharashtra"*`;
   }
 
   // 2. Capabilities inquiry
   if (isCapabilitiesQuestion(userMessage)) {
     return `### 🏛️ Capabilities of NIRMAAN AI Officer
-I am an AI-powered analytical assistant trained on India's MoSPI PAIMANA repository and 47 engineered CUF features.
+I am an AI-powered analytical assistant trained on India's MoSPI PAIMANA repository, 47 engineered CUF features, and sovereign regulatory frameworks.
 
 **What I Can Analyze For You:**
-1. **Predictive Risk Assessment:** Evaluate cost & time overrun probability using our XGBoost + LightGBM + RF stacking ensemble (99.48% F1).
-2. **Agency & Sector Drilldowns:** Filter portfolio performance for implementing agencies (*NHAI, DFCCIL, RVNL, NTPC, IOCL*) or 22 key infrastructure sectors.
-3. **State-Level Bottlenecks:** Assess Right-of-Way (RoW), statutory clearances, and civil execution hurdles by state.
-4. **Early Warning Signals:** Highlight active alerts and recommend corrective PMU interventions aligned with PM GatiShakti.`;
+1. **Statutory Sector Guidelines (RAG Knowledge Base):** Comprehensive regulatory clearance pathways, land acquisition thresholds, and safety codes for **National Highways (MoRTH/NHAI/IRC)**, **Railways (RDSO/CRS/DFCCIL)**, and **Nuclear Power Plants (DAE/NPCIL/AERB)**.
+2. **Predictive Risk Assessment:** Evaluate cost & time overrun probability using our XGBoost + LightGBM + RF stacking ensemble (99.48% F1).
+3. **Agency & Sector Drilldowns:** Filter portfolio performance for implementing agencies (*NHAI, DFCCIL, RVNL, NPCIL, NTPC, IOCL*) or 22 key infrastructure sectors.
+4. **State-Level Bottlenecks:** Assess Right-of-Way (RoW), statutory clearances, and civil execution hurdles by state.
+5. **Early Warning Signals:** Highlight active alerts and recommend corrective PMU interventions aligned with PM GatiShakti.`;
   }
 
-  // 3. Sector-specific query
+  // 3. Sector Guidelines Inquiry (Highways, Railways, Nuclear Plants)
+  const isGuidelineQuery =
+    /guideline|guidelines|statutory|clearance|clearances|aerb|crs|nhai|irc|rdso|row|land acquisition|norm|norms|rule|rules|siting|environmental clearance|licensing|safety code/i.test(
+      userMessage
+    );
+
+  if (isGuidelineQuery && matchedGuidelines && matchedGuidelines.length > 0) {
+    return generateSectorGuidelineResponse(userMessage, matchedGuidelines);
+  }
+
+  // 4. Sector-specific query
   if (detectedEntity.sector) {
+    // If query also touches guidelines or regulatory rules
+    if (matchedGuidelines && matchedGuidelines.length > 0) {
+      return generateSectorGuidelineResponse(userMessage, matchedGuidelines);
+    }
+
     return `### 📊 Sector Analysis: ${detectedEntity.sector}
 *Source: Verified Central Sector CUF Ingestion Database*
 
 - **Projects Monitored:** High-priority national assets in **${detectedEntity.sector}**
-- **Key Delay Drivers:** Land acquisition, regulatory forest clearances, and contractor liquidity constraints.
+- **Key Delay Drivers:** Land acquisition, statutory clearances, and contractor liquidity constraints.
 - **ML Risk Assessment:** Proactive monitoring identifies potential variance before revised cost estimates (RCE) are formalized.
+- **Regulatory Framework:** Compliance guided by sovereign ministry norms and statutory inspection councils.
 
 Relevant projects are pinned below for detailed inspection.`;
   }
 
-  // 4. Agency-specific query
+  // 5. Agency-specific query
   if (detectedEntity.agency) {
     const agencyName = detectedEntity.agency.toUpperCase();
     return `### 🏢 Implementing Agency Review: ${agencyName}
@@ -360,7 +413,7 @@ Relevant projects are pinned below for detailed inspection.`;
 Check the specific projects listed below for individual risk scores and milestone achievements.`;
   }
 
-  // 5. Default General Briefing
+  // 6. Default General Briefing
   return `### 🇮🇳 NIRMAAN AI Officer Briefing
 *National Infrastructure Observatory • PAIMANA Portfolio Intelligence*
 
@@ -369,7 +422,8 @@ ${contextData.systemContext.split("\n\n").slice(0, 3).join("\n\n")}
 #### 💡 Recommended Policy Actions:
 1. **Accelerate RoW Clearances:** Prioritize PM GatiShakti inter-ministerial resolution for linear infrastructure projects with high land encumbrance.
 2. **ML Early Warnings:** Utilize stacking ensemble predictive alerts (99.48% F1) to conduct mid-term reviews prior to budget revisions.
-3. **Expenditure Review:** Convene Project Monitoring Units (PMU) for assets with composite risk scores > 70/100.`;
+3. **Statutory Compliance:** Adhere to NHAI, CRS, and AERB regulatory clearance gates to avert post-execution arbitration penalties.
+4. **Expenditure Review:** Convene Project Monitoring Units (PMU) for assets with composite risk scores > 70/100.`;
 }
 
 // ─── Main route handler ────────────────────────────────────────────────────

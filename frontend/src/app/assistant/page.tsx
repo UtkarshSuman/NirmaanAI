@@ -30,11 +30,12 @@ interface Message {
 }
 
 const PROMPT_SUGGESTIONS = [
+  "Show NHAI Highway Right-of-Way (RoW) and statutory clearance guidelines",
+  "What are Railway CRS safety sanctions and GAD approval guidelines?",
+  "Explain AERB 4-tier licensing and siting guidelines for Nuclear Power Plants",
   "Show top high-risk National Highways projects with cost overrun > 20%",
   "Which Railway projects have delayed milestones exceeding 18 months?",
   "What are the primary root causes of delay across the infrastructure portfolio?",
-  "Summarize critical infrastructure interventions required for Uttar Pradesh & Maharashtra",
-  "Explain why multiple budget revisions increase cost risk in the ML model",
 ];
 
 export default function AssistantPage() {
@@ -42,11 +43,14 @@ export default function AssistantPage() {
     {
       role: "assistant",
       content: `### 🇮🇳 Namaste. Welcome to NIRMAAN AI Officer Desk.
-I am your specialized intelligence assistant for national capital execution monitoring and predictive portfolio analysis.
+I am your specialized intelligence assistant for national capital execution monitoring, predictive portfolio analysis, and sovereign statutory guidelines.
 
-I have full contextual awareness over all Central Sector Infrastructure Projects (≥ ₹150 Crore) tracked across 17 Central Ministries and 22 infrastructure sectors under the NIRMAAN AI framework.
+I have full contextual awareness over **1,931+ Central Sector Projects** (≥ ₹150 Cr) and integrated RAG access to statutory guidelines for:
+- 🛣️ **National Highways:** MoRTH / NHAI acts, CALA land acquisition, 80-90% unencumbered RoW appointed date norms, Parivesh forest clearances, and IRC standards.
+- 🚆 **Railways:** Commissioner of Railway Safety (CRS) statutory sanctions under Railways Act 1989, GAD bridge approvals, 25 kV AC traction, and RDSO codes.
+- ⚛️ **Nuclear Power Plants:** DAE / AERB 4-tier regulatory licensing (Siting, Construction, Commissioning, Operation), 1.5 km Exclusion Zones, and ASME/AERB safety codes.
 
-How may I assist your portfolio review today?`,
+How may I assist your portfolio review or regulatory inquiry today?`,
     },
   ]);
   const [input, setInput] = useState("");
@@ -140,6 +144,26 @@ How may I assist your portfolio review today?`,
               [Current Analytical Dataset + ML Model Context]
             </span>
           </div>
+        </div>
+      </div>
+
+      {/* Statutory Guidelines Knowledge Bar */}
+      <div className="p-3 rounded-lg bg-orange-50/60 border border-orange-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+        <div className="flex items-center gap-2 text-slate-800 font-semibold">
+          <ShieldCheck className="w-4 h-4 text-orange-600 shrink-0" />
+          <span>RAG Statutory Guidelines Indexed:</span>
+          <span className="text-slate-500 font-normal">Sovereign compliance protocols active for:</span>
+        </div>
+        <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
+          <span className="px-2 py-0.5 rounded bg-white text-orange-800 border border-orange-200 font-medium">
+            🛣️ Highways (MoRTH/NHAI/IRC)
+          </span>
+          <span className="px-2 py-0.5 rounded bg-white text-blue-800 border border-blue-200 font-medium">
+            🚆 Railways (CRS/RDSO/DFCCIL)
+          </span>
+          <span className="px-2 py-0.5 rounded bg-white text-purple-800 border border-purple-200 font-medium">
+            ⚛️ Nuclear Plants (DAE/AERB/NPCIL)
+          </span>
         </div>
       </div>
 
