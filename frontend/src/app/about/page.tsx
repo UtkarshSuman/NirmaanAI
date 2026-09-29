@@ -32,9 +32,10 @@ import {
   Terminal,
   Radio,
 } from "lucide-react";
-
+import FeatureVariablesModal from "@/components/FeatureVariablesModal";
 
 export const metadata = {
+
   title: "About NIRMAAN AI | SIH Methodology & Predictive Architecture",
   description:
     "Comprehensive methodology monograph explaining how NIRMAAN AI solves India's Smart India Hackathon (SIH) infrastructure project monitoring challenge for MoSPI PAIMANA.",
@@ -320,6 +321,9 @@ export default function AboutPage() {
                   <h3 className="text-sm font-bold text-slate-900 leading-snug">{pillar.title}</h3>
                   <p className="text-xs text-slate-600 leading-relaxed">{pillar.desc}</p>
 
+                  {/* Render 47 Feature Variables modal button in Pillar 02 card */}
+                  {pillar.step === "02" && <FeatureVariablesModal />}
+
                   {/* Render ML Models in ML Pillar Card only */}
                   {pillar.models && (
                     <div className="pt-2 border-t border-slate-100 space-y-2">
@@ -344,6 +348,7 @@ export default function AboutPage() {
                     </div>
                   )}
                 </div>
+
 
                 <div className="pt-2 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-orange-700">
                   <span>Production Pipeline</span>
