@@ -1,8 +1,8 @@
-# NIRMAAN AI — PAIMANA Predictive Infrastructure Intelligence Platform
+# NIRMAAN AI — Predictive Infrastructure Intelligence Platform
 
-> **SIH 2024 Submission** | Problem Statement: AI for Infrastructure Monitoring — IPMD/MoSPI PAIMANA  
-> **Team:** NIRMAAN AI  
-> **Platform:** PAIMANA (Project Assessment, Infrastructure Monitoring and Analytics for Nation-building)  
+> **SIH 2026 Submission** | Problem Solution: AI for Infrastructure Monitoring — IPMD/MoSPI PAIMANA  
+> **Team:** Team Rescue-Arc  
+> **Platform:** NIRMAAN AI (Project Assessment, Infrastructure Monitoring and Analytics for Nation-building)  
 
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](.) [![Tests](https://img.shields.io/badge/tests-49%2F50-brightgreen)](.) [![ML F1](https://img.shields.io/badge/cost_overrun_F1-99.48%25-blue)](.) [![License](https://img.shields.io/badge/license-MIT-blue)](.)
 
@@ -40,6 +40,72 @@ NIRMAAN AI transforms India's PAIMANA infrastructure monitoring from **descripti
 - **Dim A:** 47 CUF-aligned features. XGBoost + LightGBM + RF + Stacking Meta-Learner. 5-fold Stratified CV.
 - **Dim B:** Rule-based baseline F1: 79.67% → Ensemble F1: 99.48% (+24.9% relative gain)
 - **Dim C:** CUF vs External feature taxonomy. Policy recommendations for 4 schema enhancements.
+
+---
+
+## 🖥️ Platform Interfaces & Key Modules
+
+NIRMAAN AI provides a unified, interactive web interface for national infrastructure monitoring, risk triage, and predictive decision-support. Below is a comprehensive overview of the core platform interfaces:
+
+### 1. Platform Overview & National Infrastructure Observatory
+![Platform Overview](frontend/public/homepage.png)
+
+1. **Page Description:** The primary executive landing dashboard providing a macro-level overview of India's central-sector infrastructure assets (costing ₹150 Cr+). Features an interactive geospatial summary preview, live portfolio metrics (monitored projects, total outlay, delayed counts, and cost overrun rates), quick multi-parameter search, and sector filter shortcuts.
+2. **Function:** Enables ministerial leadership and monitoring officers to immediately gauge portfolio health at a glance, execute rapid searches by keyword/state/agency, filter high-priority sectors (Railways, Highways, Power, Petroleum, Urban Development), and navigate directly to the Risk Radar or comprehensive project registry.
+
+### 2. Central Sector Projects Directory (Portfolio)
+![Central Sector Projects Directory](frontend/public/portfoliopage(mainpage).png)
+
+1. **Page Description:** Central ledger indexing all 1,942+ active infrastructure projects with real-time ML risk tier classifications (Critical, High, Moderate, Low), sanctioned vs. current outlays, cost variance, schedule delay metrics, physical progress bars, and direct links to comprehensive dossiers.
+2. **Function:** Allows officers to filter projects by sector, state/UT, project status (Under Implementation, Completed, Shelved), and algorithmic risk tier; sort by cost outlay, delay, or risk score; trigger bulk data ingestion; add new project records; and export filtered views to CSV for inter-departmental review.
+
+### 3. Project Dossier & ML Predictive Intelligence
+![Project Dossier](frontend/public/eachproject_detailedpage.png)
+
+1. **Page Description:** Granular analytical profile for an individual infrastructure asset displaying live database telemetry, financial outlay breakdowns, schedule milestone targets, recorded project impediments, and predictive model forecasts accompanied by SHAP TreeExplainer feature attributions.
+2. **Function:** Provides monitoring officers with deep visibility into project cost escalation and completion risk; displays stacking ensemble overrun probabilities and forecasted additional delay months; breaks down top empirical risk drivers using explainable SHAP values; and allows editing project telemetry or exporting project CUF records.
+
+### 4. Historical Time-Series Trend & Execution Trajectory
+![Historical Execution Trajectory](frontend/public/summarygraph.png)
+
+1. **Page Description:** Longitudinal time-series analytics component tracking historical monthly monitoring snapshots across project lifecycles, charting physical progress percentage against cumulative financial expenditure percentage over time.
+2. **Function:** Detects physical-financial disconnects (e.g., expenditure surges without corresponding physical completion), analyzes delivery velocity and acceleration over multi-year timelines, validates historical snapshot cadence, and provides empirical input curves for predictive modeling.
+
+### 5. Geospatial Infrastructure Map & Regional Density
+![Geospatial Infrastructure Map](frontend/public/summarymap.png)
+
+1. **Page Description:** Interactive geospatial choropleth map of India displaying central-sector project density, aggregate outlay commitments, and delay distributions across all States and Union Territories, with geographic zone filtering (North, South, West, East, Central, North-East).
+2. **Function:** Enables territorial drill-down into specific states (e.g., Uttar Pradesh, Maharashtra) to assess regional risk concentrations, total capital commitments, escalation amounts, and delayed counts, while presenting a curated panel of high-value regional anchor projects.
+
+### 6. Early Warning & Intervention Console (Risk Radar)
+![Early Warning Console](frontend/public/projectwarningpage.png)
+
+1. **Page Description:** Active triage and early warning dashboard highlighting algorithmic threshold breaches (>20% cost overrun administrative ceilings, severe timeline deviations, or physical-financial variance) across monitored assets.
+2. **Function:** Categorizes alerts by severity (Critical, High, Moderate) and status (Pending Action vs. Acknowledged); provides direct operational directives (e.g., convening Project Monitoring Committees or issuing ministerial notices); and logs officer interventions to ensure accountability.
+
+### 7. Sector Performance Ledger & Macro Aggregations
+![Sector Performance Ledger](frontend/public/sectorwisereport.png)
+
+1. **Page Description:** Macro-level comparative scorecard aggregating project counts, capital outlays, average cost overruns, and average timeline delays across 27 national infrastructure sectors (Railways, Power Generation, National Highways, Urban Infrastructure, Petroleum Refining, Atomic Energy, Water Resources, etc.).
+2. **Function:** Benchmarks sectoral performance to identify systemic implementation challenges, evaluates cross-ministry delivery efficiency, highlights high-risk sectors requiring capital restructuring, and informs national infrastructure resource allocation.
+
+### 8. New Project Registration & Data Onboarding
+![Register New Project](frontend/public/registermewprojectpage.png)
+
+1. **Page Description:** Guided 5-step modal workflow (`Identity` → `Financials` → `Timeline` → `Progress` → `Review & Submit`) for registering new central-sector capital projects into the national monitoring ledger.
+2. **Function:** Enables implementing agencies and nodal departments to manually onboard new capital assets with verified administrative identifiers (Project ID, Sector, Ministry, State/District, Implementing Agency, Sanction Year) and standardized parameters prior to ML risk ingestion.
+
+### 9. Common Upload Form (CUF) File Ingestion
+![CUF File Ingestion](frontend/public/cuf_upload.png)
+
+1. **Page Description:** Automated batch data ingestion interface supporting official MoSPI monthly monitoring spreadsheets (.xlsx, .xls, .csv up to 50MB) alongside pre-formatted templates and single-click representative test batches.
+2. **Function:** Ingests and validates monthly progress spreadsheets, aligns 30+ CUF telemetry fields, updates the persistent project ledger, and triggers real-time feature transformation and predictive risk scoring across uploaded portfolios.
+
+### 10. NIRMAAN AI Officer (Conversational Assistant)
+![NIRMAAN AI Officer](frontend/public/chatbot.png)
+
+1. **Page Description:** Conversational copilot powered by Google Gemini 2.0 Flash, integrated across the platform with direct context injection from the live project database and MoSPI governance guidelines.
+2. **Function:** Answers natural language queries regarding project bottlenecks, delays, contractor disputes, and statutory norms; references specific central-sector assets with live outlay and overrun metrics; and synthesizes actionable intervention strategies for monitoring authorities.
 
 ---
 
@@ -331,10 +397,5 @@ This is a research and demonstration platform. It does not ingest, store, or rep
 
 ---
 
-## 🏆 SIH 2024 Alignment
-
-> **Problem Statement PS-Code:** IPMD/MoSPI — AI for Infrastructure Monitoring  
-> **Theme:** Smart Automation  
-> **Organisation:** Ministry of Statistics and Programme Implementation  
 
 The solution directly addresses all 3 technical dimensions (a, b, c) and all 9 expected outcomes (a–i) of the problem statement using open-source tools exclusively (Python, Node.js, SQLite, XGBoost, LightGBM, scikit-learn, FastAPI, Next.js, Prisma).

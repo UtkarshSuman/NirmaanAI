@@ -34,6 +34,7 @@ import {
   Clock,
 } from "lucide-react";
 import FeatureVariablesModal from "@/components/FeatureVariablesModal";
+import SihArchitectureDiagram from "@/components/SihArchitectureDiagram";
 
 export const metadata = {
   title: "About NIRMAAN AI | SIH Methodology & Predictive Architecture",
@@ -302,6 +303,9 @@ export default function AboutPage() {
           <span className="text-[11px] text-emerald-600 font-medium">+24.9% vs Baseline Rules</span>
         </div>
       </div>
+
+      {/* SIH Grand Finale End-to-End System Architecture (7-Stage Pipeline + Methodology + Open-Source Stack) */}
+      <SihArchitectureDiagram />
 
       {/* SECTION 1: THE SIH PROBLEM FORMULATION */}
       <section className="space-y-4">
