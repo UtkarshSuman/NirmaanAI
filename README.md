@@ -1,10 +1,33 @@
-# NIRMAAN AI — Predictive Infrastructure Intelligence Platform
+# NIRMAAN AI — Predictive Infrastructure Intelligence, Cost Overrun & Schedule Delay Analytics Platform
 
-> **SIH 2026 Submission** | Problem Solution: AI for Infrastructure Monitoring — IPMD/MoSPI PAIMANA  
+> **SIH 2026 Submission** | Problem Solution: AI for Infrastructure Monitoring — IPMD/MoSPI PAIMANA (Problem Statement Solution)  
 > **Team:** Team Rescue-Arc  
 > **Platform:** NIRMAAN AI (Project Assessment, Infrastructure Monitoring and Analytics for Nation-building)  
 
-[![Build](https://img.shields.io/badge/build-passing-brightgreen)](.) [![Tests](https://img.shields.io/badge/tests-49%2F50-brightgreen)](.) [![ML F1](https://img.shields.io/badge/cost_overrun_F1-99.48%25-blue)](.) [![License](https://img.shields.io/badge/license-MIT-blue)](.)
+![Next.js 16](https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![React 19](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Python 3.11+](https://img.shields.io/badge/Python_3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-EB3C00?style=for-the-badge&logo=xgboost&logoColor=white)
+![LightGBM](https://img.shields.io/badge/LightGBM-2E7D32?style=for-the-badge&logo=googlecloud&logoColor=white)
+![SHAP AI](https://img.shields.io/badge/SHAP-Explainable_AI-7C4DFF?style=for-the-badge&logo=python&logoColor=white)
+![Supabase PostgreSQL](https://img.shields.io/badge/Supabase_PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Prisma ORM](https://img.shields.io/badge/Prisma_ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+![Gemini 2.0 Flash](https://img.shields.io/badge/Google_Gemini-2.0_Flash-4285F4?style=for-the-badge&logo=googlegemini&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+---
+
+### 🔗 Live Platform & Solution Video
+
+> 🚀 **Live Production Platform**: [https://nirmaan-ai-hazel.vercel.app/](https://nirmaan-ai-hazel.vercel.app/)  
+> 📺 **Video Explanation & Solution Walkthrough**: [https://www.youtube.com/watch?v=h_9us3qxY3g](https://www.youtube.com/watch?v=h_9us3qxY3g)
+
+[![Live Demo](https://img.shields.io/badge/Live_Platform-nirmaan--ai-hazel.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://nirmaan-ai-hazel.vercel.app/)
+[![YouTube Explanation](https://img.shields.io/badge/YouTube-Solution_Walkthrough-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=h_9us3qxY3g)
 
 ---
 
@@ -12,13 +35,29 @@
 
 NIRMAAN AI transforms India's PAIMANA infrastructure monitoring from **descriptive reporting** to **predictive and prescriptive decision-support**. It analyzes 1,931 Central Sector Infrastructure Projects (≥₹150 Crore) across 17 Ministries using a 3-model ML stacking ensemble to:
 
-- **Predict** cost overrun probability before formal budget revision submissions
-- **Forecast** schedule delay months in advance of milestone breaches
-- **Score** each project with a composite 0–100 risk index
-- **Alert** monitoring officers with actionable early warning signals
-- **Explain** predictions using SHAP feature attribution
-- **Answer** natural language queries via the AI Officer (Gemini LLM)
-- **Simulate** risk for new/hypothetical projects via the What-If Predictor
+- ![Cost Overrun Prediction](https://img.shields.io/badge/📈_COST_OVERRUN-STACKING_ENSEMBLE-FF2A55?style=flat-square)  
+  **Predict Cost Overrun Probability** before formal budget revision submissions (![F1 Score](https://img.shields.io/badge/F1-99.48%25-00E676?style=flat-square) **$99.48\%$**, ![AUC--ROC](https://img.shields.io/badge/AUC--ROC-1.0-00B0FF?style=flat-square) **$1.0$**) across 1,931+ Central Sector capital assets.
+
+- ![Schedule Delay Forecasting](https://img.shields.io/badge/⏱️_SCHEDULE_DELAY-XGBOOST_REGRESSOR-FF9100?style=flat-square)  
+  **Forecast Schedule Delay Months** in advance of milestone breaches (![Ensemble F1](https://img.shields.io/badge/Ensemble_F1-91.26%25-00E676?style=flat-square) **$91.26\%$**, ![RMSE](https://img.shields.io/badge/RMSE-9.83_Months-FF9100?style=flat-square) **$9.83\text{ months}$**) using dynamic project velocity curves.
+
+- ![Composite Risk Scoring](https://img.shields.io/badge/🛡️_PROJECT_RISK_INDEX-0--100_TIERS-00B0FF?style=flat-square)  
+  **Score Every Project** with a standardized 0–100 composite risk index segmented into four operational priority tiers (![CRITICAL](https://img.shields.io/badge/CRITICAL-%E2%89%A575-FF1744?style=flat-square) **$\ge 75$**, ![HIGH](https://img.shields.io/badge/HIGH-50--74-FF9100?style=flat-square) **$50–74$**, ![MODERATE](https://img.shields.io/badge/MODERATE-25--49-FFD600?style=flat-square) **$25–49$**, ![LOW](https://img.shields.io/badge/LOW-%3C25-00E676?style=flat-square) **$< 25$**).
+
+- ![Early Warning Alerts](https://img.shields.io/badge/🚨_EARLY_WARNINGS-ADMIN_TRIAGE-FF3D00?style=flat-square)  
+  **Alert Monitoring Officers** with actionable early warning signals across 4 critical failure triggers (>20% cost overrun threshold, milestone delays, physical-financial variance, stagnant execution) with acknowledgement tracking.
+
+- ![Explainable AI Attributions](https://img.shields.io/badge/🔍_EXPLAINABLE_AI-SHAP_ATTRIBUTION-7C4DFF?style=flat-square)  
+  **Explain Machine Learning Forecasts** using **SHAP (SHapley Additive exPlanations)** TreeExplainer attribution to isolate exact cost-escalation and delay drivers for ministerial accountability.
+
+- ![AI Officer Intelligence](https://img.shields.io/badge/🤖_AI_INTELLIGENCE-GEMINI_2.0_FLASH-651FFF?style=flat-square)  
+  **Provide Institutional Decision Support** through an AI Officer powered by **Google Gemini 2.0 Flash** with live database telemetry and context injection for real-time natural language inquiries.
+
+- ![Scenario Simulation Engine](https://img.shields.io/badge/🧪_SCENARIO_SIMULATION-WHAT--IF_PREDICTOR-00E5FF?style=flat-square)  
+  **Simulate What-If Policy Scenarios** and risk trajectories for new, proposed, or restructured infrastructure projects prior to formal capital outlay commitment.
+
+- ![Admin & Data Ingestion](https://img.shields.io/badge/🏛️_GOVERNANCE_PORTAL-CUF_INGESTION-E040FB?style=flat-square)  
+  **Empower Implementing Agencies & MoSPI** with automated Common Upload Form (CUF) ingestion, ministerial benchmarking scorecards, and multi-agency project dossier management.
 
 ---
 
