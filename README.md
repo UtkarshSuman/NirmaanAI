@@ -26,7 +26,7 @@
 > 🚀 **Live Production Platform**: [https://nirmaan-ai-hazel.vercel.app/](https://nirmaan-ai-hazel.vercel.app/)  
 > 📺 **Video Explanation & Solution Walkthrough**: [https://www.youtube.com/watch?v=h_9us3qxY3g](https://www.youtube.com/watch?v=h_9us3qxY3g)
 
-[![Live Demo](https://img.shields.io/badge/Live_Platform-nirmaan--ai-hazel.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://nirmaan-ai-hazel.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live_Platform-nirmaan--ai--hazel.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://nirmaan-ai-hazel.vercel.app/)
 [![YouTube Explanation](https://img.shields.io/badge/YouTube-Solution_Walkthrough-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=h_9us3qxY3g)
 
 ---
